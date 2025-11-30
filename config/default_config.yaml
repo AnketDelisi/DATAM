@@ -1,0 +1,101 @@
+
+state: Arizona, Georgia, Michigan, Nevada, North Carolina, Pennsylvania, Wisconsin
+
+year: 2024
+candidate_Republican: Donald Trump
+candidate_Democratic: Kamala Harris
+
+
+sim_num: 300
+random_seed: 0
+
+
+# LLM
+# parallel or serial
+mode: parallel
+num_workers: 8
+model_name: qwen-max
+temperature: 0.7
+max_retry: 20
+request_timeout: 100
+sleep_sec: 5
+
+
+# wandb
+use_wandb: False
+wandb_project: test
+wandb_entity: user_name
+
+
+#################################
+##### Large Language Models #####
+#################################
+
+gpt-4o:
+  cost_input: 2.5e-6
+  cost_output: 10.0e-6
+  api_base: https://api.openai.com/v1
+  api_key: 
+
+qwen-max:
+  cost_input: 20.0e-6
+  cost_output: 60.0e-6
+  api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api_key: 
+
+# Prompt Structure
+# 1. prefix
+# 2. profile (fields)
+# 3. context
+# 4. query
+# see 'utils.gen_prompt' for more details
+# if you don't want some fields, just don't include them in the fields section, e.g. comment out the fields you don't want
+
+SEP: ','
+context_info_flag: True
+context_info_title: Reimplemented
+
+system_prompt: ''
+
+prompt:
+  prefix: "# Profile\n"
+  background: "In the {year} presidential election, {candidate_Republican} is the Republican candidate, and {candidate_Democratic} is the Democratic candidate."
+  query: |
+    
+    # Requirement
+    ONLY based on the profile and the information provided above, predict the probability that you would vote for each candidate as well as the probability that you would "vote for another candidate or not vote at all". Make sure the probabilities add up to 1.
+
+    # Response Format
+    Please output only the following JSON format, with no additional text.
+    ```json
+    {{
+        "{candidate_Republican}": probability of voting for {candidate_Republican},
+        "{candidate_Democratic}": probability of voting for {candidate_Democratic},
+        "vote for another candidate or not vote at all": probability,
+    }}
+    ```
+  fields:
+    State:
+      template: "- State: XXX\n"
+      valmap: {}
+    Race:
+      template: "- Race: XXX\n"
+      valmap: {}
+    Sex:
+      template: "- Sex: XXX\n" 
+      valmap: {}
+    Age:
+      template: "- Age: XXX\n"
+      valmap: {}
+    Occupation:
+      template: "- Occupation: XXX\n"
+      valmap: {}
+    Industry:
+      template: "- Industry: XXX\n"
+      valmap: {}
+    Education:
+      template: "- Educational Attainment: XXX\n"
+      valmap: {}
+    Religion:
+      template: "- Religion: XXX\n"
+      valmap: {}

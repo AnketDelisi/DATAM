@@ -1,0 +1,6 @@
+openai
+json-repair
+omegaconf
+pandas
+wandb
+openpyxl

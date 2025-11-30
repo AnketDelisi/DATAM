@@ -1,0 +1,14 @@
+sim_num: 300
+state: Arizona, Georgia, Michigan, Nevada, North Carolina, Pennsylvania, Wisconsin
+model_name: qwen-max-2024-04-28
+use_wandb: False
+wandb_project: 2024_Election
+wandb_entity: FlockVote
+
+context_info_title: Reimplemented
+
+qwen-max-2024-04-28:
+  cost_input: 40.0e-6
+  cost_output: 120.0e-6
+  api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api_key: 
