@@ -1,6 +1,6 @@
 # FlockVote
 
-Open-source reproduction of our [FlockVote method](https://airaxiv.com/papers/preview/2511.0030/). 
+Open-source reproduction of our [FlockVote method](https://www.arxiv.org/pdf/2512.05982). 
 The prediction process requires only less than 160k tokens per state.
 
 ![Prediction Results](assets/Comparison_results.png)
@@ -120,3 +120,15 @@ wandb login
 The default configuration is not using Weights & Biases. If you want to use it, remember to set `use_wandb` to `True` in your custom config.
 
 The `wandb_project` and `wandb_entity` can also be set in config file or input as parameters.
+
+## Citation
+
+If you find FlockVote useful in your research or applications, please consider citing our paper:
+
+```bibtex
+@article{zhou2025flockvote,
+  title={FlockVote: LLM-Empowered Agent-Based Modeling for Simulating US Presidential Elections},
+  author={Zhou, Lingfeng and Xu, Yi and Wang, Zhenyu and Wang, Dequan},
+  journal={arXiv preprint arXiv:2512.05982},
+  year={2025}
+}
