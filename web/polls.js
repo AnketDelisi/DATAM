@@ -6,6 +6,7 @@ import {
   toDate,
 } from "./modules/aggregate.js";
 import { formatInt, formatPct } from "./modules/format.js";
+import { bootstrapAggregate } from "./modules/uncertainty.js";
 
 const MAIN_PARTIES = ["P9", "P21", "P11", "P22", "P12", "P10", "P13", "P24"];
 const OTHER = "OTHER";
@@ -23,6 +24,10 @@ const TR_MONTHS = [
   "Kas",
   "Ara",
 ];
+const ciFormat = new Intl.NumberFormat("tr-TR", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
 
 const state = {
   data: null,
@@ -260,6 +265,13 @@ function render() {
     defaultSample: medianSample(polls),
   };
   const aggregate = aggregateAt(polls, entities, state.cutoff, options);
+  const uncertainty = bootstrapAggregate(
+    polls,
+    entities,
+    state.cutoff,
+    options,
+    400
+  );
   const dates = polls.map((poll) => poll.field_end).sort();
   const start = dates[0] || state.cutoff;
   const trend = buildTrend(polls, entities, start, state.cutoff, options);
@@ -269,7 +281,7 @@ function render() {
   state.polls = polls;
 
   drawChart(race, polls, trend, aggregate);
-  updateAggregateTable(race, aggregate);
+  updateAggregateTable(race, aggregate, uncertainty);
   updatePollsterTable(race, aggregate);
   updatePollTable(race, polls);
   updateMeta(race, aggregate, polls);
@@ -433,7 +445,7 @@ function drawChart(race, polls, trend, aggregate) {
     .join("");
 }
 
-function updateAggregateTable(race, aggregate) {
+function updateAggregateTable(race, aggregate, uncertainty) {
   const actual = race.actual || {};
   const rows = [...race.entities]
     .sort((a, b) => (aggregate.shares[b] || 0) - (aggregate.shares[a] || 0))
@@ -443,9 +455,17 @@ function updateAggregateTable(race, aggregate) {
       const actualValue = actual[id];
       const diff = actualValue == null ? null : value - actualValue;
       const diffClass = diff == null ? "" : diff > 0 ? "pos" : diff < 0 ? "neg" : "";
+      const interval = uncertainty?.intervals?.[id];
+      const ci = interval
+        ? `%90 GA ${ciFormat.format(interval.low * 100)}–${ciFormat.format(
+            interval.high * 100
+          )}`
+        : "";
       return `<tr>
         <td><span class="swatch" style="background:${meta.color}"></span>${meta.short}</td>
-        <td class="num">${formatPct(value * 100)}</td>
+        <td class="num">${formatPct(value * 100)}${
+          ci ? `<div class="ci">${ci}</div>` : ""
+        }</td>
         <td class="num muted">${actualValue == null ? "–" : formatPct(actualValue * 100)}</td>
         <td class="num ${diffClass}">${diff == null ? "–" : formatSignedPct(diff)}</td>
       </tr>`;

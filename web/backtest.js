@@ -10,6 +10,7 @@ import {
 } from "./modules/backtest.js";
 import { medianSample } from "./modules/aggregate.js";
 import { formatInt, formatPct } from "./modules/format.js";
+import { bootstrapAggregate } from "./modules/uncertainty.js";
 
 const TR_MONTHS = [
   "Oca",
@@ -26,6 +27,10 @@ const TR_MONTHS = [
   "Ara",
 ];
 const ppFormat = new Intl.NumberFormat("tr-TR", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+const ciFormat = new Intl.NumberFormat("tr-TR", {
   minimumFractionDigits: 1,
   maximumFractionDigits: 1,
 });
@@ -192,6 +197,13 @@ function render() {
     defaultSample: medianSample(polls),
   };
   const summary = finalSummary(polls, entities, actual, race.electionDay, options);
+  const uncertainty = bootstrapAggregate(
+    polls,
+    entities,
+    race.electionDay,
+    options,
+    400
+  );
   const board = pollsterLeaderboard(polls, entities, actual, race.electionDay);
   const loo = leaveOneOut(polls, entities, race.electionDay, options);
   const start = polls.reduce(
@@ -201,7 +213,7 @@ function render() {
   const series = errorSeries(polls, entities, actual, start, race.electionDay, options);
 
   drawErrorChart(race, series, entities, summary);
-  updateFinalTable(race, summary);
+  updateFinalTable(race, summary, uncertainty);
   updateLeaderboard(race, board);
   updateLoo(race, loo);
   updateMeta(race, summary, board);
@@ -338,7 +350,7 @@ function drawErrorChart(race, series, entities, summary) {
       .join("");
 }
 
-function updateFinalTable(race, summary) {
+function updateFinalTable(race, summary, uncertainty) {
   $("final-metrics").textContent = `MAE ${formatPp(summary.mae)} · ${
     summary.nPolls
   } anket · son anket ${
@@ -351,11 +363,17 @@ function updateFinalTable(race, summary) {
       const meta = entityMeta(row.id);
       const className =
         row.error == null ? "" : row.error > 0 ? "neg" : row.error < 0 ? "pos" : "";
+      const interval = uncertainty?.intervals?.[row.id];
+      const ci = interval
+        ? `%90 GA ${ciFormat.format(interval.low * 100)}–${ciFormat.format(
+            interval.high * 100
+          )}`
+        : "";
       return `<tr>
         <td><span class="swatch" style="background:${meta.color}"></span>${meta.short}</td>
         <td class="num">${
           row.aggregate == null ? "–" : formatPct(row.aggregate * 100)
-        }</td>
+        }${ci ? `<div class="ci">${ci}</div>` : ""}</td>
         <td class="num muted">${
           row.actual == null ? "–" : formatPct(row.actual * 100)
         }</td>

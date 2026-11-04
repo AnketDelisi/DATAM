@@ -43,6 +43,7 @@ export function weightedAverage(
     halfLifeDays = 28,
     normalize = true,
     defaultSample = 1000,
+    weightFn = null,
   } = {}
 ) {
   const sums = {};
@@ -57,7 +58,7 @@ export function weightedAverage(
     const age = Math.max(0, dayDiff(poll.field_end, cutoff));
     const recency = Math.pow(0.5, age / halfLifeDays);
     const sample = poll.sample_size || defaultSample;
-    const weight = recency * Math.sqrt(sample);
+    const weight = recency * Math.sqrt(sample) * (weightFn ? weightFn(poll) : 1);
     for (const [id, value] of Object.entries(shares)) {
       sums[id] = (sums[id] || 0) + value * weight;
       weights[id] = (weights[id] || 0) + weight;
