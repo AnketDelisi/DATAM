@@ -1,0 +1,9 @@
+Turkey ADM1 boundaries
+Source: geoBoundaries (https://www.geoboundaries.org)
+Boundary source: OpenStreetMap (https://www.openstreetmap.org/copyright)
+License: Creative Commons Attribution-ShareAlike 2.0 (CC BY-SA 2.0)
+Dataset: geoBoundaries-TUR-ADM1_simplified.geojson
+
+The boundary file is used only for the province map. It is distributed under
+CC BY-SA 2.0; the application code is distributed separately under the
+repository's license.

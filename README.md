@@ -1,4 +1,11 @@
-# FlockVote
+# DATAM
+
+Türkiye election MRP + poll aggregator and scenario simulator. The static app
+lives in `web/`; the design and data notes are in `PLAN.md`.
+
+## Legacy FlockVote baseline
+
+The original FlockVote reproduction is kept below as a historical baseline.
 
 Open-source reproduction of our [FlockVote method](https://www.arxiv.org/pdf/2512.05982). 
 The prediction process requires only less than 160k tokens per state.

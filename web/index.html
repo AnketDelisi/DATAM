@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="DATAM — Türkiye seçim simülasyonu: D'Hondt, yüzde 7 barajı, 87 seçim çevresi ve 600 sandalye."
+    />
+    <title>DATAM · Türkiye Seçim Simülasyonu</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>DATAM</h1>
+        <p>Türkiye Seçim Simülasyonu · 2023 bazlı milletvekili dağılımı</p>
+      </div>
+      <div class="topbar-meta">
+        <nav class="nav" aria-label="Bölümler">
+          <a href="./index.html" class="active">Milletvekili</a>
+          <a href="./president.html">Cumhurbaşkanı</a>
+        </nav>
+        <span id="generated-at"></span>
+        <a href="#methodology">Yöntem</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel controls" aria-label="Senaryo kontrolleri">
+        <div class="panel-head">
+          <h2>Senaryo</h2>
+          <button id="reset" class="ghost" type="button">2023 sonucu</button>
+        </div>
+        <p class="hint">
+          Parti oy oranlarını değiştirin; sandalye dağılımı ve harita anında
+          güncellenir.
+        </p>
+
+        <div id="party-controls" class="party-controls"></div>
+
+        <div class="control-row other-row">
+          <span class="swatch" style="background:#9e9e9e"></span>
+          <span class="control-label">Diğer</span>
+          <span id="other-share" class="value">0,0%</span>
+        </div>
+
+        <div class="control-row">
+          <label for="threshold" class="control-label">Baraj</label>
+          <input
+            id="threshold"
+            type="number"
+            min="0"
+            max="15"
+            step="0.1"
+            value="7"
+          />
+          <span class="pct">%</span>
+        </div>
+
+        <label class="checkbox">
+          <input id="alliances" type="checkbox" checked />
+          İttifak kurallarını uygula
+        </label>
+
+        <div class="button-row">
+          <button id="copy-link" type="button">Bağlantıyı kopyala</button>
+        </div>
+
+        <p class="hint small">
+          2023 sütunu resmi YSK sonucudur. Model, 2023'ü 2 sandalye sapmayla
+          yeniden üretir; fark sütunu bu sapmayı gösterir.
+        </p>
+      </aside>
+
+      <section class="panel map-panel" aria-label="Türkiye haritası">
+        <div class="panel-head map-head">
+          <h2>Harita</h2>
+          <div class="map-tools">
+            <div class="segmented" role="group" aria-label="Harita düzeyi">
+              <button id="map-province" class="segment active" type="button">
+                İl
+              </button>
+              <button id="map-ilce" class="segment" type="button">İlçe</button>
+            </div>
+            <div id="map-legend" class="legend"></div>
+          </div>
+        </div>
+        <div class="map-wrap">
+          <svg
+            id="map"
+            class="map-svg"
+            viewBox="0 0 800 380"
+            role="img"
+            aria-label="Türkiye il haritası"
+          ></svg>
+          <svg
+            id="ilce-map"
+            class="map-svg hidden"
+            viewBox="0 0 800 380"
+            role="img"
+            aria-label="Türkiye ilçe haritası"
+          ></svg>
+          <div id="tooltip" class="tooltip" hidden></div>
+        </div>
+        <div id="province-detail" class="province-detail"></div>
+      </section>
+
+      <section class="panel results-panel" aria-label="Meclis dağılımı">
+        <div class="panel-head">
+          <h2>Meclis</h2>
+          <div id="summary" class="summary"></div>
+        </div>
+        <svg
+          id="hemicycle"
+          viewBox="0 0 600 320"
+          role="img"
+          aria-label="Meclis sandalye dağılımı"
+        ></svg>
+        <div class="table-wrap">
+          <table class="party-table">
+            <thead>
+              <tr>
+                <th>Parti</th>
+                <th>Oy</th>
+                <th>Sandalye</th>
+                <th>2023</th>
+                <th>Fark</th>
+              </tr>
+            </thead>
+            <tbody id="party-table"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <section id="methodology" class="panel methodology">
+      <h2>Yöntem ve sınırlar</h2>
+      <p>
+        Bu araç, 2023 milletvekili genel seçimindeki seçim çevresi ve ilçe
+        sonuçlarını başlangıç noktası alır. Parti oy oranlarındaki değişim, her
+        seçim çevresine orantılı olarak uygulanır; ardından yüzde 7 ülke barajı,
+        ittifak kuralları ve D'Hondt yöntemiyle 600 sandalye dağıtılır.
+      </p>
+      <p>
+        Harita, senaryodaki il bazlı en yüksek oy oranına sahip partiyi
+        gösterir. Sandalye dağılımı seçim çevresi düzeyinde hesaplanır; il
+        toplamları bilgilendirme amaçlıdır.
+      </p>
+      <p>
+        Sınırlar: YSK'nın il bazında yayımlamadığı yurt dışı oyları ve resmi
+        ittifak protokolleri nedeniyle 2023 modeli resmi sonuçtan 2 sandalye
+        sapabilir. Bu bir senaryo aracıdır; seçim tahmini değildir.
+      </p>
+      <p class="source">
+        Kaynaklar: YSK açık veri, TÜİK Nüfus İstatistikleri Portalı. Sınırlar:
+        geoBoundaries (ADM1 CC BY-SA 2.0; ADM2 ODbL 1.0).
+      </p>
+    </section>
+
+    <footer>
+      <span>DATAM · Açık kaynak · GitHub Pages</span>
+      <span>Bu araç hiçbir siyasi parti veya kurumla bağlantılı değildir.</span>
+    </footer>
+
+    <noscript>
+      Bu araç JavaScript gerektirir. Lütfen tarayıcınızda JavaScript'i açın.
+    </noscript>
+
+    <script src="./lib/d3.min.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

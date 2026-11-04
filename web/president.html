@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="DATAM — Türkiye cumhurbaşkanlığı seçim simülasyonu: 1. tur oy oranları, 2. tur transferleri ve il haritası."
+    />
+    <title>DATAM · Cumhurbaşkanlığı Simülasyonu</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>DATAM</h1>
+        <p>Türkiye Seçim Simülasyonu · 2023 bazlı cumhurbaşkanlığı</p>
+      </div>
+      <div class="topbar-meta">
+        <nav class="nav" aria-label="Bölümler">
+          <a href="./index.html">Milletvekili</a>
+          <a href="./president.html" class="active">Cumhurbaşkanı</a>
+        </nav>
+        <span id="generated-at"></span>
+        <a href="#methodology">Yöntem</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel controls" aria-label="Cumhurbaşkanlığı senaryo kontrolleri">
+        <div class="panel-head">
+          <h2>Senaryo</h2>
+          <button id="reset" class="ghost" type="button">2023 sonucu</button>
+        </div>
+        <p class="hint">
+          Adayların 1. tur oy oranlarını ve elenen adayların 2. tur
+          transferlerini değiştirin.
+        </p>
+
+        <div id="candidate-controls"></div>
+
+        <div class="section-title">2. Tur transferleri</div>
+        <div id="transfer-controls"></div>
+
+        <div class="button-row">
+          <button id="copy-link" type="button">Bağlantıyı kopyala</button>
+        </div>
+
+        <p class="hint small">
+          2023 YSK yurt içi sandık verisi. Bu bir senaryo aracıdır; seçim
+          tahmini değildir.
+        </p>
+      </aside>
+
+      <section class="panel map-panel" aria-label="Cumhurbaşkanlığı haritası">
+        <div class="panel-head map-head">
+          <h2>Harita</h2>
+          <div class="map-tools">
+            <div class="segmented" role="group" aria-label="Tur">
+              <button id="round-first" class="segment active" type="button">
+                1. Tur
+              </button>
+              <button id="round-runoff" class="segment" type="button">
+                2. Tur
+              </button>
+            </div>
+            <div id="president-legend" class="legend"></div>
+          </div>
+        </div>
+        <div class="map-wrap">
+          <svg
+            id="president-map"
+            class="map-svg"
+            viewBox="0 0 800 380"
+            role="img"
+            aria-label="Cumhurbaşkanlığı seçim haritası"
+          ></svg>
+          <div id="tooltip" class="tooltip" hidden></div>
+        </div>
+        <div id="province-detail" class="province-detail"></div>
+      </section>
+
+      <section class="panel results-panel" aria-label="Cumhurbaşkanlığı sonuçları">
+        <div class="panel-head">
+          <h2>Sonuç</h2>
+          <div id="summary" class="summary"></div>
+        </div>
+
+        <div class="round-block">
+          <h3>1. Tur</h3>
+          <div id="first-bars" class="result-bars"></div>
+        </div>
+
+        <div class="round-block">
+          <h3>2. Tur</h3>
+          <div id="runoff-bars" class="result-bars"></div>
+          <p id="runoff-note" class="hint small"></p>
+        </div>
+
+        <p class="hint small">
+          2023 resmi 1. tur (yurt içi): Erdoğan %49,2 · Kılıçdaroğlu %45,1 ·
+          Oğan %5,3 · İnce %0,4. 2. tur: Erdoğan %51,9 · Kılıçdaroğlu %48,1.
+        </p>
+      </section>
+    </main>
+
+    <section id="methodology" class="panel methodology">
+      <h2>Yöntem ve sınırlar</h2>
+      <p>
+        1. tur, 2023 cumhurbaşkanlığı seçimindeki il bazlı oy oranlarına ulusal
+        oy farkı eklenerek hesaplanır ve iller arasında dağıtılır. 2. turda ilk
+        iki aday dışındaki oylar, kullanıcı transfer oranlarıyla ilk iki adaya
+        paylaştırılır.
+      </p>
+      <p>
+        Harita, seçili turda il bazında en yüksek oy oranına sahip adayı
+        gösterir. Cumhurbaşkanlığı seçimi ulusal oyla belirlenir; harita
+        bilgilendirme amaçlıdır.
+      </p>
+      <p>
+        Sınırlar: Veriler YSK açık veri kaynaklıdır ve yurt içi sandıkları
+        kapsar; yurt dışı oyları il bazında yayımlanmadığı için model dışıdır.
+        Bu bir senaryo aracıdır; seçim tahmini değildir.
+      </p>
+      <p class="source">
+        Kaynaklar: YSK açık veri. Sınırlar: geoBoundaries (ADM1 CC BY-SA 2.0).
+      </p>
+    </section>
+
+    <footer>
+      <span>DATAM · Açık kaynak · GitHub Pages</span>
+      <span>Bu araç hiçbir siyasi parti veya kurumla bağlantılı değildir.</span>
+    </footer>
+
+    <noscript>
+      Bu araç JavaScript gerektirir. Lütfen tarayıcınızda JavaScript'i açın.
+    </noscript>
+
+    <script src="./lib/d3.min.js"></script>
+    <script type="module" src="./president.js"></script>
+  </body>
+</html>

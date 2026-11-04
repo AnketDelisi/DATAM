@@ -1,0 +1,8 @@
+{
+  "name": "datam-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test modules/*.test.js"
+  }
+}

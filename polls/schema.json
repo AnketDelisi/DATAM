@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DATAM poll",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "poll_id",
+    "pollster",
+    "field_start",
+    "field_end",
+    "date_precision",
+    "sample_size",
+    "method",
+    "population",
+    "type",
+    "round",
+    "results",
+    "undecided",
+    "source_url",
+    "source_page",
+    "status",
+    "notes"
+  ],
+  "properties": {
+    "poll_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "pollster": { "type": "string", "minLength": 1 },
+    "field_start": { "type": "string", "format": "date" },
+    "field_end": { "type": "string", "format": "date" },
+    "date_precision": { "enum": ["day", "month"] },
+    "sample_size": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "method": { "type": ["string", "null"] },
+    "population": { "type": "string" },
+    "type": { "enum": ["presidential", "parliamentary"] },
+    "round": { "type": ["integer", "null"] },
+    "results": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": ["number", "null"],
+        "minimum": 0,
+        "maximum": 1
+      }
+    },
+    "undecided": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "source_url": { "type": "string", "format": "uri" },
+    "source_page": { "type": "string" },
+    "source_date_text": { "type": "string" },
+    "source_pollster_text": { "type": "string" },
+    "status": { "enum": ["published", "superseded", "withdrawn"] },
+    "notes": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "presidential" } } },
+      "then": { "properties": { "round": { "enum": [1, 2] } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "parliamentary" } } },
+      "then": { "properties": { "round": { "type": "null" } } }
+    }
+  ]
+}

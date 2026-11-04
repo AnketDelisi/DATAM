@@ -1,14 +1,14 @@
 [project]
-name = "flockvote"
+name = "datam"
 version = "0.1.0"
-description = "Agent-based election simulation and prediction (FlockVote)"
+description = "DATAM — Türkiye election MRP + poll aggregator and scenario simulator"
 authors = [
     { name = "maple-zhou", email = "zhoulingfeng@sjtu.edu.cn" }
 ]
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-keywords = ["election", "simulation", "agent-based", "prediction", "FlockVote"]
+keywords = ["election", "turkiye", "mrp", "polling", "simulation", "datam"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",

@@ -1,0 +1,61 @@
+# 2023 parliamentary election: party IDs follow the YSK header order.
+# Pn = parti n, In = independent candidate n (per district).
+election_id: 20230
+secim_turu: 8
+threshold: 0.07
+
+# Joint-list votes reported by YSK as ittifakN. They count toward the alliance
+# threshold. For seat allocation, v1 attributes them to the alliance's largest
+# member in the district; the official protocol can differ by a seat or two.
+joint_lists:
+  A1: SOSYALIST_GUC_BIRLIGI
+  A2: CUMHUR
+  A3: EMEK_VE_OZGURLUK
+  A4: MILLET
+  A5: ATA
+
+alliances:
+  CUMHUR:
+    - P9    # AK PARTI
+    - P11   # MHP
+    - P10   # YENIDEN REFAH
+    - P8    # BBP
+  MILLET:
+    - P21   # CHP
+    - P22   # IYI PARTI
+  EMEK_VE_OZGURLUK:
+    - P12   # YESIL SOL PARTI
+    - P13   # TIP
+  ATA:
+    - P24   # ZAFER PARTISI
+    - P23   # ADALET PARTISI
+  SOSYALIST_GUC_BIRLIGI:
+    - P3    # TKP
+    - P4    # TKH
+    - P5    # SOL PARTI
+
+parties:
+  P1:  {name: "MILLET", alliance: null}
+  P2:  {name: "HAK-PAR", alliance: null}
+  P3:  {name: "TKP", alliance: SOSYALIST_GUC_BIRLIGI}
+  P4:  {name: "TKH", alliance: SOSYALIST_GUC_BIRLIGI}
+  P5:  {name: "SOL PARTI", alliance: SOSYALIST_GUC_BIRLIGI}
+  P6:  {name: "GENCPARTI", alliance: null}
+  P7:  {name: "MEMLEKET", alliance: null}
+  P8:  {name: "BBP", alliance: CUMHUR}
+  P9:  {name: "AK PARTI", alliance: CUMHUR}
+  P10: {name: "YENIDEN REFAH", alliance: CUMHUR}
+  P11: {name: "MHP", alliance: CUMHUR}
+  P12: {name: "YESIL SOL PARTI", alliance: EMEK_VE_OZGURLUK}
+  P13: {name: "TIP", alliance: EMEK_VE_OZGURLUK}
+  P14: {name: "AB", alliance: null}
+  P15: {name: "ANAP", alliance: null}
+  P16: {name: "YP", alliance: null}
+  P17: {name: "HKP", alliance: null}
+  P18: {name: "MILLI YOL", alliance: null}
+  P19: {name: "VATAN PARTISI", alliance: null}
+  P20: {name: "GBP", alliance: null}
+  P21: {name: "CHP", alliance: MILLET}
+  P22: {name: "IYI PARTI", alliance: MILLET}
+  P23: {name: "AP", alliance: ATA}
+  P24: {name: "ZAFER PARTISI", alliance: ATA}
