@@ -8,11 +8,22 @@ const OPTIONS = {
   houseEffects: false,
 };
 
-function addOther(poll) {
+export function addOther(poll) {
   const other = Object.entries(poll.results)
     .filter(([id, value]) => !MAIN_PARTIES.includes(id) && typeof value === "number")
     .reduce((sum, [, value]) => sum + value, 0);
   return { ...poll, results: { ...poll.results, [OTHER]: other } };
+}
+
+export function parliamentActual(data) {
+  const shares = data.national.shares;
+  const other = Object.entries(shares)
+    .filter(([id]) => !MAIN_PARTIES.includes(id))
+    .reduce((sum, [, value]) => sum + value, 0);
+  const actual = {};
+  for (const id of MAIN_PARTIES) actual[id] = shares[id] || 0;
+  actual[OTHER] = other;
+  return actual;
 }
 
 export function presidentAggregate(pollPayload, round = 1) {

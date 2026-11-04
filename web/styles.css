@@ -917,6 +917,19 @@ footer {
   font-variant-numeric: tabular-nums;
 }
 
+.backtest-tables {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 24px 20px;
+}
+
+.backtest-panel {
+  padding: 16px;
+}
+
 @media (max-width: 1250px) {
   .layout {
     grid-template-columns: 300px minmax(0, 1fr);
@@ -928,6 +941,10 @@ footer {
 
   .controls {
     position: static;
+  }
+
+  .backtest-tables {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -951,8 +968,13 @@ footer {
   .controls,
   .chart-panel,
   .aggregate-panel,
-  .poll-list {
+  .poll-list,
+  .backtest-panel {
     padding: 12px;
+  }
+
+  .backtest-tables {
+    padding: 0 12px 12px;
   }
 
   .map-head {

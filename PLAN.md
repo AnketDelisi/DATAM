@@ -1,6 +1,6 @@
 # DATAM — Türkiye Election MRP + Poll Aggregator
 
-Status: **M0–M3 data + aggregator + calculator integration done; MRP-lite next.**
+Status: **M0–M3 data + aggregator + calculator + backtest done; MRP-lite next.**
 
 ## Goal
 
@@ -205,7 +205,9 @@ Acceptance: manual national shares produce plausible seats; 2023 backtest matche
 - [x] Calculator integration: “Anket ortalaması” applies the 28-day,
       no-house-effect aggregate to the president and parliament sliders
       (`web/modules/poll_preset.js`).
-- [ ] Dedicated backtest page (inline comparison exists).
+- [x] Dedicated backtest page (`web/backtest.html`, `web/backtest.js`,
+      `web/modules/backtest.js`): error over time, pollster leaderboard,
+      leave-one-pollster-out.
 - [ ] MRP-lite (needs crosstabs; the Wikipedia tables are toplines only).
 
 Poll source: Turkish Wikipedia's post-calendar tables. The pre-calendar

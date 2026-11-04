@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="DATAM 2023 backtest: anket ortalaması hata eğrisi, pollster sıralaması ve leave-one-pollster-out analizi."
+    />
+    <title>DATAM · Backtest</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>DATAM</h1>
+        <p>Türkiye Seçim Simülasyonu · 2023 backtest</p>
+      </div>
+      <div class="topbar-meta">
+        <nav class="nav" aria-label="Bölümler">
+          <a href="./index.html">Milletvekili</a>
+          <a href="./president.html">Cumhurbaşkanı</a>
+          <a href="./polls.html">Anketler</a>
+          <a href="./backtest.html" class="active">Backtest</a>
+        </nav>
+        <span id="generated-at"></span>
+        <a href="#methodology">Yöntem</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel controls" aria-label="Backtest kontrolleri">
+        <div class="panel-head">
+          <h2>Backtest</h2>
+          <button id="reset" class="ghost" type="button">Sıfırla</button>
+        </div>
+        <p class="hint">
+          2023 anketlerinden gelen ortalamanın seçim sonucuna göre hatasını
+          inceleyin. Kesim tarihi seçim günüdür.
+        </p>
+
+        <div id="race-switch" class="race-switch"></div>
+
+        <div class="control-row">
+          <label for="half-life" class="control-label">Yarılanma</label>
+          <input id="half-life" type="range" min="7" max="60" step="1" value="28" />
+          <span id="half-life-value" class="value">28 gün</span>
+        </div>
+
+        <label class="checkbox">
+          <input id="house-effects" type="checkbox" />
+          Pollster etkisini düzelt
+        </label>
+        <label class="checkbox">
+          <input id="normalize" type="checkbox" checked />
+          Payları %100’e normalize et
+        </label>
+
+        <p id="backtest-summary" class="hint small"></p>
+      </aside>
+
+      <section class="panel chart-panel" aria-label="Hata eğrisi">
+        <div class="panel-head">
+          <h2>Hata eğrisi</h2>
+          <span id="chart-subtitle" class="chart-subtitle"></span>
+        </div>
+        <svg
+          id="error-chart"
+          class="trend-chart"
+          viewBox="0 0 900 420"
+          role="img"
+          aria-label="Anket ortalaması mutlak hata eğrisi"
+        ></svg>
+        <div id="chart-legend" class="chart-legend"></div>
+      </section>
+
+      <section class="panel aggregate-panel" aria-label="Nihai karşılaştırma">
+        <div class="panel-head">
+          <h2>Nihai karşılaştırma</h2>
+        </div>
+        <p id="final-metrics" class="chart-subtitle"></p>
+        <table class="aggregate-table">
+          <thead>
+            <tr>
+              <th>Taraf</th>
+              <th>Ortalama</th>
+              <th>2023</th>
+              <th>Hata</th>
+            </tr>
+          </thead>
+          <tbody id="final-table"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <section class="backtest-tables">
+      <section class="panel backtest-panel" aria-label="Pollster sıralaması">
+        <div class="panel-head">
+          <h2>Pollster sıralaması</h2>
+          <span id="leaderboard-note" class="chart-subtitle"></span>
+        </div>
+        <p class="hint small">
+          Her pollster’ın seçim öncesi son anketi; MAE tüm tarafların mutlak
+          hata ortalamasıdır.
+        </p>
+        <div class="table-wrap poll-table-wrap">
+          <table class="poll-table">
+            <thead>
+              <tr>
+                <th>Pollster</th>
+                <th>Anket</th>
+                <th>Son anket</th>
+                <th>MAE</th>
+                <th>Sapma</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel backtest-panel" aria-label="Leave-one-out analizi">
+        <div class="panel-head">
+          <h2>Bir pollsterı çıkar</h2>
+          <span class="chart-subtitle">leave-one-pollster-out</span>
+        </div>
+        <p class="hint small">
+          Bir pollster çıkarıldığında nihai ortalamanın en çok hangi tarafta
+          kaydığı. Pozitif, ortalamanın arttığını gösterir.
+        </p>
+        <div class="table-wrap poll-table-wrap">
+          <table class="poll-table">
+            <thead>
+              <tr>
+                <th>Pollster</th>
+                <th>Anket</th>
+                <th>En büyük kayma</th>
+                <th>Taraf</th>
+              </tr>
+            </thead>
+            <tbody id="loo-table"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section id="methodology" class="panel methodology">
+      <h2>Yöntem ve sınırlar</h2>
+      <p>
+        Hata eğrisi, her gün için o güne kadar yayımlanmış anketlerle yeniden
+        hesaplanan ortalamanın 2023 sonucuna mutlak farkını gösterir. Kalın çizgi
+        tüm tarafların ortalama mutlak hatasıdır (MAE).
+      </p>
+      <p>
+        Pollster sıralaması her firmanın seçim öncesi son anketini kullanır ve
+        tüm taraflar üzerinden MAE hesaplar. Leave-one-out, her pollster tek tek
+        çıkarılarak nihai ortalamanın ne kadar değiştiğini gösterir.
+      </p>
+      <p>
+        Veriler Wikipedia’nın 2023 anket tablolarından ve YSK yurt içi
+        sonuçlarından gelir; yurt dışı seçmen ve kararsız ayrımı yoktur. Bu bir
+        backtest aracıdır, seçim tahmini değildir.
+      </p>
+      <p class="source">
+        Kaynaklar: Türkçe Wikipedia, YSK açık veri. Bu bir senaryo aracıdır.
+      </p>
+    </section>
+
+    <footer>
+      <span>DATAM · Açık kaynak · GitHub Pages</span>
+      <span>Bu araç hiçbir siyasi parti veya kurumla bağlantılı değildir.</span>
+    </footer>
+
+    <noscript>
+      Bu araç JavaScript gerektirir. Lütfen tarayıcınızda JavaScript'i açın.
+    </noscript>
+
+    <script src="./lib/d3.min.js"></script>
+    <script type="module" src="./backtest.js"></script>
+  </body>
+</html>

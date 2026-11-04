@@ -54,6 +54,7 @@ function formatDateLong(value) {
 
 function formatSignedPct(value) {
   const points = value * 100;
+  if (Math.abs(points) < 0.05) return "0,0%";
   return `${points > 0 ? "+" : ""}${formatPct(points)}`;
 }
 
