@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: node --test web/modules/allocate.test.js
+      - run: node --test web/modules/*.test.js
 
       - uses: actions/configure-pages@v5
         with:

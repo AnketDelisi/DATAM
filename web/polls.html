@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="DATAM anket ortalaması: 2023 cumhurbaşkanlığı ve milletvekili anketleri, zaman ağırlıklı ortalama ve pollster etkisi."
+    />
+    <title>DATAM · Anket Ortalaması</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>DATAM</h1>
+        <p>Türkiye Seçim Simülasyonu · 2023 anket ortalaması</p>
+      </div>
+      <div class="topbar-meta">
+        <nav class="nav" aria-label="Bölümler">
+          <a href="./index.html">Milletvekili</a>
+          <a href="./president.html">Cumhurbaşkanı</a>
+          <a href="./polls.html" class="active">Anketler</a>
+        </nav>
+        <span id="generated-at"></span>
+        <a href="#methodology">Yöntem</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel controls" aria-label="Anket ortalaması kontrolleri">
+        <div class="panel-head">
+          <h2>Anket ortalaması</h2>
+          <button id="reset" class="ghost" type="button">Sıfırla</button>
+        </div>
+        <p class="hint">
+          Wikipedia’daki 2023 anketlerinden zaman ağırlıklı ortalama. Yarışı,
+          yarılanma süresini ve kesim tarihini değiştirin.
+        </p>
+
+        <div id="race-switch" class="race-switch"></div>
+
+        <div class="control-row">
+          <label for="half-life" class="control-label">Yarılanma</label>
+          <input id="half-life" type="range" min="7" max="60" step="1" value="28" />
+          <span id="half-life-value" class="value">28 gün</span>
+        </div>
+
+        <div class="control-row">
+          <label for="cutoff" class="control-label">Kesim</label>
+          <input id="cutoff" type="date" />
+        </div>
+
+        <label class="checkbox">
+          <input id="house-effects" type="checkbox" />
+          Pollster etkisini düzelt
+        </label>
+        <label class="checkbox">
+          <input id="normalize" type="checkbox" checked />
+          Payları %100’e normalize et
+        </label>
+
+        <p id="aggregate-summary" class="hint small"></p>
+        <p class="hint small">
+          Wikipedia tabloları yalnızca topline verir; kararsız seçmen ayrımı
+          yoktur. Bu bir anket ortalamasıdır, tahmin değildir.
+        </p>
+      </aside>
+
+      <section class="panel chart-panel" aria-label="Anket eğilimi">
+        <div class="panel-head">
+          <h2>Eğilim</h2>
+          <span id="chart-subtitle" class="chart-subtitle"></span>
+        </div>
+        <svg
+          id="trend-chart"
+          class="trend-chart"
+          viewBox="0 0 900 420"
+          role="img"
+          aria-label="Anket ortalaması eğilim grafiği"
+        ></svg>
+        <div id="trend-legend" class="chart-legend"></div>
+      </section>
+
+      <section class="panel aggregate-panel" aria-label="Anket ortalaması tablosu">
+        <div class="panel-head">
+          <h2>Ortalama</h2>
+          <span id="poll-count" class="chart-subtitle"></span>
+        </div>
+        <div class="table-wrap">
+          <table class="aggregate-table">
+            <thead>
+              <tr>
+                <th>Taraf</th>
+                <th>Ortalama</th>
+                <th>2023</th>
+                <th>Fark</th>
+              </tr>
+            </thead>
+            <tbody id="aggregate-table"></tbody>
+          </table>
+        </div>
+        <h3 class="subhead">Pollster etkisi</h3>
+        <div id="pollster-table" class="pollster-table"></div>
+      </section>
+    </main>
+
+    <section class="panel poll-list" aria-label="Anket listesi">
+      <div class="panel-head">
+        <h2>Anketler</h2>
+        <span id="poll-list-meta" class="chart-subtitle"></span>
+      </div>
+      <div class="table-wrap poll-table-wrap">
+        <table class="poll-table">
+          <thead id="poll-table-head"></thead>
+          <tbody id="poll-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="methodology" class="panel methodology">
+      <h2>Yöntem ve sınırlar</h2>
+      <p>
+        Her anketin raporlanan payları %100’e normalize edilir. Anket ağırlığı
+        örneklem büyüklüğünün karekökü ile kesim tarihine olan uzaklığa göre
+        üstel azalmadan oluşur; varsayılan yarılanma süresi 28 gündür.
+      </p>
+      <p>
+        Pollster etkisi açıksa, her anketin diğer pollster’ların o günkü
+        ortalamasından sapması hesaplanır ve anket sayısına göre küçültülür
+        (n / (n + 2)). Bu basit bir düzeltmedir; tam hiyerarşik model değildir.
+      </p>
+      <p>
+        Kaynak: Türkçe Wikipedia’nın 2023 seçim anketi tabloları. Veriler yurt
+        içi seçmeni kapsar; yurt dışı seçmen ve kararsız seçmen ayrımı yoktur.
+      </p>
+      <p class="source">
+        Kaynaklar: Türkçe Wikipedia, YSK açık veri. Bu bir senaryo aracıdır;
+        seçim tahmini değildir.
+      </p>
+    </section>
+
+    <footer>
+      <span>DATAM · Açık kaynak · GitHub Pages</span>
+      <span>Bu araç hiçbir siyasi parti veya kurumla bağlantılı değildir.</span>
+    </footer>
+
+    <noscript>
+      Bu araç JavaScript gerektirir. Lütfen tarayıcınızda JavaScript'i açın.
+    </noscript>
+
+    <script src="./lib/d3.min.js"></script>
+    <script type="module" src="./polls.js"></script>
+  </body>
+</html>

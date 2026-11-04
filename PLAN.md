@@ -1,6 +1,6 @@
 # DATAM — Türkiye Election MRP + Poll Aggregator
 
-Status: **M0–M2 core done; M3 poll data ingested, aggregator next.**
+Status: **M0–M3 data + aggregator done; MRP-lite next.**
 
 ## Goal
 
@@ -191,7 +191,7 @@ the Pages workflow deploys `web/` from `main`.
 
 Acceptance: manual national shares produce plausible seats; 2023 backtest matches.
 
-### M3 — polls + MRP-lite (data done, aggregator next)
+### M3 — polls + MRP-lite (data + aggregator done, MRP-lite next)
 
 - [x] Poll schema (`polls/schema.json`) and validator
       (`pipeline/validate_polls.py`).
@@ -199,12 +199,15 @@ Acceptance: manual national shares produce plausible seats; 2023 backtest matche
 - [x] 145 polls ingested: 82 first round, 14 runoff, 49 parliamentary;
       31 pollsters; 2023-03-15 to 2023-05-26.
 - [x] Combined site payload (`web/data/polls_2023.json`).
-- [ ] Aggregator: time decay, house effects, undecided allocation.
-- [ ] Backtest page.
+- [x] Aggregator (`web/polls.html`, `web/polls.js`,
+      `web/modules/aggregate.js`): time decay, pollster effects, normalize
+      toggle, trend chart, poll table, inline 2023 comparison.
+- [ ] Dedicated backtest page (inline comparison exists).
 - [ ] MRP-lite (needs crosstabs; the Wikipedia tables are toplines only).
 
 Poll source: Turkish Wikipedia's post-calendar tables. The pre-calendar
-hypothetical-candidate tables are excluded in v1.
+hypothetical-candidate tables are excluded in v1. Aggregator defaults: 28-day
+half-life, house effects off, normalize on.
 
 Commands:
 
