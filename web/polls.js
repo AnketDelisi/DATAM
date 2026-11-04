@@ -457,7 +457,7 @@ function updateAggregateTable(race, aggregate, uncertainty) {
       const diffClass = diff == null ? "" : diff > 0 ? "pos" : diff < 0 ? "neg" : "";
       const interval = uncertainty?.intervals?.[id];
       const ci = interval
-        ? `%90 GA ${ciFormat.format(interval.low * 100)}–${ciFormat.format(
+        ? `${ciFormat.format(interval.low * 100)}–${ciFormat.format(
             interval.high * 100
           )}`
         : "";

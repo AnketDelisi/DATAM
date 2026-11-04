@@ -67,6 +67,14 @@ pipeline is kept only as a historical baseline.
 - Party/independent headers: `getIttifakSecimSonucBaslikList`
 - Actual seats: `getPartiKazanimSayisi`
 
+## Design
+
+- Brutalist/Swiss: charcoal `#1b1b1b`, paper `#f2f2ed`, 2px rules, square
+  corners, Helvetica-style type, monospace numbers.
+- Logo: `web/assets/datam.svg`, rendered white in the charcoal header.
+- Party/candidate colors remain only as data encoding in maps, charts,
+  swatches, and the hemicycle.
+
 ## Model
 
 ### Aggregator

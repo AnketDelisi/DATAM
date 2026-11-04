@@ -365,7 +365,7 @@ function updateFinalTable(race, summary, uncertainty) {
         row.error == null ? "" : row.error > 0 ? "neg" : row.error < 0 ? "pos" : "";
       const interval = uncertainty?.intervals?.[row.id];
       const ci = interval
-        ? `%90 GA ${ciFormat.format(interval.low * 100)}–${ciFormat.format(
+        ? `${ciFormat.format(interval.low * 100)}–${ciFormat.format(
             interval.high * 100
           )}`
         : "";
