@@ -5,12 +5,14 @@ import {
   formatPct,
   normalizeName,
 } from "./modules/format.js";
+import { presidentAggregate } from "./modules/poll_preset.js";
 
 const CANDIDATE_ORDER = ["A", "B", "C", "D"];
 
 const state = {
   data: null,
   geojson: null,
+  pollData: null,
   candidates: [],
   byId: new Map(),
   names: {},
@@ -50,7 +52,7 @@ function escapeHtml(value) {
 }
 
 async function main() {
-  const [data, geojson] = await Promise.all([
+  const [data, geojson, pollData] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -59,10 +61,15 @@ async function main() {
       if (!response.ok) throw new Error(`geo ${response.status}`);
       return response.json();
     }),
+    fetch("./data/polls_2023.json").then((response) => {
+      if (!response.ok) throw new Error(`polls ${response.status}`);
+      return response.json();
+    }),
   ]);
 
   state.data = data;
   state.geojson = geojson;
+  state.pollData = pollData;
   state.candidates = data.president.candidates;
   state.byId = new Map(state.candidates.map((candidate) => [candidate.id, candidate]));
   state.names = Object.fromEntries(
@@ -101,6 +108,7 @@ async function main() {
   });
 
   $("reset").addEventListener("click", resetTo2023);
+  $("apply-polls").addEventListener("click", applyPollAverage);
   $("copy-link").addEventListener("click", copyLink);
   $("round-first").addEventListener("click", () => setRound("first"));
   $("round-runoff").addEventListener("click", () => setRound("runoff"));
@@ -547,6 +555,20 @@ function showProvinceDetail(key) {
   )} katılım</span>
     </div>
     ${rows}`;
+}
+
+function applyPollAverage() {
+  const shares = presidentAggregate(state.pollData, 1);
+  for (const candidate of state.candidates) {
+    state.shares[candidate.id] = (shares[candidate.id] || 0) * 100;
+  }
+  normalizeShares();
+  syncCandidateControls();
+  state.selectedKey = null;
+  state.map.setSelected(null);
+  $("province-detail").innerHTML = "";
+  hideTooltip();
+  render();
 }
 
 function resetTo2023() {

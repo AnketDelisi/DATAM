@@ -8,14 +8,19 @@ import {
   formatSigned,
   normalizeName,
 } from "./modules/format.js";
+import {
+  MAIN_PARTIES,
+  parliamentAggregate,
+} from "./modules/poll_preset.js";
 
-const MAIN_ORDER = ["P9", "P21", "P11", "P22", "P12", "P10", "P13", "P24"];
+const MAIN_ORDER = [...MAIN_PARTIES];
 const OTHER_COLOR = "#9e9e9e";
 
 const state = {
   data: null,
   geojson: null,
   ilceGeo: null,
+  pollData: null,
   partiesById: new Map(),
   mainParties: [],
   geoDisplay: new Map(),
@@ -38,7 +43,7 @@ function $(id) {
 }
 
 async function main() {
-  const [data, geojson, ilceGeo] = await Promise.all([
+  const [data, geojson, ilceGeo, pollData] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -51,10 +56,15 @@ async function main() {
       if (!response.ok) throw new Error(`ilce geo ${response.status}`);
       return response.json();
     }),
+    fetch("./data/polls_2023.json").then((response) => {
+      if (!response.ok) throw new Error(`polls ${response.status}`);
+      return response.json();
+    }),
   ]);
 
   state.data = data;
   state.geojson = geojson;
+  state.pollData = pollData;
   state.partiesById = new Map(data.parties.map((party) => [party.id, party]));
   state.mainParties = MAIN_ORDER.map((id) => state.partiesById.get(id)).filter(Boolean);
   state.geoDisplay = new Map(
@@ -99,6 +109,7 @@ async function main() {
   state.hemicycle = createHemicycle($("hemicycle"), 600);
 
   $("reset").addEventListener("click", resetTo2023);
+  $("apply-polls").addEventListener("click", applyPollAverage);
   $("copy-link").addEventListener("click", copyLink);
   $("map-province").addEventListener("click", () => setMapMode("province"));
   $("map-ilce").addEventListener("click", () => setMapMode("ilce"));
@@ -625,6 +636,21 @@ function showIlceDetail(geoId) {
       <span>${province} · ${formatInt(row.valid_votes)} geçerli oy</span>
     </div>
     ${rows}`;
+}
+
+function applyPollAverage() {
+  const shares = parliamentAggregate(state.pollData);
+  for (const id of MAIN_ORDER) {
+    state.shares[id] = (shares[id] || 0) * 100;
+  }
+  normalizeShares();
+  syncControls();
+  state.selectedKey = null;
+  state.map.setSelected(null);
+  state.ilceMapView.setSelected(null);
+  $("province-detail").innerHTML = "";
+  hideTooltip();
+  render();
 }
 
 function resetTo2023() {
