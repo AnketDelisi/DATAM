@@ -1,0 +1,26 @@
+# Historical house-effect weighting.
+# Effects are relative to the leave-one-pollster-out consensus, not to truth.
+half_life_days: 1095
+min_effective_polls: 2
+shrink_prior_polls: 2
+
+election_type_weights:
+  general: 1.0
+  presidential: 1.0
+  referendum: 0.7
+  local: 1.0
+
+race_type_weights:
+  parliamentary: 1.0
+  presidential_first: 1.0
+  presidential_runoff: 1.0
+  referendum: 1.0
+  metropolitan_mayor: 0.6
+  district_mayor: 0.4
+  municipal_council: 0.3
+  provincial_council: 0.3
+  local_other: 0.3
+
+# For local races, use bloc effects only. Party effects are estimated from
+# general elections and (where available) local council party shares.
+local_bloc_only: true

@@ -132,9 +132,11 @@
         üstel azalmadan oluşur; varsayılan yarılanma süresi 28 gündür.
       </p>
       <p>
-        Pollster etkisi açıksa, her anketin diğer pollster’ların o günkü
-        ortalamasından sapması hesaplanır ve anket sayısına göre küçültülür
-        (n / (n + 2)). Bu basit bir düzeltmedir; tam hiyerarşik model değildir.
+        Tarihsel pollster etkisi açıksa, 2015–2024 seçim anketlerinden iki
+        aşamalı bir modelle tahmin edilen düzeltme uygulanır: önce blok
+        düzeyinde çarpımsal sapma, sonra blok içi parti kompozisyonu. Etkiler
+        seçim türü, yarış türü ve üç yıllık yarılanma süresiyle ağırlıklandırılır;
+        az anketi olan pollster’larda sıfıra doğru küçültülür.
       </p>
       <p>
         Kaynak: Türkçe Wikipedia’nın 2023 seçim anketi tabloları. Veriler yurt

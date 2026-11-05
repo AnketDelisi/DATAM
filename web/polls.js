@@ -6,6 +6,11 @@ import {
   toDate,
 } from "./modules/aggregate.js";
 import { formatInt, formatPct } from "./modules/format.js";
+import {
+  applyHistoricalHouseEffects,
+  largestHistoricalEffect,
+  pollsterKey,
+} from "./modules/historical_effects.js";
 import { bootstrapAggregate } from "./modules/uncertainty.js";
 
 const MAIN_PARTIES = ["P9", "P21", "P11", "P22", "P12", "P10", "P13", "P24"];
@@ -32,6 +37,7 @@ const ciFormat = new Intl.NumberFormat("tr-TR", {
 const state = {
   data: null,
   pollData: null,
+  historicalEffects: null,
   races: {},
   raceKey: "presidentFirst",
   halfLife: 28,
@@ -59,6 +65,12 @@ function formatDateLong(value) {
 
 function formatSignedPct(value) {
   const points = value * 100;
+  if (Math.abs(points) < 0.05) return "0,0%";
+  return `${points > 0 ? "+" : ""}${formatPct(points)}`;
+}
+
+function formatLogEffect(value) {
+  const points = (Math.exp(value) - 1) * 100;
   if (Math.abs(points) < 0.05) return "0,0%";
   return `${points > 0 ? "+" : ""}${formatPct(points)}`;
 }
@@ -149,7 +161,7 @@ function buildRaces() {
 }
 
 async function main() {
-  const [data, pollData] = await Promise.all([
+  const [data, pollData, historicalEffects] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -158,9 +170,14 @@ async function main() {
       if (!response.ok) throw new Error(`polls ${response.status}`);
       return response.json();
     }),
+    fetch("./data/house_effects.json").then((response) => {
+      if (!response.ok) throw new Error(`house effects ${response.status}`);
+      return response.json();
+    }),
   ]);
   state.data = data;
   state.pollData = pollData;
+  state.historicalEffects = historicalEffects;
   buildRaces();
   buildRaceSwitch();
   readUrl();
@@ -256,12 +273,14 @@ function attachControls() {
 
 function render() {
   const race = currentRace();
-  const polls = race.polls;
+  const polls = state.houseEffects && state.historicalEffects
+    ? applyHistoricalHouseEffects(race.polls, race.key, state.historicalEffects)
+    : race.polls;
   const entities = race.entities;
   const options = {
     halfLifeDays: state.halfLife,
     normalize: state.normalize,
-    houseEffects: state.houseEffects,
+    houseEffects: false,
     defaultSample: medianSample(polls),
   };
   const aggregate = aggregateAt(polls, entities, state.cutoff, options);
@@ -476,33 +495,32 @@ function updateAggregateTable(race, aggregate, uncertainty) {
 
 function updatePollsterTable(race, aggregate) {
   const container = $("pollster-table");
-  if (!state.houseEffects || !aggregate.effects) {
+  if (!state.houseEffects || !state.historicalEffects) {
     container.innerHTML =
-      `<p class="hint small">Kapalı. Pollster etkisini düzeltmek için kutuyu işaretleyin.</p>`;
+      `<p class="hint small">Kapalı. Tarihsel pollster etkisini uygulamak için kutuyu işaretleyin.</p>`;
     return;
   }
-  const entries = Object.entries(aggregate.effects)
-    .map(([pollster, data]) => {
-      let largest = null;
-      for (const [id, effect] of Object.entries(data.effects)) {
-        if (largest == null || Math.abs(effect) > Math.abs(largest.effect)) {
-          largest = { id, effect };
-        }
-      }
-      return { pollster, n: data.n, largest };
-    })
+  const active = new Set(state.polls.map((poll) => pollsterKey(poll.pollster)));
+  const entries = Object.entries(state.historicalEffects.pollsters)
+    .filter(([pollster]) => active.has(pollsterKey(pollster)))
+    .map(([pollster, data]) => ({
+      pollster,
+      n: data.n_polls,
+      largest: largestHistoricalEffect(state.historicalEffects, race.key, pollster),
+    }))
+    .filter((entry) => entry.largest)
     .sort((a, b) => b.n - a.n)
     .slice(0, 12);
 
   const rows = entries
     .map((entry) => {
-      const meta = entry.largest ? entityMeta(race, entry.largest.id) : null;
-      const diff = entry.largest ? entry.largest.effect : 0;
+      const meta = entityMeta(race, entry.largest.id);
+      const diff = entry.largest.value;
       const className = diff > 0 ? "pos" : diff < 0 ? "neg" : "";
       return `<div class="effect-row">
         <span>${escapeHtml(entry.pollster)}</span>
         <span>${entry.n}</span>
-        <span class="${className}">${meta ? `${meta.short} ${formatSignedPct(diff)}` : "–"}</span>
+        <span class="${className}">${meta.short} ${formatLogEffect(diff)}</span>
       </div>`;
     })
     .join("");
@@ -549,7 +567,7 @@ function updateMeta(race, aggregate, polls) {
     aggregate.lastPoll ? formatDateLong(aggregate.lastPoll) : "–"
   } · ${pollsters.size} pollster`;
   $("chart-subtitle").textContent = `${race.label} · ${
-    state.houseEffects ? "pollster düzeltmeli" : "ham"
+    state.houseEffects ? "tarihsel etkili" : "ham"
   } ortalama`;
   $("poll-count").textContent = `${polls.length} anket`;
   $("poll-list-meta").textContent = `${polls.length} anket · kesim ${formatDateLong(

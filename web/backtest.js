@@ -10,6 +10,7 @@ import {
 } from "./modules/backtest.js";
 import { medianSample } from "./modules/aggregate.js";
 import { formatInt, formatPct } from "./modules/format.js";
+import { applyHistoricalHouseEffects } from "./modules/historical_effects.js";
 import { bootstrapAggregate } from "./modules/uncertainty.js";
 
 const TR_MONTHS = [
@@ -38,6 +39,7 @@ const ciFormat = new Intl.NumberFormat("tr-TR", {
 const state = {
   data: null,
   pollData: null,
+  historicalEffects: null,
   raceKey: "presidentFirst",
   halfLife: 28,
   houseEffects: false,
@@ -91,7 +93,7 @@ function entityMeta(id) {
 }
 
 async function main() {
-  const [data, pollData] = await Promise.all([
+  const [data, pollData, historicalEffects] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -100,9 +102,14 @@ async function main() {
       if (!response.ok) throw new Error(`polls ${response.status}`);
       return response.json();
     }),
+    fetch("./data/house_effects_2019.json").then((response) => {
+      if (!response.ok) throw new Error(`house effects ${response.status}`);
+      return response.json();
+    }),
   ]);
   state.data = data;
   state.pollData = pollData;
+  state.historicalEffects = historicalEffects;
   state.meta = new Map(
     [...data.president.candidates, ...data.parties].map((item) => [
       item.id,
@@ -188,12 +195,15 @@ function attachControls() {
 function render() {
   const race = RACES[state.raceKey];
   const entities = entitiesFor(state.raceKey);
-  const polls = preparePolls(state.pollData, state.raceKey);
+  const rawPolls = preparePolls(state.pollData, state.raceKey);
+  const polls = state.houseEffects && state.historicalEffects
+    ? applyHistoricalHouseEffects(rawPolls, state.raceKey, state.historicalEffects)
+    : rawPolls;
   const actual = actualFor(state.data, state.raceKey);
   const options = {
     halfLifeDays: state.halfLife,
     normalize: state.normalize,
-    houseEffects: state.houseEffects,
+    houseEffects: false,
     defaultSample: medianSample(polls),
   };
   const summary = finalSummary(polls, entities, actual, race.electionDay, options);
@@ -420,7 +430,7 @@ function updateMeta(race, summary, board) {
     board.length
   } pollster · MAE ${formatPp(summary.mae)}`;
   $("chart-subtitle").textContent = `${race.label} · mutlak hata (puan) · ${
-    state.houseEffects ? "pollster düzeltmeli" : "ham"
+    state.houseEffects ? "2015–2019 etkili" : "ham"
   }`;
 }
 

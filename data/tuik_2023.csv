@@ -1,0 +1,812 @@
+# TÜİK NİP, 2023, scraped by scrape_nip.py
+province,attribute,value,count
+ADANA,Sex,Male,1135046.0
+ADANA,Sex,Female,1135252.0
+ADANA,Median_Age,33.5,33.5
+ADANA,Household_Size,1-2 persons,390997.0
+ADANA,Household_Size,3-4 persons,931046.0
+ADANA,Household_Size,5+ persons,884344.0
+ADANA,Education,Primary or below,719353.0
+ADANA,Education,Secondary,517688.0
+ADANA,Education,High school,484355.0
+ADANA,Education,University,351483.0
+ADIYAMAN,Sex,Male,306779.0
+ADIYAMAN,Sex,Female,298199.0
+ADIYAMAN,Median_Age,29.4,29.4
+ADIYAMAN,Household_Size,1-2 persons,81114.0
+ADIYAMAN,Household_Size,3-4 persons,206821.0
+ADIYAMAN,Household_Size,5+ persons,306353.0
+ADIYAMAN,Education,Primary or below,203876.0
+ADIYAMAN,Education,Secondary,149852.0
+ADIYAMAN,Education,High school,114510.0
+ADIYAMAN,Education,University,74290.0
+AFYONKARAHİSAR,Sex,Male,374705.0
+AFYONKARAHİSAR,Sex,Female,376639.0
+AFYONKARAHİSAR,Median_Age,35.5,35.5
+AFYONKARAHİSAR,Household_Size,1-2 persons,160528.0
+AFYONKARAHİSAR,Household_Size,3-4 persons,269451.0
+AFYONKARAHİSAR,Household_Size,5+ persons,287060.0
+AFYONKARAHİSAR,Education,Primary or below,265299.0
+AFYONKARAHİSAR,Education,Secondary,180670.0
+AFYONKARAHİSAR,Education,High school,146778.0
+AFYONKARAHİSAR,Education,University,95282.0
+AĞRI,Sex,Male,265585.0
+AĞRI,Sex,Female,245653.0
+AĞRI,Median_Age,24.0,24.0
+AĞRI,Household_Size,1-2 persons,45331.0
+AĞRI,Household_Size,3-4 persons,115420.0
+AĞRI,Household_Size,5+ persons,324579.0
+AĞRI,Education,Primary or below,207985.0
+AĞRI,Education,Secondary,124616.0
+AĞRI,Education,High school,71577.0
+AĞRI,Education,University,44697.0
+AKSARAY,Sex,Male,219006.0
+AKSARAY,Sex,Female,219498.0
+AKSARAY,Median_Age,32.5,32.5
+AKSARAY,Household_Size,1-2 persons,80218.0
+AKSARAY,Household_Size,3-4 persons,167655.0
+AKSARAY,Household_Size,5+ persons,174081.0
+AKSARAY,Education,Primary or below,150385.0
+AKSARAY,Education,Secondary,110780.0
+AKSARAY,Education,High school,76270.0
+AKSARAY,Education,University,51787.0
+AMASYA,Sex,Male,168290.0
+AMASYA,Sex,Female,171239.0
+AMASYA,Median_Age,39.8,39.8
+AMASYA,Household_Size,1-2 persons,88337.0
+AMASYA,Household_Size,3-4 persons,142671.0
+AMASYA,Household_Size,5+ persons,94637.0
+AMASYA,Education,Primary or below,116571.0
+AMASYA,Education,Secondary,73071.0
+AMASYA,Education,High school,73042.0
+AMASYA,Education,University,54151.0
+ANKARA,Sex,Male,2860361.0
+ANKARA,Sex,Female,2943121.0
+ANKARA,Median_Age,35.4,35.4
+ANKARA,Household_Size,1-2 persons,1292898.0
+ANKARA,Household_Size,3-4 persons,2920916.0
+ANKARA,Household_Size,5+ persons,1381620.0
+ANKARA,Education,Primary or below,1430888.0
+ANKARA,Education,Secondary,1028109.0
+ANKARA,Education,High school,1424607.0
+ANKARA,Education,University,1481683.0
+ANTALYA,Sex,Male,1357198.0
+ANTALYA,Sex,Female,1339051.0
+ANTALYA,Median_Age,36.1,36.1
+ANTALYA,Household_Size,1-2 persons,605420.0
+ANTALYA,Household_Size,3-4 persons,1242541.0
+ANTALYA,Household_Size,5+ persons,751838.0
+ANTALYA,Education,Primary or below,751136.0
+ANTALYA,Education,Secondary,554900.0
+ANTALYA,Education,High school,647059.0
+ANTALYA,Education,University,506814.0
+ARDAHAN,Sex,Male,48239.0
+ARDAHAN,Sex,Female,44580.0
+ARDAHAN,Median_Age,35.4,35.4
+ARDAHAN,Household_Size,1-2 persons,20914.0
+ARDAHAN,Household_Size,3-4 persons,31440.0
+ARDAHAN,Household_Size,5+ persons,35892.0
+ARDAHAN,Education,Primary or below,32577.0
+ARDAHAN,Education,Secondary,22987.0
+ARDAHAN,Education,High school,18471.0
+ARDAHAN,Education,University,11785.0
+ARTVİN,Sex,Male,86355.0
+ARTVİN,Sex,Female,86001.0
+ARTVİN,Median_Age,41.4,41.4
+ARTVİN,Household_Size,1-2 persons,48637.0
+ARTVİN,Household_Size,3-4 persons,63744.0
+ARTVİN,Household_Size,5+ persons,50296.0
+ARTVİN,Education,Primary or below,51874.0
+ARTVİN,Education,Secondary,33749.0
+ARTVİN,Education,High school,46570.0
+ARTVİN,Education,University,30038.0
+AYDIN,Sex,Male,576262.0
+AYDIN,Sex,Female,585440.0
+AYDIN,Median_Age,39.4,39.4
+AYDIN,Household_Size,1-2 persons,323005.0
+AYDIN,Household_Size,3-4 persons,510523.0
+AYDIN,Household_Size,5+ persons,292108.0
+AYDIN,Education,Primary or below,383355.0
+AYDIN,Education,Secondary,255666.0
+AYDIN,Education,High school,241391.0
+AYDIN,Education,University,195373.0
+BALIKESİR,Sex,Male,634259.0
+BALIKESİR,Sex,Female,639260.0
+BALIKESİR,Median_Age,41.8,41.8
+BALIKESİR,Household_Size,1-2 persons,398599.0
+BALIKESİR,Household_Size,3-4 persons,585579.0
+BALIKESİR,Household_Size,5+ persons,245205.0
+BALIKESİR,Education,Primary or below,430240.0
+BALIKESİR,Education,Secondary,257611.0
+BALIKESİR,Education,High school,276591.0
+BALIKESİR,Education,University,225995.0
+BARTIN,Sex,Male,103087.0
+BARTIN,Sex,Female,104151.0
+BARTIN,Median_Age,40.7,40.7
+BARTIN,Household_Size,1-2 persons,56462.0
+BARTIN,Household_Size,3-4 persons,84025.0
+BARTIN,Household_Size,5+ persons,56671.0
+BARTIN,Education,Primary or below,71334.0
+BARTIN,Education,Secondary,50638.0
+BARTIN,Education,High school,44993.0
+BARTIN,Education,University,27733.0
+BATMAN,Sex,Male,327361.0
+BATMAN,Sex,Female,319844.0
+BATMAN,Median_Age,24.8,24.8
+BATMAN,Household_Size,1-2 persons,45687.0
+BATMAN,Household_Size,3-4 persons,148333.0
+BATMAN,Household_Size,5+ persons,426529.0
+BATMAN,Education,Primary or below,201928.0
+BATMAN,Education,Secondary,165088.0
+BATMAN,Education,High school,126618.0
+BATMAN,Education,University,74010.0
+BAYBURT,Sex,Male,43603.0
+BAYBURT,Sex,Female,42444.0
+BAYBURT,Median_Age,31.9,31.9
+BAYBURT,Household_Size,1-2 persons,16375.0
+BAYBURT,Household_Size,3-4 persons,27760.0
+BAYBURT,Household_Size,5+ persons,33104.0
+BAYBURT,Education,Primary or below,25951.0
+BAYBURT,Education,Secondary,18224.0
+BAYBURT,Education,High school,22079.0
+BAYBURT,Education,University,13304.0
+BİLECİK,Sex,Male,115418.0
+BİLECİK,Sex,Female,112640.0
+BİLECİK,Median_Age,36.7,36.7
+BİLECİK,Household_Size,1-2 persons,56219.0
+BİLECİK,Household_Size,3-4 persons,104801.0
+BİLECİK,Household_Size,5+ persons,55136.0
+BİLECİK,Education,Primary or below,69919.0
+BİLECİK,Education,Secondary,48001.0
+BİLECİK,Education,High school,57112.0
+BİLECİK,Education,University,36262.0
+BİNGÖL,Sex,Male,144014.0
+BİNGÖL,Sex,Female,141641.0
+BİNGÖL,Median_Age,30.0,30.0
+BİNGÖL,Household_Size,1-2 persons,43718.0
+BİNGÖL,Household_Size,3-4 persons,108220.0
+BİNGÖL,Household_Size,5+ persons,123280.0
+BİNGÖL,Education,Primary or below,86186.0
+BİNGÖL,Education,Secondary,65546.0
+BİNGÖL,Education,High school,68760.0
+BİNGÖL,Education,University,37010.0
+BİTLİS,Sex,Male,186038.0
+BİTLİS,Sex,Female,173709.0
+BİTLİS,Median_Age,25.3,25.3
+BİTLİS,Household_Size,1-2 persons,37796.0
+BİTLİS,Household_Size,3-4 persons,95998.0
+BİTLİS,Household_Size,5+ persons,210998.0
+BİTLİS,Education,Primary or below,119957.0
+BİTLİS,Education,Secondary,92843.0
+BİTLİS,Education,High school,65061.0
+BİTLİS,Education,University,38662.0
+BOLU,Sex,Male,161319.0
+BOLU,Sex,Female,163470.0
+BOLU,Median_Age,37.9,37.9
+BOLU,Household_Size,1-2 persons,82297.0
+BOLU,Household_Size,3-4 persons,138578.0
+BOLU,Household_Size,5+ persons,82875.0
+BOLU,Education,Primary or below,102215.0
+BOLU,Education,Secondary,63469.0
+BOLU,Education,High school,80918.0
+BOLU,Education,University,55533.0
+BURDUR,Sex,Male,138441.0
+BURDUR,Sex,Female,139011.0
+BURDUR,Median_Age,39.2,39.2
+BURDUR,Household_Size,1-2 persons,82091.0
+BURDUR,Household_Size,3-4 persons,115427.0
+BURDUR,Household_Size,5+ persons,62372.0
+BURDUR,Education,Primary or below,94547.0
+BURDUR,Education,Secondary,56796.0
+BURDUR,Education,High school,61588.0
+BURDUR,Education,University,45877.0
+BURSA,Sex,Male,1605941.0
+BURSA,Sex,Female,1608630.0
+BURSA,Median_Age,35.9,35.9
+BURSA,Household_Size,1-2 persons,633366.0
+BURSA,Household_Size,3-4 persons,1514681.0
+BURSA,Household_Size,5+ persons,993898.0
+BURSA,Education,Primary or below,939854.0
+BURSA,Education,Secondary,728544.0
+BURSA,Education,High school,733495.0
+BURSA,Education,University,545808.0
+ÇANAKKALE,Sex,Male,285346.0
+ÇANAKKALE,Sex,Female,285153.0
+ÇANAKKALE,Median_Age,41.0,41.0
+ÇANAKKALE,Household_Size,1-2 persons,182560.0
+ÇANAKKALE,Household_Size,3-4 persons,263249.0
+ÇANAKKALE,Household_Size,5+ persons,94587.0
+ÇANAKKALE,Education,Primary or below,189367.0
+ÇANAKKALE,Education,Secondary,105471.0
+ÇANAKKALE,Education,High school,127617.0
+ÇANAKKALE,Education,University,114063.0
+ÇANKIRI,Sex,Male,103037.0
+ÇANKIRI,Sex,Female,102464.0
+ÇANKIRI,Median_Age,39.8,39.8
+ÇANKIRI,Household_Size,1-2 persons,59537.0
+ÇANKIRI,Household_Size,3-4 persons,73463.0
+ÇANKIRI,Household_Size,5+ persons,60782.0
+ÇANKIRI,Education,Primary or below,71356.0
+ÇANKIRI,Education,Secondary,44167.0
+ÇANKIRI,Education,High school,46753.0
+ÇANKIRI,Education,University,27838.0
+ÇORUM,Sex,Male,261950.0
+ÇORUM,Sex,Female,266401.0
+ÇORUM,Median_Age,40.3,40.3
+ÇORUM,Household_Size,1-2 persons,148496.0
+ÇORUM,Household_Size,3-4 persons,217372.0
+ÇORUM,Household_Size,5+ persons,146557.0
+ÇORUM,Education,Primary or below,200051.0
+ÇORUM,Education,Secondary,120551.0
+ÇORUM,Education,High school,99736.0
+ÇORUM,Education,University,71394.0
+DENİZLİ,Sex,Male,526717.0
+DENİZLİ,Sex,Female,532365.0
+DENİZLİ,Median_Age,37.7,37.7
+DENİZLİ,Household_Size,1-2 persons,269150.0
+DENİZLİ,Household_Size,3-4 persons,494807.0
+DENİZLİ,Household_Size,5+ persons,267556.0
+DENİZLİ,Education,Primary or below,339837.0
+DENİZLİ,Education,Secondary,239030.0
+DENİZLİ,Education,High school,227239.0
+DENİZLİ,Education,University,173047.0
+DİYARBAKIR,Sex,Male,918980.0
+DİYARBAKIR,Sex,Female,899153.0
+DİYARBAKIR,Median_Age,25.8,25.8
+DİYARBAKIR,Household_Size,1-2 persons,159462.0
+DİYARBAKIR,Household_Size,3-4 persons,518328.0
+DİYARBAKIR,Household_Size,5+ persons,1084140.0
+DİYARBAKIR,Education,Primary or below,630820.0
+DİYARBAKIR,Education,Secondary,446351.0
+DİYARBAKIR,Education,High school,313927.0
+DİYARBAKIR,Education,University,208060.0
+DÜZCE,Sex,Male,204734.0
+DÜZCE,Sex,Female,205131.0
+DÜZCE,Median_Age,35.8,35.8
+DÜZCE,Household_Size,1-2 persons,84610.0
+DÜZCE,Household_Size,3-4 persons,167799.0
+DÜZCE,Household_Size,5+ persons,140922.0
+DÜZCE,Education,Primary or below,127263.0
+DÜZCE,Education,Secondary,95299.0
+DÜZCE,Education,High school,93584.0
+DÜZCE,Education,University,60457.0
+EDİRNE,Sex,Male,210653.0
+EDİRNE,Sex,Female,209260.0
+EDİRNE,Median_Age,41.1,41.1
+EDİRNE,Household_Size,1-2 persons,125959.0
+EDİRNE,Household_Size,3-4 persons,184018.0
+EDİRNE,Household_Size,5+ persons,84404.0
+EDİRNE,Education,Primary or below,139488.0
+EDİRNE,Education,Secondary,83200.0
+EDİRNE,Education,High school,98382.0
+EDİRNE,Education,University,71992.0
+ELAZIĞ,Sex,Male,298845.0
+ELAZIĞ,Sex,Female,305566.0
+ELAZIĞ,Median_Age,34.7,34.7
+ELAZIĞ,Household_Size,1-2 persons,118992.0
+ELAZIĞ,Household_Size,3-4 persons,252913.0
+ELAZIĞ,Household_Size,5+ persons,208200.0
+ELAZIĞ,Education,Primary or below,187026.0
+ELAZIĞ,Education,Secondary,135444.0
+ELAZIĞ,Education,High school,134267.0
+ELAZIĞ,Education,University,99211.0
+ERZİNCAN,Sex,Male,124244.0
+ERZİNCAN,Sex,Female,119155.0
+ERZİNCAN,Median_Age,35.1,35.1
+ERZİNCAN,Household_Size,1-2 persons,58254.0
+ERZİNCAN,Household_Size,3-4 persons,96302.0
+ERZİNCAN,Household_Size,5+ persons,68228.0
+ERZİNCAN,Education,Primary or below,73804.0
+ERZİNCAN,Education,Secondary,47241.0
+ERZİNCAN,Education,High school,59547.0
+ERZİNCAN,Education,University,43163.0
+ERZURUM,Sex,Male,372622.0
+ERZURUM,Sex,Female,377371.0
+ERZURUM,Median_Age,30.2,30.2
+ERZURUM,Household_Size,1-2 persons,114988.0
+ERZURUM,Household_Size,3-4 persons,256082.0
+ERZURUM,Household_Size,5+ persons,341340.0
+ERZURUM,Education,Primary or below,255660.0
+ERZURUM,Education,Secondary,159687.0
+ERZURUM,Education,High school,156602.0
+ERZURUM,Education,University,109613.0
+ESKİŞEHİR,Sex,Male,454606.0
+ESKİŞEHİR,Sex,Female,460812.0
+ESKİŞEHİR,Median_Age,37.8,37.8
+ESKİŞEHİR,Household_Size,1-2 persons,269146.0
+ESKİŞEHİR,Household_Size,3-4 persons,436355.0
+ESKİŞEHİR,Household_Size,5+ persons,174711.0
+ESKİŞEHİR,Education,Primary or below,248640.0
+ESKİŞEHİR,Education,Secondary,168710.0
+ESKİŞEHİR,Education,High school,235307.0
+ESKİŞEHİR,Education,University,193114.0
+GAZİANTEP,Sex,Male,1091830.0
+GAZİANTEP,Sex,Female,1072304.0
+GAZİANTEP,Median_Age,26.6,26.6
+GAZİANTEP,Household_Size,1-2 persons,253128.0
+GAZİANTEP,Household_Size,3-4 persons,718753.0
+GAZİANTEP,Household_Size,5+ persons,1132630.0
+GAZİANTEP,Education,Primary or below,726539.0
+GAZİANTEP,Education,Secondary,577219.0
+GAZİANTEP,Education,High school,357259.0
+GAZİANTEP,Education,University,250324.0
+GİRESUN,Sex,Male,230728.0
+GİRESUN,Sex,Female,230984.0
+GİRESUN,Median_Age,42.4,42.4
+GİRESUN,Household_Size,1-2 persons,148883.0
+GİRESUN,Household_Size,3-4 persons,180815.0
+GİRESUN,Household_Size,5+ persons,114568.0
+GİRESUN,Education,Primary or below,163212.0
+GİRESUN,Education,Secondary,96249.0
+GİRESUN,Education,High school,100299.0
+GİRESUN,Education,University,72496.0
+GÜMÜŞHANE,Sex,Male,74581.0
+GÜMÜŞHANE,Sex,Female,73958.0
+GÜMÜŞHANE,Median_Age,36.1,36.1
+GÜMÜŞHANE,Household_Size,1-2 persons,37316.0
+GÜMÜŞHANE,Household_Size,3-4 persons,44885.0
+GÜMÜŞHANE,Household_Size,5+ persons,51633.0
+GÜMÜŞHANE,Education,Primary or below,47598.0
+GÜMÜŞHANE,Education,Secondary,29665.0
+GÜMÜŞHANE,Education,High school,37404.0
+GÜMÜŞHANE,Education,University,22307.0
+HAKKARİ,Sex,Male,154235.0
+HAKKARİ,Sex,Female,133390.0
+HAKKARİ,Median_Age,25.9,25.9
+HAKKARİ,Household_Size,1-2 persons,22500.0
+HAKKARİ,Household_Size,3-4 persons,63584.0
+HAKKARİ,Household_Size,5+ persons,171133.0
+HAKKARİ,Education,Primary or below,74465.0
+HAKKARİ,Education,Secondary,69701.0
+HAKKARİ,Education,High school,77392.0
+HAKKARİ,Education,University,35089.0
+HATAY,Sex,Male,782303.0
+HATAY,Sex,Female,762337.0
+HATAY,Median_Age,31.4,31.4
+HATAY,Household_Size,1-2 persons,273586.0
+HATAY,Household_Size,3-4 persons,579669.0
+HATAY,Household_Size,5+ persons,658297.0
+HATAY,Education,Primary or below,547862.0
+HATAY,Education,Secondary,372494.0
+HATAY,Education,High school,269324.0
+HATAY,Education,University,197510.0
+IĞDIR,Sex,Male,109710.0
+IĞDIR,Sex,Female,100028.0
+IĞDIR,Median_Age,27.6,27.6
+IĞDIR,Household_Size,1-2 persons,24819.0
+IĞDIR,Household_Size,3-4 persons,61084.0
+IĞDIR,Household_Size,5+ persons,107900.0
+IĞDIR,Education,Primary or below,71315.0
+IĞDIR,Education,Secondary,51655.0
+IĞDIR,Education,High school,39172.0
+IĞDIR,Education,University,25838.0
+ISPARTA,Sex,Male,222515.0
+ISPARTA,Sex,Female,227262.0
+ISPARTA,Median_Age,37.5,37.5
+ISPARTA,Household_Size,1-2 persons,122182.0
+ISPARTA,Household_Size,3-4 persons,193800.0
+ISPARTA,Household_Size,5+ persons,106677.0
+ISPARTA,Education,Primary or below,137657.0
+ISPARTA,Education,Secondary,85210.0
+ISPARTA,Education,High school,110156.0
+ISPARTA,Education,University,84200.0
+İSTANBUL,Sex,Male,7806787.0
+İSTANBUL,Sex,Female,7849137.0
+İSTANBUL,Median_Age,34.0,34.0
+İSTANBUL,Household_Size,1-2 persons,2871402.0
+İSTANBUL,Household_Size,3-4 persons,7100707.0
+İSTANBUL,Household_Size,5+ persons,5205677.0
+İSTANBUL,Education,Primary or below,4142081.0
+İSTANBUL,Education,Secondary,3261008.0
+İSTANBUL,Education,High school,3623528.0
+İSTANBUL,Education,University,3329470.0
+İZMİR,Sex,Male,2221180.0
+İZMİR,Sex,Female,2258345.0
+İZMİR,Median_Age,38.4,38.4
+İZMİR,Household_Size,1-2 persons,1156046.0
+İZMİR,Household_Size,3-4 persons,2133176.0
+İZMİR,Household_Size,5+ persons,1056184.0
+İZMİR,Education,Primary or below,1271134.0
+İZMİR,Education,Secondary,915862.0
+İZMİR,Education,High school,1047469.0
+İZMİR,Education,University,948828.0
+KAHRAMANMARAŞ,Sex,Male,568064.0
+KAHRAMANMARAŞ,Sex,Female,548554.0
+KAHRAMANMARAŞ,Median_Age,31.0,31.0
+KAHRAMANMARAŞ,Household_Size,1-2 persons,187774.0
+KAHRAMANMARAŞ,Household_Size,3-4 persons,417257.0
+KAHRAMANMARAŞ,Household_Size,5+ persons,489713.0
+KAHRAMANMARAŞ,Education,Primary or below,384464.0
+KAHRAMANMARAŞ,Education,Secondary,285962.0
+KAHRAMANMARAŞ,Education,High school,202267.0
+KAHRAMANMARAŞ,Education,University,137805.0
+KARABÜK,Sex,Male,128370.0
+KARABÜK,Sex,Female,126872.0
+KARABÜK,Median_Age,37.9,37.9
+KARABÜK,Household_Size,1-2 persons,72237.0
+KARABÜK,Household_Size,3-4 persons,107930.0
+KARABÜK,Household_Size,5+ persons,54516.0
+KARABÜK,Education,Primary or below,76304.0
+KARABÜK,Education,Secondary,50479.0
+KARABÜK,Education,High school,66780.0
+KARABÜK,Education,University,45901.0
+KARAMAN,Sex,Male,131571.0
+KARAMAN,Sex,Female,132389.0
+KARAMAN,Median_Age,34.5,34.5
+KARAMAN,Household_Size,1-2 persons,59858.0
+KARAMAN,Household_Size,3-4 persons,113634.0
+KARAMAN,Household_Size,5+ persons,76508.0
+KARAMAN,Education,Primary or below,85103.0
+KARAMAN,Education,Secondary,64446.0
+KARAMAN,Education,High school,52774.0
+KARAMAN,Education,University,38705.0
+KARS,Sex,Male,144024.0
+KARS,Sex,Female,134311.0
+KARS,Median_Age,29.0,29.0
+KARS,Household_Size,1-2 persons,40294.0
+KARS,Household_Size,3-4 persons,84838.0
+KARS,Household_Size,5+ persons,135266.0
+KARS,Education,Primary or below,95613.0
+KARS,Education,Secondary,69410.0
+KARS,Education,High school,52176.0
+KARS,Education,University,35222.0
+KASTAMONU,Sex,Male,192048.0
+KASTAMONU,Sex,Female,196942.0
+KASTAMONU,Median_Age,42.4,42.4
+KASTAMONU,Household_Size,1-2 persons,115424.0
+KASTAMONU,Household_Size,3-4 persons,148296.0
+KASTAMONU,Household_Size,5+ persons,108024.0
+KASTAMONU,Education,Primary or below,153199.0
+KASTAMONU,Education,Secondary,82360.0
+KASTAMONU,Education,High school,77786.0
+KASTAMONU,Education,University,53200.0
+KAYSERİ,Sex,Male,722569.0
+KAYSERİ,Sex,Female,723114.0
+KAYSERİ,Median_Age,33.8,33.8
+KAYSERİ,Household_Size,1-2 persons,266680.0
+KAYSERİ,Household_Size,3-4 persons,655790.0
+KAYSERİ,Household_Size,5+ persons,482605.0
+KAYSERİ,Education,Primary or below,446206.0
+KAYSERİ,Education,Secondary,324258.0
+KAYSERİ,Education,High school,315981.0
+KAYSERİ,Education,University,234604.0
+KIRIKKALE,Sex,Male,142651.0
+KIRIKKALE,Sex,Female,143093.0
+KIRIKKALE,Median_Age,37.6,37.6
+KIRIKKALE,Household_Size,1-2 persons,72881.0
+KIRIKKALE,Household_Size,3-4 persons,120929.0
+KIRIKKALE,Household_Size,5+ persons,75028.0
+KIRIKKALE,Education,Primary or below,80777.0
+KIRIKKALE,Education,Secondary,61482.0
+KIRIKKALE,Education,High school,78122.0
+KIRIKKALE,Education,University,44282.0
+KIRKLARELİ,Sex,Male,190769.0
+KIRKLARELİ,Sex,Female,186387.0
+KIRKLARELİ,Median_Age,40.8,40.8
+KIRKLARELİ,Household_Size,1-2 persons,106495.0
+KIRKLARELİ,Household_Size,3-4 persons,181309.0
+KIRKLARELİ,Household_Size,5+ persons,73115.0
+KIRKLARELİ,Education,Primary or below,115963.0
+KIRKLARELİ,Education,Secondary,80346.0
+KIRKLARELİ,Education,High school,93084.0
+KIRKLARELİ,Education,University,64705.0
+KIRŞEHİR,Sex,Male,122754.0
+KIRŞEHİR,Sex,Female,124425.0
+KIRŞEHİR,Median_Age,37.2,37.2
+KIRŞEHİR,Household_Size,1-2 persons,60856.0
+KIRŞEHİR,Household_Size,3-4 persons,99261.0
+KIRŞEHİR,Household_Size,5+ persons,72617.0
+KIRŞEHİR,Education,Primary or below,78548.0
+KIRŞEHİR,Education,Secondary,50195.0
+KIRŞEHİR,Education,High school,57338.0
+KIRŞEHİR,Education,University,38149.0
+KİLİS,Sex,Male,78198.0
+KİLİS,Sex,Female,76981.0
+KİLİS,Median_Age,27.7,27.7
+KİLİS,Household_Size,1-2 persons,26629.0
+KİLİS,Household_Size,3-4 persons,52231.0
+KİLİS,Household_Size,5+ persons,67015.0
+KİLİS,Education,Primary or below,43237.0
+KİLİS,Education,Secondary,42381.0
+KİLİS,Education,High school,31086.0
+KİLİS,Education,University,21171.0
+KOCAELİ,Sex,Male,1061291.0
+KOCAELİ,Sex,Female,1041616.0
+KOCAELİ,Median_Age,33.6,33.6
+KOCAELİ,Household_Size,1-2 persons,366378.0
+KOCAELİ,Household_Size,3-4 persons,1000627.0
+KOCAELİ,Household_Size,5+ persons,682603.0
+KOCAELİ,Education,Primary or below,565196.0
+KOCAELİ,Education,Secondary,465299.0
+KOCAELİ,Education,High school,508958.0
+KOCAELİ,Education,University,382202.0
+KONYA,Sex,Male,1152384.0
+KONYA,Sex,Female,1167857.0
+KONYA,Median_Age,32.9,32.9
+KONYA,Household_Size,1-2 persons,434738.0
+KONYA,Household_Size,3-4 persons,945082.0
+KONYA,Household_Size,5+ persons,860781.0
+KONYA,Education,Primary or below,793390.0
+KONYA,Education,Secondary,536747.0
+KONYA,Education,High school,436608.0
+KONYA,Education,University,341854.0
+KÜTAHYA,Sex,Male,284542.0
+KÜTAHYA,Sex,Female,291132.0
+KÜTAHYA,Median_Age,39.1,39.1
+KÜTAHYA,Household_Size,1-2 persons,158097.0
+KÜTAHYA,Household_Size,3-4 persons,247783.0
+KÜTAHYA,Household_Size,5+ persons,140051.0
+KÜTAHYA,Education,Primary or below,200486.0
+KÜTAHYA,Education,Secondary,125491.0
+KÜTAHYA,Education,High school,129948.0
+KÜTAHYA,Education,University,83291.0
+MALATYA,Sex,Male,373688.0
+MALATYA,Sex,Female,369037.0
+MALATYA,Median_Age,35.2,35.2
+MALATYA,Household_Size,1-2 persons,156026.0
+MALATYA,Household_Size,3-4 persons,278487.0
+MALATYA,Household_Size,5+ persons,273497.0
+MALATYA,Education,Primary or below,236614.0
+MALATYA,Education,Secondary,161822.0
+MALATYA,Education,High school,165860.0
+MALATYA,Education,University,120461.0
+MANİSA,Sex,Male,741274.0
+MANİSA,Sex,Female,734442.0
+MANİSA,Median_Age,37.3,37.3
+MANİSA,Household_Size,1-2 persons,353445.0
+MANİSA,Household_Size,3-4 persons,681490.0
+MANİSA,Household_Size,5+ persons,400048.0
+MANİSA,Education,Primary or below,537308.0
+MANİSA,Education,Secondary,344188.0
+MANİSA,Education,High school,281367.0
+MANİSA,Education,University,205305.0
+MARDİN,Sex,Male,446320.0
+MARDİN,Sex,Female,442554.0
+MARDİN,Median_Age,24.9,24.9
+MARDİN,Household_Size,1-2 persons,75048.0
+MARDİN,Household_Size,3-4 persons,212223.0
+MARDİN,Household_Size,5+ persons,562284.0
+MARDİN,Education,Primary or below,314797.0
+MARDİN,Education,Secondary,214127.0
+MARDİN,Education,High school,152340.0
+MARDİN,Education,University,88356.0
+MERSİN,Sex,Male,969526.0
+MERSİN,Sex,Female,968863.0
+MERSİN,Median_Age,35.0,35.0
+MERSİN,Household_Size,1-2 persons,396432.0
+MERSİN,Household_Size,3-4 persons,825101.0
+MERSİN,Household_Size,5+ persons,655174.0
+MERSİN,Education,Primary or below,621233.0
+MERSİN,Education,Secondary,426136.0
+MERSİN,Education,High school,403838.0
+MERSİN,Education,University,321122.0
+MUĞLA,Sex,Male,541870.0
+MUĞLA,Sex,Female,524866.0
+MUĞLA,Median_Age,39.9,39.9
+MUĞLA,Household_Size,1-2 persons,299158.0
+MUĞLA,Household_Size,3-4 persons,476763.0
+MUĞLA,Household_Size,5+ persons,253437.0
+MUĞLA,Education,Primary or below,311403.0
+MUĞLA,Education,Secondary,207179.0
+MUĞLA,Education,High school,250200.0
+MUĞLA,Education,University,223678.0
+MUŞ,Sex,Male,203272.0
+MUŞ,Sex,Female,196607.0
+MUŞ,Median_Age,24.2,24.2
+MUŞ,Household_Size,1-2 persons,36885.0
+MUŞ,Household_Size,3-4 persons,90065.0
+MUŞ,Household_Size,5+ persons,255890.0
+MUŞ,Education,Primary or below,145267.0
+MUŞ,Education,Secondary,105417.0
+MUŞ,Education,High school,64617.0
+MUŞ,Education,University,35146.0
+NEVŞEHİR,Sex,Male,155897.0
+NEVŞEHİR,Sex,Female,160097.0
+NEVŞEHİR,Median_Age,35.9,35.9
+NEVŞEHİR,Household_Size,1-2 persons,72331.0
+NEVŞEHİR,Household_Size,3-4 persons,129402.0
+NEVŞEHİR,Household_Size,5+ persons,100666.0
+NEVŞEHİR,Education,Primary or below,102305.0
+NEVŞEHİR,Education,Secondary,71948.0
+NEVŞEHİR,Education,High school,67593.0
+NEVŞEHİR,Education,University,46032.0
+NİĞDE,Sex,Male,188774.0
+NİĞDE,Sex,Female,188306.0
+NİĞDE,Median_Age,33.5,33.5
+NİĞDE,Household_Size,1-2 persons,80302.0
+NİĞDE,Household_Size,3-4 persons,146723.0
+NİĞDE,Household_Size,5+ persons,133038.0
+NİĞDE,Education,Primary or below,128151.0
+NİĞDE,Education,Secondary,96761.0
+NİĞDE,Education,High school,73020.0
+NİĞDE,Education,University,47858.0
+ORDU,Sex,Male,386605.0
+ORDU,Sex,Female,389195.0
+ORDU,Median_Age,40.6,40.6
+ORDU,Household_Size,1-2 persons,222937.0
+ORDU,Household_Size,3-4 persons,320919.0
+ORDU,Household_Size,5+ persons,216535.0
+ORDU,Education,Primary or below,285525.0
+ORDU,Education,Secondary,173692.0
+ORDU,Education,High school,157776.0
+ORDU,Education,University,107519.0
+OSMANİYE,Sex,Male,280450.0
+OSMANİYE,Sex,Female,277216.0
+OSMANİYE,Median_Age,32.5,32.5
+OSMANİYE,Household_Size,1-2 persons,99677.0
+OSMANİYE,Household_Size,3-4 persons,227052.0
+OSMANİYE,Household_Size,5+ persons,216017.0
+OSMANİYE,Education,Primary or below,177027.0
+OSMANİYE,Education,Secondary,130778.0
+OSMANİYE,Education,High school,117575.0
+OSMANİYE,Education,University,81246.0
+RİZE,Sex,Male,175231.0
+RİZE,Sex,Female,175275.0
+RİZE,Median_Age,39.4,39.4
+RİZE,Household_Size,1-2 persons,81510.0
+RİZE,Household_Size,3-4 persons,139676.0
+RİZE,Household_Size,5+ persons,115546.0
+RİZE,Education,Primary or below,106799.0
+RİZE,Education,Secondary,73911.0
+RİZE,Education,High school,87188.0
+RİZE,Education,University,59494.0
+SAKARYA,Sex,Male,550484.0
+SAKARYA,Sex,Female,547631.0
+SAKARYA,Median_Age,35.1,35.1
+SAKARYA,Household_Size,1-2 persons,205466.0
+SAKARYA,Household_Size,3-4 persons,467591.0
+SAKARYA,Household_Size,5+ persons,384824.0
+SAKARYA,Education,Primary or below,333599.0
+SAKARYA,Education,Secondary,236218.0
+SAKARYA,Education,High school,264600.0
+SAKARYA,Education,University,169859.0
+SAMSUN,Sex,Male,681565.0
+SAMSUN,Sex,Female,695981.0
+SAMSUN,Median_Age,37.8,37.8
+SAMSUN,Household_Size,1-2 persons,310900.0
+SAMSUN,Household_Size,3-4 persons,576180.0
+SAMSUN,Household_Size,5+ persons,444420.0
+SAMSUN,Education,Primary or below,467306.0
+SAMSUN,Education,Secondary,298552.0
+SAMSUN,Education,High school,285026.0
+SAMSUN,Education,University,226604.0
+SİİRT,Sex,Male,180736.0
+SİİRT,Sex,Female,166676.0
+SİİRT,Median_Age,24.2,24.2
+SİİRT,Household_Size,1-2 persons,28088.0
+SİİRT,Household_Size,3-4 persons,76978.0
+SİİRT,Household_Size,5+ persons,217339.0
+SİİRT,Education,Primary or below,114809.0
+SİİRT,Education,Secondary,86041.0
+SİİRT,Education,High school,63741.0
+SİİRT,Education,University,40907.0
+SİNOP,Sex,Male,114183.0
+SİNOP,Sex,Female,115533.0
+SİNOP,Median_Age,42.8,42.8
+SİNOP,Household_Size,1-2 persons,72418.0
+SİNOP,Household_Size,3-4 persons,88992.0
+SİNOP,Household_Size,5+ persons,57136.0
+SİNOP,Education,Primary or below,87839.0
+SİNOP,Education,Secondary,51747.0
+SİNOP,Education,High school,43726.0
+SİNOP,Education,University,31640.0
+SİVAS,Sex,Male,325125.0
+SİVAS,Sex,Female,325276.0
+SİVAS,Median_Age,36.0,36.0
+SİVAS,Household_Size,1-2 persons,138044.0
+SİVAS,Household_Size,3-4 persons,247486.0
+SİVAS,Household_Size,5+ persons,230201.0
+SİVAS,Education,Primary or below,213697.0
+SİVAS,Education,Secondary,140342.0
+SİVAS,Education,High school,149705.0
+SİVAS,Education,University,96689.0
+ŞANLIURFA,Sex,Male,1116834.0
+ŞANLIURFA,Sex,Female,1097130.0
+ŞANLIURFA,Median_Age,21.2,21.2
+ŞANLIURFA,Household_Size,1-2 persons,161579.0
+ŞANLIURFA,Household_Size,3-4 persons,470798.0
+ŞANLIURFA,Household_Size,5+ persons,1496969.0
+ŞANLIURFA,Education,Primary or below,856742.0
+ŞANLIURFA,Education,Secondary,556605.0
+ŞANLIURFA,Education,High school,282872.0
+ŞANLIURFA,Education,University,166261.0
+ŞIRNAK,Sex,Male,299177.0
+ŞIRNAK,Sex,Female,271568.0
+ŞIRNAK,Median_Age,22.7,22.7
+ŞIRNAK,Household_Size,1-2 persons,39132.0
+ŞIRNAK,Household_Size,3-4 persons,95927.0
+ŞIRNAK,Household_Size,5+ persons,390023.0
+ŞIRNAK,Education,Primary or below,178474.0
+ŞIRNAK,Education,Secondary,144853.0
+ŞIRNAK,Education,High school,107298.0
+ŞIRNAK,Education,University,57062.0
+TEKİRDAĞ,Sex,Male,595133.0
+TEKİRDAĞ,Sex,Female,571926.0
+TEKİRDAĞ,Median_Age,35.2,35.2
+TEKİRDAĞ,Household_Size,1-2 persons,241500.0
+TEKİRDAĞ,Household_Size,3-4 persons,556150.0
+TEKİRDAĞ,Household_Size,5+ persons,337461.0
+TEKİRDAĞ,Education,Primary or below,340262.0
+TEKİRDAĞ,Education,Secondary,286799.0
+TEKİRDAĞ,Education,High school,269266.0
+TEKİRDAĞ,Education,University,178193.0
+TOKAT,Sex,Male,301234.0
+TOKAT,Sex,Female,305700.0
+TOKAT,Median_Age,38.7,38.7
+TOKAT,Household_Size,1-2 persons,145718.0
+TOKAT,Household_Size,3-4 persons,223109.0
+TOKAT,Household_Size,5+ persons,211798.0
+TOKAT,Education,Primary or below,219551.0
+TOKAT,Education,Secondary,139634.0
+TOKAT,Education,High school,121880.0
+TOKAT,Education,University,84652.0
+TRABZON,Sex,Male,409040.0
+TRABZON,Sex,Female,415312.0
+TRABZON,Median_Age,38.1,38.1
+TRABZON,Household_Size,1-2 persons,198476.0
+TRABZON,Household_Size,3-4 persons,342586.0
+TRABZON,Household_Size,5+ persons,254041.0
+TRABZON,Education,Primary or below,255493.0
+TRABZON,Education,Secondary,155094.0
+TRABZON,Education,High school,201402.0
+TRABZON,Education,University,149767.0
+TUNCELİ,Sex,Male,47110.0
+TUNCELİ,Sex,Female,42207.0
+TUNCELİ,Median_Age,39.2,39.2
+TUNCELİ,Household_Size,1-2 persons,25364.0
+TUNCELİ,Household_Size,3-4 persons,35399.0
+TUNCELİ,Household_Size,5+ persons,19603.0
+TUNCELİ,Education,Primary or below,24763.0
+TUNCELİ,Education,Secondary,15445.0
+TUNCELİ,Education,High school,24529.0
+TUNCELİ,Education,University,17958.0
+UŞAK,Sex,Male,187253.0
+UŞAK,Sex,Female,189748.0
+UŞAK,Median_Age,38.2,38.2
+UŞAK,Household_Size,1-2 persons,99038.0
+UŞAK,Household_Size,3-4 persons,173920.0
+UŞAK,Household_Size,5+ persons,89525.0
+UŞAK,Education,Primary or below,123287.0
+UŞAK,Education,Secondary,91509.0
+UŞAK,Education,High school,79366.0
+UŞAK,Education,University,54980.0
+VAN,Sex,Male,574993.0
+VAN,Sex,Female,552619.0
+VAN,Median_Age,24.9,24.9
+VAN,Household_Size,1-2 persons,92430.0
+VAN,Household_Size,3-4 persons,303879.0
+VAN,Household_Size,5+ persons,695382.0
+VAN,Education,Primary or below,413139.0
+VAN,Education,Secondary,284980.0
+VAN,Education,High school,181965.0
+VAN,Education,University,114280.0
+YALOVA,Sex,Male,152100.0
+YALOVA,Sex,Female,152680.0
+YALOVA,Median_Age,36.9,36.9
+YALOVA,Household_Size,1-2 persons,72513.0
+YALOVA,Household_Size,3-4 persons,126148.0
+YALOVA,Household_Size,5+ persons,94244.0
+YALOVA,Education,Primary or below,81072.0
+YALOVA,Education,Secondary,63447.0
+YALOVA,Education,High school,77641.0
+YALOVA,Education,University,54914.0
+YOZGAT,Sex,Male,210051.0
+YOZGAT,Sex,Female,210648.0
+YOZGAT,Median_Age,37.2,37.2
+YOZGAT,Household_Size,1-2 persons,105622.0
+YOZGAT,Household_Size,3-4 persons,158739.0
+YOZGAT,Household_Size,5+ persons,136408.0
+YOZGAT,Education,Primary or below,153154.0
+YOZGAT,Education,Secondary,93086.0
+YOZGAT,Education,High school,87375.0
+YOZGAT,Education,University,50504.0
+ZONGULDAK,Sex,Male,294001.0
+ZONGULDAK,Sex,Female,297491.0
+ZONGULDAK,Median_Age,40.9,40.9
+ZONGULDAK,Household_Size,1-2 persons,161844.0
+ZONGULDAK,Household_Size,3-4 persons,269797.0
+ZONGULDAK,Household_Size,5+ persons,140498.0
+ZONGULDAK,Education,Primary or below,205157.0
+ZONGULDAK,Education,Secondary,129957.0
+ZONGULDAK,Education,High school,135734.0
+ZONGULDAK,Education,University,85734.0

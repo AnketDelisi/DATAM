@@ -1,0 +1,133 @@
+{
+  "elections": {
+    "2015-06": {
+      "total": 71,
+      "by_race": {
+        "parliamentary": 71
+      },
+      "scopes": []
+    },
+    "2015-11": {
+      "total": 58,
+      "by_race": {
+        "parliamentary": 58
+      },
+      "scopes": []
+    },
+    "2017-ref": {
+      "total": 45,
+      "by_race": {
+        "referendum": 45
+      },
+      "scopes": []
+    },
+    "2018-general": {
+      "total": 30,
+      "by_race": {
+        "parliamentary": 30
+      },
+      "scopes": []
+    },
+    "2018-pres": {
+      "total": 26,
+      "by_race": {
+        "presidential_first": 26
+      },
+      "scopes": []
+    },
+    "2019-local": {
+      "total": 81,
+      "by_race": {
+        "metropolitan_mayor": 78,
+        "local_other": 3
+      },
+      "scopes": [
+        "Adana",
+        "Ankara",
+        "Antalya",
+        "Balıkesir",
+        "Bursa",
+        "Denizli",
+        "Eskişehir",
+        "Hatay",
+        "İstanbul",
+        "İzmir"
+      ]
+    },
+    "2023-general": {
+      "total": 49,
+      "by_race": {
+        "parliamentary": 49
+      },
+      "scopes": []
+    },
+    "2023-pres": {
+      "total": 95,
+      "by_race": {
+        "presidential_first": 81,
+        "presidential_runoff": 14
+      },
+      "scopes": []
+    },
+    "2024-local": {
+      "total": 458,
+      "by_race": {
+        "metropolitan_mayor": 356,
+        "district_mayor": 102
+      },
+      "scopes": [
+        "Adana",
+        "Ankara",
+        "Antalya",
+        "Aydın",
+        "Balıkesir",
+        "Bilecik",
+        "Bolu",
+        "Burdur",
+        "Bursa",
+        "Denizli",
+        "Diyarbakır",
+        "Düzce",
+        "Edirne",
+        "Elazığ",
+        "Erzurum",
+        "Eskişehir",
+        "Gaziantep",
+        "Giresun",
+        "Hatay",
+        "Isparta",
+        "Kahramanmaraş",
+        "Kars",
+        "Kayseri",
+        "Kocaeli",
+        "Konya",
+        "Kırklareli",
+        "Kırıkkale",
+        "Malatya",
+        "Manisa",
+        "Mardin",
+        "Mersin",
+        "Muğla",
+        "Nevşehir",
+        "Niğde",
+        "Ordu",
+        "Sakarya",
+        "Samsun",
+        "Sinop",
+        "Sivas",
+        "Tekirdağ",
+        "Tokat",
+        "Trabzon",
+        "Uşak",
+        "Van",
+        "Yalova",
+        "Zonguldak",
+        "Çanakkale",
+        "Çankırı",
+        "İstanbul",
+        "İzmir",
+        "Şanlıurfa"
+      ]
+    }
+  }
+}

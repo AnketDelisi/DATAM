@@ -1,0 +1,64 @@
+parties:
+  AKP:
+    name: "AK Parti"
+    aliases: ["AKP", "AK PARTI", "AK PARTİ", "ADALET VE KALKINMA PARTISI", "ADALET VE KALKINMA PARTİSİ"]
+    bloc: INCUMBENT
+  CHP:
+    name: "CHP"
+    aliases: ["CHP", "CUMHURIYET HALK PARTISI", "CUMHURİYET HALK PARTİSİ"]
+    bloc: OPPOSITION
+  MHP:
+    name: "MHP"
+    aliases: ["MHP", "MILLIYETCI HAREKET PARTISI", "MİLLİYETÇİ HAREKET PARTİSİ"]
+    bloc: INCUMBENT
+  HDP_DEM:
+    name: "HDP/DEM"
+    aliases: ["HDP", "BDP", "DEM", "DEM PARTI", "DEM PARTİ", "YESIL SOL", "YEŞİL SOL", "YSP", "YESIL SOL PARTI", "YEŞİL SOL PARTİ"]
+    bloc: KURDISH_LEFT
+  IYI:
+    name: "İYİ Parti"
+    aliases: ["IYI", "IYI PARTI", "İYİ", "İYİ PARTİ", "IYIP"]
+    bloc: OPPOSITION
+  SP:
+    name: "Saadet Partisi"
+    aliases: ["SP", "SAADET", "SAADET PARTISI", "SAADET PARTİSİ"]
+    bloc: OPPOSITION
+  BBP:
+    name: "BBP"
+    aliases: ["BBP", "BUYUK BIRLIK PARTISI", "BÜYÜK BİRLİK PARTİSİ"]
+    bloc: INCUMBENT
+  YRP:
+    name: "Yeniden Refah"
+    aliases: ["YRP", "YENIDEN REFAH", "YENİDEN REFAH"]
+    bloc: INCUMBENT
+  ZP:
+    name: "Zafer Partisi"
+    aliases: ["ZP", "ZAFER", "ZAFER PARTISI", "ZAFER PARTİSİ"]
+    bloc: OTHER
+  TIP:
+    name: "TİP"
+    aliases: ["TIP", "TİP", "TURKIYE ISCI PARTISI", "TÜRKİYE İŞÇİ PARTİSİ"]
+    bloc: OTHER
+  OTHER:
+    name: "Diğer"
+    aliases: ["DIGER", "DİĞER", "DIGERLERI", "DİĞERLERİ", "BAGIMSIZ", "BAĞIMSIZ", "AP", "VP", "DEVA", "GP", "DP", "HUDA", "HÜDA", "DSP", "BTP", "TDP", "ANAP", "YP", "MP", "GBP", "AB", "HKP", "MILLI YOL", "MİLLİ YOL", "VATAN", "VATAN PARTISI", "VATAN PARTİSİ"]
+    bloc: OTHER
+
+blocs:
+  INCUMBENT: [AKP, MHP, BBP, YRP]
+  OPPOSITION: [CHP, IYI, SP]
+  KURDISH_LEFT: [HDP_DEM]
+  OTHER: [ZP, TIP, OTHER]
+
+candidates:
+  ERDOGAN: {name: "Erdoğan", bloc: INCUMBENT}
+  KILICDAROGLU: {name: "Kılıçdaroğlu", bloc: OPPOSITION}
+  OGAN: {name: "Oğan", bloc: OTHER}
+  INCE: {name: "İnce", bloc: OTHER}
+  INCE_2018: {name: "İnce", bloc: OPPOSITION}
+  AKSENER: {name: "Akşener", bloc: OPPOSITION}
+  DEMIRTAS: {name: "Demirtaş", bloc: KURDISH_LEFT}
+  KARAMOLLAOGLU: {name: "Karamollaoğlu", bloc: OPPOSITION}
+  PERINCEK: {name: "Perinçek", bloc: OTHER}
+  "YES": {name: "Evet", bloc: INCUMBENT}
+  "NO": {name: "Hayır", bloc: OPPOSITION}

@@ -1,14 +1,14 @@
 [project]
 name = "datam"
 version = "0.1.0"
-description = "DATAM — Türkiye election MRP + poll aggregator and scenario simulator"
+description = "DATAM — Türkiye election poll aggregator, simulator, and demographic analysis"
 authors = [
     { name = "maple-zhou", email = "zhoulingfeng@sjtu.edu.cn" }
 ]
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-keywords = ["election", "turkiye", "mrp", "polling", "simulation", "datam"]
+keywords = ["election", "turkiye", "polling", "simulation", "demographics", "datam"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -17,12 +17,12 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
 ]
 dependencies = [
-    "openai>=1.0.0",
-    "json-repair>=0.1.0",
-    "omegaconf>=2.0.0",
     "pandas>=2.0.0",
-    "wandb>=0.15.0",
-    "openpyxl>=3.0.0",
+    "PyYAML>=6.0",
+    "omegaconf>=2.0.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "html5lib>=1.1",
 ]
 
 [build-system]
@@ -31,23 +31,24 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 only-include = [
-  "flock.py",
-  "data_loader.py",
-  "utils.py",
+  "pipeline",
   "config",
-  "assets",
+  "web",
+  "polls",
   "data",
+  "README.md",
+  "PLAN.md",
 ]
 
 [tool.hatch.build.targets.sdist]
 include = [
-  "flock.py",
-  "data_loader.py",
-  "utils.py",
+  "pipeline",
   "config",
-  "assets",
+  "web",
+  "polls",
   "data",
   "README.md",
+  "PLAN.md",
   "requirements.txt",
 ]
 

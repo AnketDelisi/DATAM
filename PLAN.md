@@ -1,34 +1,30 @@
-# DATAM — Türkiye Election MRP + Poll Aggregator
+# DATAM — Türkiye Election Poll Aggregator
 
-Status: **M0–M3 data + aggregator + calculator + backtest + intervals done; MRP-lite next.**
+Status: **M0–M3 done; historical house effects integrated; demographic
+correlation next.**
 
 ## Goal
 
 A static GitHub Pages tool that:
 
 - aggregates Turkish election polls,
-- estimates presidential and parliamentary outcomes,
-- lets users run scenarios (turnout, undecided allocation, swing, runoff transfers),
-- shows uncertainty and backtests against 2018/2023.
+- simulates presidential and parliamentary outcomes,
+- lets users run scenarios (turnout, undecided allocation, swing, runoff
+  transfers),
+- shows uncertainty and backtests against 2023,
+- estimates pollster house effects from 2015–2024 historical polls,
+- supports province-level correlation with demographics.
 
-The product is a **statistical model**, not the legacy LLM simulator. The LLM
-pipeline is kept only as a historical baseline.
+## Decisions
 
-## Locked decisions
-
-- **Live tool** for the next election; 2023 is the baseline and backtest.
-- **Replace the LLM** in the product path; keep it as a comparison row.
-- **Public poll toplines/crosstabs**; no microdata in v1.
-- **Presidential + parliament**; parties + alliances.
-- **Blocs with user-mapped candidate names** for the president tab.
-- **Manual JSON polls**, one file per poll.
-- **Runoff transfer sliders**.
-- **Swing MRP (Design A)**, not ecological inference, in v1.
-- **Tier 0 default**, MRP-lite behind a toggle; promote only if backtests win.
-- **Turnout separate**, with sliders and explicit assumptions.
-- **President = province margin map; parliament = 600-seat hemicycle.**
-- **Vanilla JS + D3**, no build step, Turkish-first.
-- **No scraping, no local elections, no true MRP** in v1.
+- Live tool for the next election; 2023 is the baseline and backtest.
+- Public poll toplines; no microdata.
+- Presidential + parliament; parties + alliances.
+- National swing and per-province baselines.
+- Turnout is separate, with explicit assumptions.
+- President = province margin map; parliament = 600-seat hemicycle.
+- Vanilla JS + D3, no build step, Turkish-first.
+- Historical polls and local elections are used only for house effects.
 
 ## Data
 
@@ -38,42 +34,16 @@ pipeline is kept only as a historical baseline.
 | `data/actuals_2023.csv` | 2023 presidential shares, electorate, turnout | have |
 | `data/prior_2018.csv` | 2018 incumbent alliance share | have |
 | `data/tuik_2023.csv` | province × sex/median age/household/education | have |
-| `data/raw/ysk/2023_parliament/` | raw YSK parliamentary API snapshots | M0 |
-| `data/processed/parliament_2023_districts.csv` | one row per electoral district | M0 |
-| `data/processed/parliament_2023_long.csv` | district × party votes | M0 |
-| `data/processed/seat_counts_2023.csv` | seats per electoral district | M0 |
-| `data/processed/actual_seats_2023.csv` | official 2023 seat totals | M0 |
-| `data/processed/party_headers_2023.csv` | YSK party/independent ID map | M0 |
-| `data/raw/ysk/2023_president/` | raw first-round/runoff API snapshots | M1 |
-| `data/processed/president_2023.csv` | first-round/runoff votes by province | M1 |
-| `data/processed/ilce_geo_mapping.csv` | YSK ilçe ↔ ADM2 feature map | M1 |
-| `web/geo/tr-provinces.geojson` | 81 province polygons | M1 |
-| `web/geo/tr-ilce.geojson` | 973 ilçe polygons | M1 |
-| ADNKS province × age × sex | poststratification cells | TODO |
-| `polls/schema.json` | poll JSON schema | M3 |
-| `polls/2023_president.json` | 82 first-round + 14 runoff polls | M3 |
-| `polls/2023_parliament.json` | 49 parliamentary polls | M3 |
-| `web/data/polls_2023.json` | combined poll payload for the site | M3 |
-
-### YSK API
-
-- Base: `https://acikveri.ysk.gov.tr/api/`
-- 2023 election: `secimId=20230`
-- Parliamentary: `secimTuru=8`
-- Presidential first round: `secimTuru=9`
-- 2023 runoff: `secimId=20240`
-- Electoral districts: `getIlList?secimId=20230&secimTuru=8` (87, 600 seats)
-- Results: `getSecimSandikSonucList` with `yurtIciDisi=1`
-- Party/independent headers: `getIttifakSecimSonucBaslikList`
-- Actual seats: `getPartiKazanimSayisi`
-
-## Design
-
-- Brutalist/Swiss: charcoal `#1b1b1b`, paper `#f2f2ed`, 2px rules, square
-  corners, Helvetica-style type, monospace numbers.
-- Logo: `web/assets/datam.svg`, rendered white in the charcoal header.
-- Party/candidate colors remain only as data encoding in maps, charts,
-  swatches, and the hemicycle.
+| `data/processed/parliament_2023_districts.csv` | one row per electoral district | have |
+| `data/processed/parliament_2023_long.csv` | district × party votes | have |
+| `data/processed/seat_counts_2023.csv` | seats per electoral district | have |
+| `data/processed/actual_seats_2023.csv` | official 2023 seat totals | have |
+| `data/processed/president_2023.csv` | first-round/runoff votes by province | have |
+| `polls/2023_president.json` | 82 first-round + 14 runoff polls | have |
+| `polls/2023_parliament.json` | 49 parliamentary polls | have |
+| `polls/historical/` | 2015–2024 polls for house effects | have |
+| `web/data/house_effects.json` | full historical two-level effects | have |
+| `web/data/house_effects_2019.json` | leak-free 2023 backtest effects | have |
 
 ## Model
 
@@ -81,31 +51,22 @@ pipeline is kept only as a historical baseline.
 
 `weight_i = sample_size_i^0.5 * exp(-ln(2) * age_days / half_life) * reliability_i`
 
-- House effects: hierarchical pollster random effects.
+- Default half-life: 28 days.
 - Undecided: proportional, 2023-pattern, custom.
-- Time trend: random walk; 28-day half-life default.
+- Pollster effects: two-level log-ratio model, estimated offline from
+  2015–2024 polls. Bloc bias is estimated first; within-bloc party residuals
+  are estimated second. Effects are weighted by election type, race type, and
+  a three-year recency half-life, then shrunk toward zero.
+- The site applies the exported effects when the toggle is on. The 2023
+  leak-free backtest did not beat the raw average, so the default is off.
 
 ### President
 
-Tier 0 (default):
-
 `share[p,c] = baseline_2023[p,c] + (national_poll[c] - national_2023[c])`
-
-Tier 1 (MRP-lite, toggle):
-
-- Unit `u` = province (upgrade to district if ADNKS district age-sex exists).
-- Cell `j = (u, age, sex, education)`.
-- Baseline ALR: `b[j,c] = log(s[u,c]^2023) - log(s[u,ref]^2023)`.
-- Swing: `delta[j,c] = gamma[c] + alpha[age,c] + beta[sex,c] + delta_edu[edu,c] + rho[region,c] + w[u,c] + epsilon`.
-- `pi[j,c] = softmax(b[j,c] + delta[j,c])`.
-- Poststratify with `W[j] = N[j] * T[j]`.
-- Anchor `w[u,c]` on 2023; fit to poll crosstabs.
 
 Runoff: top two blocs; eliminated blocs split by user-controlled transfers.
 
 ### Parliament
-
-Tier 0 (default):
 
 `share[d,p] = baseline_2023[d,p] + (national_poll[p] - national_2023[p])`
 
@@ -115,169 +76,75 @@ Then:
 2. D'Hondt per electoral district among qualifying parties/independents.
 3. Sum to 600.
 
-Tier 1: MRP-lite party shares by cell, aggregated to district; then the same
-seat allocation.
-
-Validation target: reproduce the official 2023 600-seat total. The current
-domestic-vote D'Hondt model matches 84/87 districts exactly; the remaining
-3 provinces are one seat off each because YSK does not publish the
+Validation: the domestic-vote D'Hondt model matches 84/87 districts exactly;
+the remaining three are one seat off because YSK does not publish the
 province-level assignment of overseas votes. Max national party error: 2 seats.
-
-## Repo layout
-
-```
-data/
-  raw/ysk/
-  processed/
-polls/
-config/
-  alliances_2023.yaml
-  election_2028.yaml
-pipeline/
-  fetch_ysk.py
-  allocate.py
-  build_cells.py
-  aggregate.py
-  fit_mrp.py
-  export_site.py
-  tests/
-web/
-  index.html
-  app.js
-  modules/
-  lib/d3.min.js
-  data/
-  geo/
-legacy/            # existing FlockVote code, later
-PLAN.md
-```
 
 ## Milestones
 
 ### M0 — data + seat math (done)
 
-- [x] Locate YSK open-data API.
-- [x] Identify 87 electoral districts and 600 seats.
-- [x] Fetch all district results and headers.
-- [x] Build processed CSV files.
-- [x] Implement D'Hondt + threshold + alliance + joint-list rule.
-- [x] Reproduce the 600-seat total; 84/87 districts exact.
-- [x] Add unit tests and a self-check.
+- [x] YSK district results, headers, and processed CSVs.
+- [x] D'Hondt + threshold + alliance + joint-list rule.
+- [x] 600-seat total reproduced; unit tests.
 
-Known M0 limitation: Batman, Isparta, and Kahramanmaraş are one seat off each.
-The residual is consistent with overseas votes, which the YSK API exposes only
-as a national total, not by province. `allocate.py --strict` fails on this;
-the default run reports it and passes with max party error 2.
+### M1 — static web scaffold (done)
 
-### M1 — static web scaffold (first slice done)
+- [x] Province and ilçe GeoJSON, maps, hemicycle, sliders.
+- [x] Presidential tab with runoff transfers.
+- [x] GitHub Pages workflow.
 
-- [x] `web/index.html`, `styles.css`, `app.js`
-- [x] Province GeoJSON (geoBoundaries ADM1, CC BY-SA 2.0).
-- [x] 973 ilçe polygons (geoBoundaries ADM2, ODbL 1.0) with parent-province
-      join and YSK ilçe matching (`pipeline/build_ilce_mapping.py`).
-- [x] JS D'Hondt allocator + Node test; matches the Python 2023 model
-      (P9 266, P11 51, P12 62, P21 168, P22 44, P10 5, P13 4).
-- [x] Interactive province/ilçe map toggle, 600-seat hemicycle, party sliders,
-      threshold input, alliance toggle, shareable URL state.
-- [x] GitHub Pages workflow (`.github/workflows/pages.yml`) and `web/.nojekyll`.
-- [x] Verified in headless Chrome (province and ilçe modes).
-- [x] Presidential tab (`web/president.html`): first-round swing, runoff
-      transfer sliders, editable candidate names, province map, result bars,
-      shareable URL state.
-- [x] YSK first-round/runoff data by province (`pipeline/fetch_president.py`,
-      `data/processed/president_2023.csv`). Domestic ballots only.
-
-Acceptance: the site loads from `web/`, the 2023 baseline produces 600 seats,
-the presidential baseline reproduces the domestic 2023 first round/runoff, and
-the Pages workflow deploys `web/` from `main`.
-
-### M2 — parliament Tier 0 + UI (core done)
+### M2 — parliament UI and backtest (done)
 
 - [x] Hemicycle, party table, threshold and alliance toggles.
 - [x] Province/ilçe maps and 2023 backtest.
-- [ ] Threshold sensitivity chart (optional).
 
-Acceptance: manual national shares produce plausible seats; 2023 backtest matches.
+### M3 — polls + historical house effects (done)
 
-### M3 — polls + MRP-lite (data + aggregator done, MRP-lite next)
+- [x] Poll schema and validator.
+- [x] 145 2023 polls; 31 pollsters.
+- [x] Aggregator, trend chart, poll table, calculator presets.
+- [x] Backtest page: error over time, leaderboard, leave-one-out.
+- [x] Bootstrap 90% intervals.
+- [x] 2015–2024 historical poll archive and pollster/party aliases.
+- [x] Two-level bloc + within-bloc party house-effect model.
+- [x] Leak-free 2015–2019 effects for the 2023 backtest.
 
-- [x] Poll schema (`polls/schema.json`) and validator
-      (`pipeline/validate_polls.py`).
-- [x] Turkish Wikipedia scraper (`pipeline/scrape_wikipedia_polls.py`).
-- [x] 145 polls ingested: 82 first round, 14 runoff, 49 parliamentary;
-      31 pollsters; 2023-03-15 to 2023-05-26.
-- [x] Combined site payload (`web/data/polls_2023.json`).
-- [x] Aggregator (`web/polls.html`, `web/polls.js`,
-      `web/modules/aggregate.js`): time decay, pollster effects, normalize
-      toggle, trend chart, poll table, inline 2023 comparison.
-- [x] Calculator integration: “Anket ortalaması” applies the 28-day,
-      no-house-effect aggregate to the president and parliament sliders
-      (`web/modules/poll_preset.js`).
-- [x] Dedicated backtest page (`web/backtest.html`, `web/backtest.js`,
-      `web/modules/backtest.js`): error over time, pollster leaderboard,
-      leave-one-pollster-out.
-- [x] Bootstrap uncertainty intervals (`web/modules/uncertainty.js`): 400
-      draws, 90% intervals in the polls and backtest tables. Covers poll mix
-      and sampling error; pollster-effect parameter uncertainty is fixed.
-- [ ] MRP-lite. It needs **current** poll crosstabs, not just past ones. Past
-      crosstabs are for priors/validation; 2023 province results are the
-      baseline. Wikipedia toplines are insufficient for true MRP.
+### M4 — demographics + polish (next)
 
-Poll source: Turkish Wikipedia's post-calendar tables. The pre-calendar
-hypothetical-candidate tables are excluded in v1. Aggregator defaults: 28-day
-half-life, house effects off, normalize on.
+- [ ] Province-level demographic correlation with election shares/swing.
+- [ ] Document confounding and uncertainty; no causal claims.
+- [ ] Accessibility and shareable scenario polish.
 
-Commands:
+## Commands
 
 ```bash
-uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_wikipedia_polls.py
+uv sync
+uv run python -m unittest discover -s pipeline/tests -v
+node --test web/modules/*.test.js
 uv run python pipeline/validate_polls.py
+uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
+uv run python pipeline/house_effects.py --backtest
+uv run python pipeline/export_site.py
 ```
-
-Acceptance: the validator passes and the backtest decides the default model.
-
-### M4 — CI, docs, polish
-
-- GitHub Actions validate polls, run tests, build JSON, deploy Pages.
-- Turkish/English toggle if desired; accessibility; shareable scenarios.
 
 ## Deployment
 
-- Local preview: `uv run python -m http.server 8000 --directory web`, then
-  open `http://localhost:8000/`.
-- GitHub Pages: **Settings → Pages → Build and deployment → Source:
-  GitHub Actions**. The workflow runs tests, rebuilds `web/data`, and deploys
-  `web/` on every push to `main`.
-- Commit `web/`, `data/processed/`, `polls/`, `pipeline/`,
-  `config/alliances_2023.yaml`, and `.github/workflows/pages.yml`.
-- Poll JSON is committed; the Wikipedia scraper is not run in CI. The test
-  suite validates the committed poll files.
-- The province GeoJSON is geoBoundaries CC BY-SA 2.0. The ilçe GeoJSON is
-  geoBoundaries ADM2, ODbL 1.0. License files live beside the assets.
-- After replacing the province GeoJSON, run
-  `uv run python pipeline/rewind_geojson.py`; d3-geo expects the opposite ring
-  winding from the source file.
-- After replacing the ilçe GeoJSON, run
-  `uv run --with shapely python pipeline/build_ilce_mapping.py`; it adds the
-  parent province, matches YSK ilçe names, rewinds rings, and writes
-  `data/processed/ilce_geo_mapping.csv`. Commit both the GeoJSON and the mapping.
-- `web/.nojekyll` is included so Pages serves the files as-is.
+Local preview:
+
+```bash
+uv run python -m http.server 8000 --directory web
+```
+
+GitHub Pages: Settings → Pages → Build and deployment → Source: GitHub
+Actions. The workflow runs tests, rebuilds `web/data`, and deploys `web/` on
+every push to `main`.
 
 ## Open issues
 
-- ADNKS province × age × sex is the main data gap.
 - Overseas votes affect the national threshold; verify YSK treatment.
 - Joint lists: v1 treats guest parties as part of the host list.
-- 2028 seat counts: project from population and allow manual override.
+- 2028 seat counts need a population projection and manual override.
 - Legal poll-publication blackout: add a freeze flag.
-- Wikipedia polls are toplines only; crosstabs need pollster PDFs. Fall back to
-  national swing when absent.
-
-## Backtest metrics
-
-- National share error.
-- Province/district MAE.
-- Winner accuracy.
-- Seat MAE and total absolute deviation.
-- 80%/95% interval coverage.
-- Compare Tier 0, Tier 1, persistence, and the legacy LLM.
+- Wikipedia polls are toplines only; crosstabs need pollster PDFs.
+- Demographic correlation is descriptive; causal inference needs more design.

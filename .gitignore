@@ -25,12 +25,11 @@ dist/
 .idea/
 .vscode/
 
-# Project outputs
-prediction_results/
-wandb/
-
 # Locks
 uv.lock
 
 # Local config (if any)
 .env.local
+
+# Run logs
+*.log

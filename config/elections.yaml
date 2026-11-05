@@ -1,0 +1,88 @@
+elections:
+  2015-06:
+    date: "2015-06-07"
+    start_date: "2011-06-13"
+    type: general
+    source_url: "https://tr.wikipedia.org/wiki/Haziran_2015_T%C3%BCrkiye_genel_se%C3%A7imleri_i%C3%A7in_yap%C4%B1lan_anketler"
+    races:
+      parliamentary:
+        entities: [AKP, CHP, MHP, HDP_DEM, SP, OTHER]
+        actual: {AKP: 0.4066, CHP: 0.2513, MHP: 0.1645, HDP_DEM: 0.1296, SP: 0.0207, OTHER: 0.0273}
+
+  2015-11:
+    date: "2015-11-01"
+    start_date: "2015-06-08"
+    type: general
+    source_url: "https://tr.wikipedia.org/wiki/Kas%C4%B1m_2015_T%C3%BCrkiye_genel_se%C3%A7imleri_i%C3%A7in_yap%C4%B1lan_anketler"
+    races:
+      parliamentary:
+        entities: [AKP, CHP, MHP, HDP_DEM, OTHER]
+        actual: {AKP: 0.4950, CHP: 0.2530, MHP: 0.1203, HDP_DEM: 0.1056, OTHER: 0.0261}
+
+  2017-ref:
+    date: "2017-04-16"
+    start_date: "2015-11-02"
+    type: referendum
+    source_url: "https://tr.wikipedia.org/wiki/2017_T%C3%BCrkiye_anayasa_de%C4%9Fi%C5%9Fikli%C4%9Fi_referandumu_i%C3%A7in_yap%C4%B1lan_anketler"
+    races:
+      referendum:
+        entities: ["YES", "NO"]
+        actual: {"YES": 0.5141, "NO": 0.4859}
+
+  2018-general:
+    date: "2018-06-24"
+    start_date: "2017-04-17"
+    type: general
+    source_url: "https://tr.wikipedia.org/wiki/2018_T%C3%BCrkiye_genel_se%C3%A7imleri_i%C3%A7in_yap%C4%B1lan_anketler"
+    races:
+      parliamentary:
+        entities: [AKP, CHP, IYI, HDP_DEM, MHP, SP, OTHER]
+        actual: {AKP: 0.4256, CHP: 0.2264, IYI: 0.0996, HDP_DEM: 0.1170, MHP: 0.1110, SP: 0.0134, OTHER: 0.0070}
+
+  2018-pres:
+    date: "2018-06-24"
+    start_date: "2017-04-17"
+    type: presidential
+    source_url: "https://tr.wikipedia.org/wiki/2018_T%C3%BCrkiye_cumhurba%C5%9Fkanl%C4%B1%C4%9F%C4%B1_se%C3%A7imi_i%C3%A7in_yap%C4%B1lan_anketler"
+    races:
+      presidential_first:
+        entities: [ERDOGAN, INCE_2018, AKSENER, DEMIRTAS, KARAMOLLAOGLU, PERINCEK]
+        actual: {ERDOGAN: 0.5259, INCE_2018: 0.3064, AKSENER: 0.0729, DEMIRTAS: 0.0840, KARAMOLLAOGLU: 0.0089, PERINCEK: 0.0020}
+
+  2019-local:
+    date: "2019-03-31"
+    start_date: "2018-06-25"
+    type: local
+    source_url: "https://tr.wikipedia.org/wiki/2019_T%C3%BCrkiye_yerel_se%C3%A7imleri_i%C3%A7in_yap%C4%B1lan_anketler"
+
+  2023-general:
+    date: "2023-05-14"
+    start_date: "2018-06-25"
+    type: general
+    source_url: "https://tr.wikipedia.org/wiki/%C3%9Clke_%C3%A7ap%C4%B1nda_2023_T%C3%BCrkiye_genel_se%C3%A7imleri_i%C3%A7in_yap%C4%B1lan_anketler"
+    use_existing: polls/2023_parliament.json
+    races:
+      parliamentary:
+        entities: [AKP, CHP, MHP, IYI, HDP_DEM, YRP, TIP, ZP, BBP, OTHER]
+        actual: {AKP: 0.3562, CHP: 0.2535, MHP: 0.1007, IYI: 0.0969, HDP_DEM: 0.0882, YRP: 0.0280, TIP: 0.0176, ZP: 0.0223, BBP: 0.0097, OTHER: 0.0269}
+
+  2023-pres:
+    date: "2023-05-14"
+    runoff_date: "2023-05-28"
+    start_date: "2018-06-25"
+    type: presidential
+    source_url: "https://tr.wikipedia.org/wiki/2023_T%C3%BCrkiye_cumhurba%C5%9Fkanl%C4%B1%C4%9F%C4%B1_se%C3%A7imi_i%C3%A7in_yap%C4%B1lan_anketler"
+    use_existing: polls/2023_president.json
+    races:
+      presidential_first:
+        entities: [ERDOGAN, KILICDAROGLU, OGAN, INCE]
+        actual: {ERDOGAN: 0.4924, KILICDAROGLU: 0.4507, OGAN: 0.0528, INCE: 0.0041}
+      presidential_runoff:
+        entities: [ERDOGAN, KILICDAROGLU]
+        actual: {ERDOGAN: 0.5191, KILICDAROGLU: 0.4809}
+
+  2024-local:
+    date: "2024-03-31"
+    start_date: "2023-05-29"
+    type: local
+    source_url: "https://tr.wikipedia.org/wiki/2024_T%C3%BCrkiye_yerel_se%C3%A7imleri_i%C3%A7in_yap%C4%B1lan_anketler"

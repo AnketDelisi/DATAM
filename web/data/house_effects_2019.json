@@ -1,0 +1,1458 @@
+{
+  "meta": {
+    "generated_at": "2026-11-05T16:04:45.733335+00:00",
+    "method": "two-level log-ratio: bloc effects, then within-bloc party residuals",
+    "effect_sign": "log bias vs consensus; apply exp(-effect) to correct",
+    "skipped_bloc_effects": [
+      "OTHER"
+    ],
+    "reference_bloc": "INCUMBENT",
+    "half_life_days": 1095.0,
+    "reference_date": "2023-05-14",
+    "min_effective_polls": 2.0,
+    "shrink_prior_polls": 2.0,
+    "local_bloc_only": true,
+    "poll_count": 311,
+    "pollster_count": 46,
+    "bloc_of": {
+      "AKP": "INCUMBENT",
+      "CHP": "OPPOSITION",
+      "MHP": "INCUMBENT",
+      "HDP_DEM": "KURDISH_LEFT",
+      "IYI": "OPPOSITION",
+      "SP": "OPPOSITION",
+      "BBP": "INCUMBENT",
+      "YRP": "INCUMBENT",
+      "ZP": "OTHER",
+      "TIP": "OTHER",
+      "OTHER": "OTHER",
+      "ERDOGAN": "INCUMBENT",
+      "KILICDAROGLU": "OPPOSITION",
+      "OGAN": "OTHER",
+      "INCE": "OTHER",
+      "INCE_2018": "OPPOSITION",
+      "AKSENER": "OPPOSITION",
+      "DEMIRTAS": "KURDISH_LEFT",
+      "KARAMOLLAOGLU": "OPPOSITION",
+      "PERINCEK": "OTHER",
+      "YES": "INCUMBENT",
+      "NO": "OPPOSITION"
+    },
+    "election_type_weights": {
+      "general": 1.0,
+      "presidential": 1.0,
+      "referendum": 0.7,
+      "local": 1.0
+    },
+    "race_type_weights": {
+      "parliamentary": 1.0,
+      "presidential_first": 1.0,
+      "presidential_runoff": 1.0,
+      "referendum": 1.0,
+      "metropolitan_mayor": 0.6,
+      "district_mayor": 0.4,
+      "municipal_council": 0.3,
+      "provincial_council": 0.3,
+      "local_other": 0.3
+    },
+    "training_window": "2015-2019",
+    "purpose": "2023 backtest only"
+  },
+  "pollsters": {
+    "A&G": {
+      "n_polls": 3,
+      "n_contests": 3,
+      "last_poll": "2017-04-14",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "OPPOSITION": -0.090561
+      },
+      "bloc_effective_n": {
+        "OPPOSITION": 2.96
+      },
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": -0.090561,
+        "MHP": 0.0,
+        "IYI": -0.090561,
+        "SP": -0.090561,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.090561,
+        "INCE_2018": -0.090561,
+        "AKSENER": -0.090561,
+        "KARAMOLLAOGLU": -0.090561,
+        "YES": 0.0,
+        "NO": -0.090561
+      }
+    },
+    "ADA": {
+      "n_polls": 3,
+      "n_contests": 3,
+      "last_poll": "2019-03-18",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "OPPOSITION": -0.005088
+      },
+      "bloc_effective_n": {
+        "OPPOSITION": 2.8
+      },
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": -0.005088,
+        "MHP": 0.0,
+        "IYI": -0.005088,
+        "SP": -0.005088,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.005088,
+        "INCE_2018": -0.005088,
+        "AKSENER": -0.005088,
+        "KARAMOLLAOGLU": -0.005088,
+        "YES": 0.0,
+        "NO": -0.005088
+      }
+    },
+    "AKAM": {
+      "n_polls": 13,
+      "n_contests": 4,
+      "last_poll": "2018-04-14",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": 0.145725,
+        "OPPOSITION": 0.167004
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 7.55,
+        "OPPOSITION": 12.34
+      },
+      "party_effects": {
+        "AKP": -0.071958,
+        "MHP": 0.071958
+      },
+      "party_effective_n": {
+        "AKP": 7.28,
+        "MHP": 7.89
+      },
+      "total_effects": {
+        "AKP": -0.071958,
+        "CHP": 0.167004,
+        "MHP": 0.071958,
+        "HDP_DEM": 0.145725,
+        "IYI": 0.167004,
+        "SP": 0.167004,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.167004,
+        "INCE_2018": 0.167004,
+        "AKSENER": 0.167004,
+        "DEMIRTAS": 0.145725,
+        "KARAMOLLAOGLU": 0.167004,
+        "YES": 0.0,
+        "NO": 0.167004
+      }
+    },
+    "ANAR": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2017-04-12",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "AREA": {
+      "n_polls": 4,
+      "n_contests": 3,
+      "last_poll": "2019-03-19",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "OPPOSITION": 0.015383
+      },
+      "bloc_effective_n": {
+        "OPPOSITION": 3.68
+      },
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": 0.015383,
+        "MHP": 0.0,
+        "IYI": 0.015383,
+        "SP": 0.015383,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.015383,
+        "INCE_2018": 0.015383,
+        "AKSENER": 0.015383,
+        "KARAMOLLAOGLU": 0.015383,
+        "YES": 0.0,
+        "NO": 0.015383
+      }
+    },
+    "Aksoy": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2015-05-27",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "Andy-AR": {
+      "n_polls": 7,
+      "n_contests": 2,
+      "last_poll": "2015-10-29",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.01459,
+        "OPPOSITION": -0.00299
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 6.92,
+        "OPPOSITION": 6.97
+      },
+      "party_effects": {
+        "AKP": -0.013816,
+        "MHP": 0.013816
+      },
+      "party_effective_n": {
+        "AKP": 6.98,
+        "MHP": 6.99
+      },
+      "total_effects": {
+        "AKP": -0.013816,
+        "CHP": -0.00299,
+        "MHP": 0.013816,
+        "HDP_DEM": -0.01459,
+        "IYI": -0.00299,
+        "SP": -0.00299,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.00299,
+        "INCE_2018": -0.00299,
+        "AKSENER": -0.00299,
+        "DEMIRTAS": -0.01459,
+        "KARAMOLLAOGLU": -0.00299,
+        "YES": 0.0,
+        "NO": -0.00299
+      }
+    },
+    "Ankara Analitik": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2018-03-24",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "Argetus": {
+      "n_polls": 4,
+      "n_contests": 3,
+      "last_poll": "2018-05-31",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.012277,
+        "OPPOSITION": -0.058122
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 3.64,
+        "OPPOSITION": 3.31
+      },
+      "party_effects": {
+        "AKP": 0.006268,
+        "MHP": -0.006268
+      },
+      "party_effective_n": {
+        "AKP": 2.99,
+        "MHP": 2.99
+      },
+      "total_effects": {
+        "AKP": 0.006268,
+        "CHP": -0.058122,
+        "MHP": -0.006268,
+        "HDP_DEM": -0.012277,
+        "IYI": -0.058122,
+        "SP": -0.058122,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.058122,
+        "INCE_2018": -0.058122,
+        "AKSENER": -0.058122,
+        "DEMIRTAS": -0.012277,
+        "KARAMOLLAOGLU": -0.058122,
+        "YES": 0.0,
+        "NO": -0.058122
+      }
+    },
+    "Avrasya": {
+      "n_polls": 19,
+      "n_contests": 10,
+      "last_poll": "2019-03-29",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "OPPOSITION": 0.121685
+      },
+      "bloc_effective_n": {
+        "OPPOSITION": 18.98
+      },
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": 0.121685,
+        "MHP": 0.0,
+        "IYI": 0.121685,
+        "SP": 0.121685,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.121685,
+        "INCE_2018": 0.121685,
+        "AKSENER": 0.121685,
+        "KARAMOLLAOGLU": 0.121685,
+        "YES": 0.0,
+        "NO": 0.121685
+      }
+    },
+    "BETİMAR": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2015-10-20",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "Benenson SG": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2015-05-07",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "Denge": {
+      "n_polls": 6,
+      "n_contests": 3,
+      "last_poll": "2017-04-07",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.022515,
+        "OPPOSITION": 0.005516
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 4.94,
+        "OPPOSITION": 5.87
+      },
+      "party_effects": {
+        "AKP": 0.025682,
+        "MHP": -0.025682,
+        "CHP": -0.138141,
+        "SP": 0.138141
+      },
+      "party_effective_n": {
+        "AKP": 4.99,
+        "MHP": 5.0,
+        "CHP": 3.0,
+        "SP": 3.0
+      },
+      "total_effects": {
+        "AKP": 0.025682,
+        "CHP": -0.132625,
+        "MHP": -0.025682,
+        "HDP_DEM": -0.022515,
+        "IYI": 0.005516,
+        "SP": 0.143657,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.005516,
+        "INCE_2018": 0.005516,
+        "AKSENER": 0.005516,
+        "DEMIRTAS": -0.022515,
+        "KARAMOLLAOGLU": 0.005516,
+        "YES": 0.0,
+        "NO": 0.005516
+      }
+    },
+    "EMAX": {
+      "n_polls": 7,
+      "n_contests": 7,
+      "last_poll": "2019-03-19",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "OPPOSITION": -0.089435
+      },
+      "bloc_effective_n": {
+        "OPPOSITION": 7.0
+      },
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": -0.089435,
+        "MHP": 0.0,
+        "IYI": -0.089435,
+        "SP": -0.089435,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.089435,
+        "INCE_2018": -0.089435,
+        "AKSENER": -0.089435,
+        "KARAMOLLAOGLU": -0.089435,
+        "YES": 0.0,
+        "NO": -0.089435
+      }
+    },
+    "Ethno-Forschung Germany": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2015-04-12",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "GENAR": {
+      "n_polls": 6,
+      "n_contests": 2,
+      "last_poll": "2017-04-05",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.025828,
+        "OPPOSITION": -0.051648
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 2.99,
+        "OPPOSITION": 5.83
+      },
+      "party_effects": {
+        "AKP": 0.017692,
+        "MHP": -0.017692
+      },
+      "party_effective_n": {
+        "AKP": 3.0,
+        "MHP": 2.99
+      },
+      "total_effects": {
+        "AKP": 0.017692,
+        "CHP": -0.051648,
+        "MHP": -0.017692,
+        "HDP_DEM": -0.025828,
+        "IYI": -0.051648,
+        "SP": -0.051648,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.051648,
+        "INCE_2018": -0.051648,
+        "AKSENER": -0.051648,
+        "DEMIRTAS": -0.025828,
+        "KARAMOLLAOGLU": -0.051648,
+        "YES": 0.0,
+        "NO": -0.051648
+      }
+    },
+    "Gezici": {
+      "n_polls": 41,
+      "n_contests": 12,
+      "last_poll": "2019-03-17",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.015007,
+        "OPPOSITION": 0.019049
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 21.99,
+        "OPPOSITION": 36.7
+      },
+      "party_effects": {
+        "AKP": -0.071231,
+        "MHP": 0.071231,
+        "CHP": -0.277274,
+        "SP": 0.263797,
+        "INCE_2018": 0.21313,
+        "AKSENER": 0.146045,
+        "KARAMOLLAOGLU": -0.345698
+      },
+      "party_effective_n": {
+        "AKP": 20.07,
+        "MHP": 20.84,
+        "CHP": 4.0,
+        "SP": 4.0,
+        "INCE_2018": 3.0,
+        "AKSENER": 3.0,
+        "KARAMOLLAOGLU": 2.91
+      },
+      "total_effects": {
+        "AKP": -0.071231,
+        "CHP": -0.258225,
+        "MHP": 0.071231,
+        "HDP_DEM": -0.015007,
+        "IYI": 0.019049,
+        "SP": 0.282846,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.019049,
+        "INCE_2018": 0.232179,
+        "AKSENER": 0.165094,
+        "DEMIRTAS": -0.015007,
+        "KARAMOLLAOGLU": -0.326649,
+        "YES": 0.0,
+        "NO": 0.019049
+      }
+    },
+    "KONDA": {
+      "n_polls": 11,
+      "n_contests": 4,
+      "last_poll": "2018-06-10",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": 0.006923,
+        "OPPOSITION": -0.032027
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 9.3,
+        "OPPOSITION": 9.51
+      },
+      "party_effects": {
+        "AKP": -0.002639,
+        "MHP": 0.002639
+      },
+      "party_effective_n": {
+        "AKP": 7.98,
+        "MHP": 7.98
+      },
+      "total_effects": {
+        "AKP": -0.002639,
+        "CHP": -0.032027,
+        "MHP": 0.002639,
+        "HDP_DEM": 0.006923,
+        "IYI": -0.032027,
+        "SP": -0.032027,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.032027,
+        "INCE_2018": -0.032027,
+        "AKSENER": -0.032027,
+        "DEMIRTAS": 0.006923,
+        "KARAMOLLAOGLU": -0.032027,
+        "YES": 0.0,
+        "NO": -0.032027
+      }
+    },
+    "KamuAR": {
+      "n_polls": 5,
+      "n_contests": 2,
+      "last_poll": "2015-10-11",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.157142,
+        "OPPOSITION": 0.078746
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 4.86,
+        "OPPOSITION": 4.99
+      },
+      "party_effects": {
+        "AKP": -0.161946,
+        "MHP": 0.161946,
+        "CHP": -0.327831,
+        "SP": 0.327831
+      },
+      "party_effective_n": {
+        "AKP": 4.97,
+        "MHP": 4.99,
+        "CHP": 3.0,
+        "SP": 3.0
+      },
+      "total_effects": {
+        "AKP": -0.161946,
+        "CHP": -0.249085,
+        "MHP": 0.161946,
+        "HDP_DEM": -0.157142,
+        "IYI": 0.078746,
+        "SP": 0.406576,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.078746,
+        "INCE_2018": 0.078746,
+        "AKSENER": 0.078746,
+        "DEMIRTAS": -0.157142,
+        "KARAMOLLAOGLU": 0.078746,
+        "YES": 0.0,
+        "NO": 0.078746
+      }
+    },
+    "Konsensus": {
+      "n_polls": 10,
+      "n_contests": 5,
+      "last_poll": "2018-05-28",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.083209,
+        "OPPOSITION": 0.075043
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 6.31,
+        "OPPOSITION": 8.8
+      },
+      "party_effects": {
+        "AKP": 0.031113,
+        "MHP": -0.031113
+      },
+      "party_effective_n": {
+        "AKP": 4.52,
+        "MHP": 4.87
+      },
+      "total_effects": {
+        "AKP": 0.031113,
+        "CHP": 0.075043,
+        "MHP": -0.031113,
+        "HDP_DEM": -0.083209,
+        "IYI": 0.075043,
+        "SP": 0.075043,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.075043,
+        "INCE_2018": 0.075043,
+        "AKSENER": 0.075043,
+        "DEMIRTAS": -0.083209,
+        "KARAMOLLAOGLU": 0.075043,
+        "YES": 0.0,
+        "NO": 0.075043
+      }
+    },
+    "Kurd-Tek": {
+      "n_polls": 2,
+      "n_contests": 1,
+      "last_poll": "2015-10-21",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "LRC": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2015-09-24",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "MAK": {
+      "n_polls": 15,
+      "n_contests": 5,
+      "last_poll": "2018-06-06",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.150298,
+        "OPPOSITION": -0.06566
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 10.6,
+        "OPPOSITION": 12.93
+      },
+      "party_effects": {
+        "AKP": 0.026357,
+        "MHP": -0.026357,
+        "CHP": -0.268247,
+        "SP": 0.268247
+      },
+      "party_effective_n": {
+        "AKP": 9.25,
+        "MHP": 9.79,
+        "CHP": 5.43,
+        "SP": 5.64
+      },
+      "total_effects": {
+        "AKP": 0.026357,
+        "CHP": -0.333907,
+        "MHP": -0.026357,
+        "HDP_DEM": -0.150298,
+        "IYI": -0.06566,
+        "SP": 0.202588,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.06566,
+        "INCE_2018": -0.06566,
+        "AKSENER": -0.06566,
+        "DEMIRTAS": -0.150298,
+        "KARAMOLLAOGLU": -0.06566,
+        "YES": 0.0,
+        "NO": -0.06566
+      }
+    },
+    "Mediar": {
+      "n_polls": 12,
+      "n_contests": 7,
+      "last_poll": "2019-03-19",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": 0.432147,
+        "OPPOSITION": 0.275356
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 7.0,
+        "OPPOSITION": 11.9
+      },
+      "party_effects": {
+        "CHP": -0.465028,
+        "IYI": 0.13143,
+        "SP": 0.321332,
+        "INCE_2018": -0.127008,
+        "AKSENER": -0.008797,
+        "KARAMOLLAOGLU": 0.148072
+      },
+      "party_effective_n": {
+        "CHP": 4.0,
+        "IYI": 4.0,
+        "SP": 4.0,
+        "INCE_2018": 2.99,
+        "AKSENER": 2.98,
+        "KARAMOLLAOGLU": 3.0
+      },
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": -0.189673,
+        "MHP": 0.0,
+        "HDP_DEM": 0.432147,
+        "IYI": 0.406786,
+        "SP": 0.596687,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.275356,
+        "INCE_2018": 0.148348,
+        "AKSENER": 0.266558,
+        "DEMIRTAS": 0.432147,
+        "KARAMOLLAOGLU": 0.423428,
+        "YES": 0.0,
+        "NO": 0.275356
+      }
+    },
+    "MetroPOLL": {
+      "n_polls": 17,
+      "n_contests": 5,
+      "last_poll": "2019-03-21",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": 0.022265,
+        "OPPOSITION": 0.035864
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 12.97,
+        "OPPOSITION": 15.39
+      },
+      "party_effects": {
+        "AKP": -0.038719,
+        "MHP": 0.038719,
+        "CHP": -0.237424,
+        "SP": 0.237424
+      },
+      "party_effective_n": {
+        "AKP": 12.64,
+        "MHP": 13.8,
+        "CHP": 6.52,
+        "SP": 6.54
+      },
+      "total_effects": {
+        "AKP": -0.038719,
+        "CHP": -0.20156,
+        "MHP": 0.038719,
+        "HDP_DEM": 0.022265,
+        "IYI": 0.035864,
+        "SP": 0.273288,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.035864,
+        "INCE_2018": 0.035864,
+        "AKSENER": 0.035864,
+        "DEMIRTAS": 0.022265,
+        "KARAMOLLAOGLU": 0.035864,
+        "YES": 0.0,
+        "NO": 0.035864
+      }
+    },
+    "NET": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2017-02-19",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "NETAR": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2017-04-05",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "ORC": {
+      "n_polls": 41,
+      "n_contests": 14,
+      "last_poll": "2019-03-04",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.2974,
+        "OPPOSITION": -0.191963
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 21.35,
+        "OPPOSITION": 38.01
+      },
+      "party_effects": {
+        "AKP": -0.073046,
+        "MHP": 0.073046,
+        "CHP": 0.040348,
+        "IYI": -0.040348
+      },
+      "party_effective_n": {
+        "AKP": 18.84,
+        "MHP": 20.43,
+        "CHP": 4.6,
+        "IYI": 2.98
+      },
+      "total_effects": {
+        "AKP": -0.073046,
+        "CHP": -0.151615,
+        "MHP": 0.073046,
+        "HDP_DEM": -0.2974,
+        "IYI": -0.23231,
+        "SP": -0.191963,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.191963,
+        "INCE_2018": -0.191963,
+        "AKSENER": -0.191963,
+        "DEMIRTAS": -0.2974,
+        "KARAMOLLAOGLU": -0.191963,
+        "YES": 0.0,
+        "NO": -0.191963
+      }
+    },
+    "Optimar": {
+      "n_polls": 7,
+      "n_contests": 6,
+      "last_poll": "2019-03-22",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "OPPOSITION": -0.051877,
+        "KURDISH_LEFT": -0.136609
+      },
+      "bloc_effective_n": {
+        "OPPOSITION": 6.5,
+        "KURDISH_LEFT": 2.54
+      },
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": -0.051877,
+        "MHP": 0.0,
+        "HDP_DEM": -0.136609,
+        "IYI": -0.051877,
+        "SP": -0.051877,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.051877,
+        "INCE_2018": -0.051877,
+        "AKSENER": -0.051877,
+        "DEMIRTAS": -0.136609,
+        "KARAMOLLAOGLU": -0.051877,
+        "YES": 0.0,
+        "NO": -0.051877
+      }
+    },
+    "Perspektif": {
+      "n_polls": 5,
+      "n_contests": 2,
+      "last_poll": "2015-10-16",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": 0.025127,
+        "OPPOSITION": 0.06044
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 4.97,
+        "OPPOSITION": 4.99
+      },
+      "party_effects": {
+        "AKP": -0.04405,
+        "MHP": 0.04405
+      },
+      "party_effective_n": {
+        "AKP": 4.98,
+        "MHP": 5.0
+      },
+      "total_effects": {
+        "AKP": -0.04405,
+        "CHP": 0.06044,
+        "MHP": 0.04405,
+        "HDP_DEM": 0.025127,
+        "IYI": 0.06044,
+        "SP": 0.06044,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.06044,
+        "INCE_2018": 0.06044,
+        "AKSENER": 0.06044,
+        "DEMIRTAS": 0.025127,
+        "KARAMOLLAOGLU": 0.06044,
+        "YES": 0.0,
+        "NO": 0.06044
+      }
+    },
+    "Piar": {
+      "n_polls": 16,
+      "n_contests": 11,
+      "last_poll": "2019-03-23",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": 0.327969,
+        "OPPOSITION": 0.209508
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 6.58,
+        "OPPOSITION": 15.53
+      },
+      "party_effects": {
+        "AKP": -0.03442,
+        "MHP": 0.03442,
+        "CHP": -0.424088,
+        "IYI": 0.162339,
+        "SP": 0.261749
+      },
+      "party_effective_n": {
+        "AKP": 3.0,
+        "MHP": 3.0,
+        "CHP": 4.0,
+        "IYI": 4.0,
+        "SP": 3.0
+      },
+      "total_effects": {
+        "AKP": -0.03442,
+        "CHP": -0.21458,
+        "MHP": 0.03442,
+        "HDP_DEM": 0.327969,
+        "IYI": 0.371846,
+        "SP": 0.471257,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.209508,
+        "INCE_2018": 0.209508,
+        "AKSENER": 0.209508,
+        "DEMIRTAS": 0.327969,
+        "KARAMOLLAOGLU": 0.209508,
+        "YES": 0.0,
+        "NO": 0.209508
+      }
+    },
+    "Politics": {
+      "n_polls": 2,
+      "n_contests": 2,
+      "last_poll": "2017-03-13",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "Pollmark": {
+      "n_polls": 5,
+      "n_contests": 4,
+      "last_poll": "2019-02-16",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.063859,
+        "OPPOSITION": -0.00414
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 2.92,
+        "OPPOSITION": 4.47
+      },
+      "party_effects": {
+        "AKP": 0.030277,
+        "MHP": -0.030277
+      },
+      "party_effective_n": {
+        "AKP": 2.99,
+        "MHP": 2.99
+      },
+      "total_effects": {
+        "AKP": 0.030277,
+        "CHP": -0.00414,
+        "MHP": -0.030277,
+        "HDP_DEM": -0.063859,
+        "IYI": -0.00414,
+        "SP": -0.00414,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.00414,
+        "INCE_2018": -0.00414,
+        "AKSENER": -0.00414,
+        "DEMIRTAS": -0.063859,
+        "KARAMOLLAOGLU": -0.00414,
+        "YES": 0.0,
+        "NO": -0.00414
+      }
+    },
+    "Qriously": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2017-04-06",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "REMRES": {
+      "n_polls": 7,
+      "n_contests": 2,
+      "last_poll": "2018-06-13",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": 0.222677,
+        "OPPOSITION": 0.248248
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 7.0,
+        "OPPOSITION": 6.98
+      },
+      "party_effects": {
+        "INCE_2018": -0.250486,
+        "AKSENER": -0.094018,
+        "KARAMOLLAOGLU": 0.344504
+      },
+      "party_effective_n": {
+        "INCE_2018": 4.99,
+        "AKSENER": 5.0,
+        "KARAMOLLAOGLU": 5.0
+      },
+      "total_effects": {
+        "AKP": 0.0,
+        "CHP": 0.248248,
+        "MHP": 0.0,
+        "HDP_DEM": 0.222677,
+        "IYI": 0.248248,
+        "SP": 0.248248,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.248248,
+        "INCE_2018": -0.002239,
+        "AKSENER": 0.15423,
+        "DEMIRTAS": 0.222677,
+        "KARAMOLLAOGLU": 0.592752,
+        "YES": 0.0,
+        "NO": 0.248248
+      }
+    },
+    "SAMER": {
+      "n_polls": 2,
+      "n_contests": 2,
+      "last_poll": "2015-10-09",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "SAROS": {
+      "n_polls": 2,
+      "n_contests": 2,
+      "last_poll": "2019-03-22",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "SONAR": {
+      "n_polls": 14,
+      "n_contests": 4,
+      "last_poll": "2018-06-03",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.017671,
+        "OPPOSITION": 0.092922
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 9.1,
+        "OPPOSITION": 12.17
+      },
+      "party_effects": {
+        "AKP": -0.078313,
+        "MHP": 0.078313,
+        "INCE_2018": -0.106748,
+        "AKSENER": -0.010696,
+        "KARAMOLLAOGLU": 0.117444
+      },
+      "party_effective_n": {
+        "AKP": 6.98,
+        "MHP": 6.98,
+        "INCE_2018": 2.99,
+        "AKSENER": 2.99,
+        "KARAMOLLAOGLU": 3.0
+      },
+      "total_effects": {
+        "AKP": -0.078313,
+        "CHP": 0.092922,
+        "MHP": 0.078313,
+        "HDP_DEM": -0.017671,
+        "IYI": 0.092922,
+        "SP": 0.092922,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": 0.092922,
+        "INCE_2018": -0.013827,
+        "AKSENER": 0.082225,
+        "DEMIRTAS": -0.017671,
+        "KARAMOLLAOGLU": 0.210366,
+        "YES": 0.0,
+        "NO": 0.092922
+      }
+    },
+    "TAVAK": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2015-05-20",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "THEMİS": {
+      "n_polls": 2,
+      "n_contests": 1,
+      "last_poll": "2017-04-13",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "Themis": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2019-03-18",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "TÜSİAR": {
+      "n_polls": 4,
+      "n_contests": 3,
+      "last_poll": "2017-03-10",
+      "bloc_effects": {
+        "INCUMBENT": 0.0,
+        "KURDISH_LEFT": -0.15909,
+        "OPPOSITION": -0.066561
+      },
+      "bloc_effective_n": {
+        "KURDISH_LEFT": 2.8,
+        "OPPOSITION": 3.91
+      },
+      "party_effects": {
+        "AKP": 0.035108,
+        "MHP": -0.035108
+      },
+      "party_effective_n": {
+        "AKP": 2.99,
+        "MHP": 2.98
+      },
+      "total_effects": {
+        "AKP": 0.035108,
+        "CHP": -0.066561,
+        "MHP": -0.035108,
+        "HDP_DEM": -0.15909,
+        "IYI": -0.066561,
+        "SP": -0.066561,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "KILICDAROGLU": -0.066561,
+        "INCE_2018": -0.066561,
+        "AKSENER": -0.066561,
+        "DEMIRTAS": -0.15909,
+        "KARAMOLLAOGLU": -0.066561,
+        "YES": 0.0,
+        "NO": -0.066561
+      }
+    },
+    "Varyans": {
+      "n_polls": 2,
+      "n_contests": 2,
+      "last_poll": "2018-01-03",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "Vera": {
+      "n_polls": 2,
+      "n_contests": 2,
+      "last_poll": "2018-06-11",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "İstanbul Ekonomi": {
+      "n_polls": 1,
+      "n_contests": 1,
+      "last_poll": "2018-04-25",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    },
+    "İvem": {
+      "n_polls": 2,
+      "n_contests": 1,
+      "last_poll": "2017-04-11",
+      "bloc_effects": {
+        "INCUMBENT": 0.0
+      },
+      "bloc_effective_n": {},
+      "party_effects": {},
+      "party_effective_n": {},
+      "total_effects": {
+        "AKP": 0.0,
+        "MHP": 0.0,
+        "BBP": 0.0,
+        "YRP": 0.0,
+        "ERDOGAN": 0.0,
+        "YES": 0.0
+      }
+    }
+  }
+}
