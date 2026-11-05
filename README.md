@@ -12,7 +12,8 @@ seat-allocation, historical house-effect, and demographic datasets.
   first round/runoff scenarios.
 - Backtests the aggregator against 2023 and reports uncertainty intervals.
 - Estimates two-level historical pollster effects from 2015–2024 polls.
-- Next: correlate province-level election results with TÜİK demographics.
+- Correlates province-level election results with TÜİK demographics in the
+  Demografi explorer.
 
 ## Repository layout
 
@@ -23,6 +24,7 @@ data/processed/         cleaned seat and province results
 polls/                  2023 polls and historical poll archive
 pipeline/               poll scrapers, allocation, site export, house effects
 web/                    static site (HTML/CSS/vanilla JS + D3)
+web/demographics.html   correlation explorer (scatter + map + table)
 ```
 
 ## Install and test
@@ -42,7 +44,12 @@ uv run python pipeline/validate_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
 uv run python pipeline/export_site.py
+uv run python pipeline/demographic_correlation.py
 ```
+
+The demographic correlation script writes `data/analysis/province_demographics.csv`,
+`demographic_correlations.csv`, and `demographic_correlations.md`. It reports raw,
+electorate-weighted, and region + electorate-controlled partial correlations.
 
 The 2023 backtest fits house effects on 2015–2019 polls only, so 2023 polls do
 not leak into the correction. In the current model the two-level correction did

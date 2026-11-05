@@ -1,7 +1,6 @@
 # DATAM — Türkiye Election Poll Aggregator
 
-Status: **M0–M3 done; historical house effects integrated; demographic
-correlation next.**
+Status: **M0–M3 done; demographic correlation explorer integrated.**
 
 ## Goal
 
@@ -110,10 +109,12 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] Two-level bloc + within-bloc party house-effect model.
 - [x] Leak-free 2015–2019 effects for the 2023 backtest.
 
-### M4 — demographics + polish (next)
+### M4 — demographics + polish (started)
 
-- [ ] Province-level demographic correlation with election shares/swing.
-- [ ] Document confounding and uncertainty; no causal claims.
+- [x] Province-level demographic correlation with election shares/swing.
+- [x] Region + electorate-controlled partial correlations.
+- [x] Scatter, choropleth, and correlation-table explorer.
+- [ ] 2018/2024 extensions and fuller confounding diagnostics.
 - [ ] Accessibility and shareable scenario polish.
 
 ## Commands

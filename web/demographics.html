@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="DATAM demografi: 2023 il sonuçları ile TÜİK nüfus, hane ve eğitim göstergeleri arasındaki korelasyonlar."
+    />
+    <title>DATAM · Demografi</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-title">
+        <a href="./index.html" class="brand-link" aria-label="DATAM ana sayfa">
+          <img src="./assets/datam.svg" alt="DATAM" class="brand-logo" />
+        </a>
+        <p>Türkiye Seçim Simülasyonu · 2023 demografi korelasyonları</p>
+      </div>
+      <div class="topbar-meta">
+        <nav class="nav" aria-label="Bölümler">
+          <a href="./index.html">Milletvekili</a>
+          <a href="./president.html">Cumhurbaşkanı</a>
+          <a href="./polls.html">Anketler</a>
+          <a href="./backtest.html">Backtest</a>
+          <a href="./demographics.html" class="active">Demografi</a>
+        </nav>
+        <span id="generated-at"></span>
+        <a href="#methodology">Yöntem</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel controls" aria-label="Demografi kontrolleri">
+        <div class="panel-head">
+          <h2>Korelasyon</h2>
+        </div>
+        <p class="hint">
+          81 il için 2023 sonuçlarını TÜİK göstergeleriyle karşılaştırın.
+          Korelasyonlar betimleyicidir; nedensellik göstermez.
+        </p>
+
+        <div class="control-row">
+          <label for="outcome" class="control-label">Sonuç</label>
+          <select id="outcome" class="demo-select"></select>
+        </div>
+        <div class="control-row">
+          <label for="demographic" class="control-label">Gösterge</label>
+          <select id="demographic" class="demo-select"></select>
+        </div>
+
+        <div id="corr-stats" class="stat-grid"></div>
+
+        <p class="hint small">
+          <strong>r</strong>: ham Pearson. <strong>partial r</strong>: bölge
+          sabit etkileri ve log(seçmen) kontrolünden sonra. Nokta boyutu seçmen
+          sayısı, renk coğrafi bölge.
+        </p>
+        <div id="region-legend" class="chart-legend"></div>
+      </aside>
+
+      <section class="panel chart-panel" aria-label="İl saçılım grafiği">
+        <div class="panel-head">
+          <h2>İl saçılımı</h2>
+          <span id="scatter-subtitle" class="chart-subtitle"></span>
+        </div>
+        <svg
+          id="scatter"
+          class="trend-chart"
+          viewBox="0 0 900 460"
+          role="img"
+          aria-label="Demografi ve seçim sonucu saçılım grafiği"
+        ></svg>
+        <p class="hint small">
+          Her nokta bir il. Sağ üstteki değerler seçili çiftin korelasyonudur.
+        </p>
+      </section>
+
+      <section class="panel aggregate-panel" aria-label="Korelasyon tablosu">
+        <div class="panel-head">
+          <h2>Tablo</h2>
+          <span id="table-note" class="chart-subtitle"></span>
+        </div>
+        <div class="table-wrap">
+          <table class="aggregate-table corr-table">
+            <thead>
+              <tr>
+                <th>Gösterge</th>
+                <th>r</th>
+                <th>partial r</th>
+                <th>r̄</th>
+              </tr>
+            </thead>
+            <tbody id="corr-table"></tbody>
+          </table>
+        </div>
+        <p class="hint small">
+          Satıra tıklayın; saçılım ve istatistikler güncellenir. r̄ seçmen
+          ağırlıklı Pearson korelasyonudur.
+        </p>
+      </section>
+
+      <section class="panel demo-map-panel" aria-label="Demografi haritası">
+        <div class="panel-head map-head">
+          <h2>Harita</h2>
+          <div class="map-tools">
+            <div class="segmented" role="group" aria-label="Harita değişkeni">
+              <button id="map-demographic" class="segment active" type="button">
+                Gösterge
+              </button>
+              <button id="map-outcome" class="segment" type="button">Sonuç</button>
+            </div>
+            <div id="demo-map-legend" class="legend"></div>
+          </div>
+        </div>
+        <svg
+          id="demo-map"
+          class="map-svg demo-map-svg"
+          viewBox="0 0 800 380"
+          role="img"
+          aria-label="Seçili değişkenin il haritası"
+        ></svg>
+        <p class="hint small">
+          Renk, seçili göstergenin il içindeki düzeyini gösterir. Üzerine gelin.
+        </p>
+      </section>
+    </main>
+
+    <section id="methodology" class="panel methodology">
+      <h2>Yöntem ve sınırlar</h2>
+      <p>
+        Kaynaklar: TÜİK Nüfus İstatistikleri Portalı 2023 ve YSK 2023 yurt içi
+        sonuçları. İl düzeyinde cinsiyet, medyan yaş, hane büyüklüğü ve eğitim
+        dağılımı kullanılır; yaş kırılımları, istihdam ve yerleşim yeri şu an
+        yalnızca ülke düzeyinde olduğu için il analizine girmez.
+      </p>
+      <p>
+        <strong>partial r</strong>, her iki değişkenin bölge kuklaları ve
+        log(seçmen sayısı) üzerine artıkları arasındaki Pearson korelasyonudur.
+        Bu, bölgesel kompozisyonun ve il büyüklüğünün bir kısmını kontrol eder;
+        diğer demografik değişkenleri kontrol etmez. Çoklu test düzeltmesi
+        uygulanmamıştır. Bu sayfa betimleyici bir analizdir; nedensel çıkarım
+        için uygun değildir.
+      </p>
+      <p class="source">
+        DATAM · Açık kaynak · GitHub Pages. Bu araç hiçbir siyasi parti veya
+        kurumla bağlantılı değildir.
+      </p>
+    </section>
+
+    <footer>
+      <span>DATAM · Açık kaynak · GitHub Pages</span>
+      <span>Betimleyici analiz; seçim tahmini değildir.</span>
+    </footer>
+
+    <noscript>
+      Bu araç JavaScript gerektirir. Lütfen tarayıcınızda JavaScript'i açın.
+    </noscript>
+
+    <script src="./lib/d3.min.js"></script>
+    <script type="module" src="./demographics.js"></script>
+  </body>
+</html>

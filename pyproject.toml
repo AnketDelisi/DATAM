@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
 ]
 dependencies = [
+    "numpy>=1.24",
     "pandas>=2.0.0",
     "PyYAML>=6.0",
     "omegaconf>=2.0.0",
