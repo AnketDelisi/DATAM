@@ -45,11 +45,24 @@ uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_
 uv run python pipeline/house_effects.py --backtest
 uv run python pipeline/export_site.py
 uv run python pipeline/demographic_correlation.py
+uv run python pipeline/demographic_swing.py
+uv run python pipeline/demographic_swing_backtest.py
+uv run python pipeline/project_2028_seats.py
 ```
 
 The demographic correlation script writes `data/analysis/province_demographics.csv`,
 `demographic_correlations.csv`, and `demographic_correlations.md`. It reports raw,
 electorate-weighted, and region + electorate-controlled partial correlations.
+`pipeline/demographic_swing.py` turns those profiles into a province-level tilt
+used by the experimental demographic-swing control. The default strength is
+60%, chosen by a leave-one-province-out check: uniform-swing MAE 0.0254 vs
+0.0218 at 0.60 for the 2018→2023 incumbent change. This is a diagnostic, not
+a 2028 forecast guarantee.
+
+`web/data/elections.json` defines the 2023 baseline and the 2028 projection.
+`config/2028_seats.yaml` controls the 2028 seat apportionment (2023 seats
+weighted by projected electorate growth). `polls/2028_*.json` are ready for
+next-election polls; `export_site.py` combines them into `polls_2028.json`.
 
 The 2023 backtest fits house effects on 2015–2019 polls only, so 2023 polls do
 not leak into the correction. In the current model the two-level correction did

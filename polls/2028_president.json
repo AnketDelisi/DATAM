@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "source": "pending",
+    "coverage": "2028 presidential polls; none collected yet",
+    "unit": "fraction",
+    "candidates": {}
+  },
+  "polls": []
+}

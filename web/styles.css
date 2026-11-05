@@ -126,6 +126,10 @@ body {
   font-size: 0.78rem;
 }
 
+.hint.warn {
+  color: #b23a2b;
+}
+
 .hint.small {
   margin-top: 14px;
   margin-bottom: 0;
@@ -1406,6 +1410,17 @@ footer {
 .corr-table tbody tr.selected .pos,
 .corr-table tbody tr.selected .neg {
   color: #fff;
+}
+
+.poll-table th.subhead {
+  color: var(--muted);
+  font-size: 0.56rem;
+  text-align: right;
+  padding: 2px 4px;
+}
+
+.poll-table td.adjusted {
+  color: var(--muted);
 }
 
 .demo-map-panel {

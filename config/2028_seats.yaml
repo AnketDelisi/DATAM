@@ -1,0 +1,8 @@
+# 2028 seat projection assumptions.
+# Seats are apportioned from 2023 district electorates, grown to 2028.
+# Override a province with province_annual_growth.<NORMALIZED_PROVINCE>.
+base_year: 2023
+target_year: 2028
+total_seats: 600
+national_annual_growth: 0.0
+province_annual_growth: {}

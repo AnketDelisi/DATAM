@@ -42,10 +42,26 @@
           transferlerini değiştirin.
         </p>
 
+        <div class="control-row">
+          <label for="election-year" class="control-label">Seçim</label>
+          <select id="election-year" class="demo-select"></select>
+        </div>
+        <p id="election-note" class="hint small"></p>
+
         <div id="candidate-controls"></div>
 
         <div class="section-title">2. Tur transferleri</div>
         <div id="transfer-controls"></div>
+
+        <label class="checkbox">
+          <input id="demographic-swing" type="checkbox" />
+          Demografik salınım (deneysel)
+        </label>
+        <div class="control-row">
+          <label for="swing-strength" class="control-label">Etki</label>
+          <input id="swing-strength" type="range" min="0" max="100" step="5" value="60" />
+          <span id="swing-strength-value" class="value">60%</span>
+        </div>
 
         <div class="button-row">
           <button id="apply-polls" type="button">Anket ortalaması</button>
@@ -133,6 +149,13 @@
         Sınırlar: Veriler YSK açık veri kaynaklıdır ve yurt içi sandıkları
         kapsar; yurt dışı oyları il bazında yayımlanmadığı için model dışıdır.
         Bu bir senaryo aracıdır; seçim tahmini değildir.
+      </p>
+      <p>
+        <strong>Demografik salınım</strong> deneysel bir seçenektir: ulusal oy
+        farkı, ilin 2023 demografik profiline göre standartlaştırılmış bir tilt
+        ile ölçeklenir. Korelasyonlar betimleyicidir; varsayılan etki %60'tır ve
+        bu ayar nedensel bir model değildir. 2028 projeksiyonu şimdilik 2023 tabanını ve sandalye haritasını
+        kullanır; 2028 anketleri eklendiğinde aynı akış üzerinden hesaplanır.
       </p>
       <p class="source">
         Kaynaklar: YSK açık veri. Sınırlar: geoBoundaries (ADM1 CC BY-SA 2.0).

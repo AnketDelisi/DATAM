@@ -16,6 +16,12 @@ test("presidential preset is the 2023 first-round aggregate", () => {
   assert.ok(shares.D > 0.02 && shares.D < 0.05);
 });
 
+test("empty 2028 payload returns no shares", () => {
+  const empty = { datasets: { president: { polls: [] }, parliament: { polls: [] } } };
+  assert.deepEqual(presidentAggregate(empty, 1, "2028-05-14"), {});
+  assert.deepEqual(parliamentAggregate(empty, "2028-05-14"), {});
+});
+
 test("parliamentary preset uses the main party shares", () => {
   const shares = parliamentAggregate(pollPayload);
   assert.ok(shares.P9 > 0.35 && shares.P9 < 0.39);

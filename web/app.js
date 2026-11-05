@@ -12,6 +12,7 @@ import {
   MAIN_PARTIES,
   parliamentAggregate,
 } from "./modules/poll_preset.js";
+import { PARTY_OUTCOME, swingFactor, tiltFor } from "./modules/projection.js";
 
 const MAIN_ORDER = [...MAIN_PARTIES];
 const OTHER_COLOR = "#9e9e9e";
@@ -21,6 +22,13 @@ const state = {
   geojson: null,
   ilceGeo: null,
   pollData: null,
+  pollDataByYear: {},
+  elections: {},
+  year: "2023",
+  election: null,
+  demographicSwing: null,
+  seatProjection: null,
+  swingStrength: 0.6,
   partiesById: new Map(),
   mainParties: [],
   geoDisplay: new Map(),
@@ -43,7 +51,7 @@ function $(id) {
 }
 
 async function main() {
-  const [data, geojson, ilceGeo, pollData] = await Promise.all([
+  const [data, geojson, ilceGeo, polls2023, polls2028, elections, demographicSwing, seatProjection] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -60,11 +68,30 @@ async function main() {
       if (!response.ok) throw new Error(`polls ${response.status}`);
       return response.json();
     }),
+    fetch("./data/polls_2028.json").then((response) => {
+      if (!response.ok) throw new Error(`polls 2028 ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/elections.json").then((response) => {
+      if (!response.ok) throw new Error(`elections ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/demographic_swing.json").then((response) => {
+      if (!response.ok) throw new Error(`swing ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/seat_projection_2028.json").then((response) => {
+      if (!response.ok) throw new Error(`seat projection ${response.status}`);
+      return response.json();
+    }),
   ]);
 
   state.data = data;
   state.geojson = geojson;
-  state.pollData = pollData;
+  state.pollDataByYear = { "2023": polls2023, "2028": polls2028 };
+  state.elections = elections;
+  state.demographicSwing = demographicSwing;
+  state.seatProjection = seatProjection;
   state.partiesById = new Map(data.parties.map((party) => [party.id, party]));
   state.mainParties = MAIN_ORDER.map((id) => state.partiesById.get(id)).filter(Boolean);
   state.geoDisplay = new Map(
@@ -91,6 +118,9 @@ async function main() {
   }
 
   readUrl();
+  state.election = state.elections[state.year] || state.elections["2023"];
+  state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
+  buildElectionControl();
   buildControls();
   normalizeShares();
   syncControls();
@@ -122,6 +152,16 @@ async function main() {
     state.useAlliances = event.target.checked;
     render();
   });
+  $("demographic-swing").addEventListener("change", (event) => {
+    state.swingStrength = event.target.checked ? Number($("swing-strength").value) / 100 : 0;
+    $("swing-strength").disabled = !event.target.checked;
+    render();
+  });
+  $("swing-strength").addEventListener("input", (event) => {
+    state.swingStrength = $("demographic-swing").checked ? Number(event.target.value) / 100 : 0;
+    $("swing-strength-value").textContent = `${event.target.value}%`;
+    render();
+  });
 
   setMapMode(state.mapMode);
   render();
@@ -141,8 +181,46 @@ function readUrl() {
     if (Number.isFinite(value)) state.threshold = clamp(value, 0, 15) / 100;
   }
   if (params.has("a")) state.useAlliances = params.get("a") !== "0";
+  const year = params.get("year");
+  if (year && state.elections[year]) state.year = year;
+  if (params.has("ds")) {
+    const value = Number(params.get("ds"));
+    if (Number.isFinite(value)) state.swingStrength = clamp(value, 0, 100) / 100;
+  }
   const mode = params.get("m");
   if (mode === "province" || mode === "ilce") state.mapMode = mode;
+}
+
+function buildElectionControl() {
+  const select = $("election-year");
+  select.innerHTML = Object.keys(state.elections)
+    .sort()
+    .map((year) => `<option value="${year}">${
+      year === "2023" ? "2023 sonucu" : `${year} projeksiyonu`
+    }</option>`)
+    .join("");
+  select.value = state.year;
+  select.addEventListener("change", () => {
+    state.year = select.value;
+    state.election = state.elections[state.year] || state.elections["2023"];
+    state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
+    updateElectionNote();
+    render();
+  });
+  updateElectionNote();
+}
+
+function updateElectionNote() {
+  const election = state.election || state.elections["2023"];
+  const datasets = state.pollData?.datasets || {};
+  const hasPolls =
+    (datasets.president?.polls?.length || 0) + (datasets.parliament?.polls?.length || 0) > 0;
+  $("election-note").textContent =
+    election.status === "projection"
+      ? `${election.year} projeksiyonu: 2023 tabanı ve 2028 sandalye projeksiyonu; henüz anket verisi yok.`
+      : "2023 resmi sonucu ve anket ortalaması.";
+  $("apply-polls").disabled = !hasPolls;
+  $("apply-polls").textContent = hasPolls ? "Anket ortalaması" : "Anket verisi yok";
 }
 
 function buildControls() {
@@ -172,6 +250,10 @@ function buildControls() {
 
   $("threshold").value = (state.threshold * 100).toFixed(1);
   $("alliances").checked = state.useAlliances;
+  $("demographic-swing").checked = state.swingStrength > 0;
+  $("swing-strength").value = Math.round(state.swingStrength * 100);
+  $("swing-strength").disabled = state.swingStrength <= 0;
+  $("swing-strength-value").textContent = `${Math.round(state.swingStrength * 100)}%`;
 }
 
 function buildLegend() {
@@ -231,6 +313,14 @@ function updateOtherShare() {
   $("other-share").textContent = formatPct(Math.max(0, 100 - sum));
 }
 
+function effectiveFactor(id, factor, provinceKey) {
+  return swingFactor(
+    factor,
+    tiltFor(state.demographicSwing, provinceKey, PARTY_OUTCOME[id]),
+    state.swingStrength
+  );
+}
+
 function buildScenarioDistricts() {
   const { data } = state;
   const totalValid = data.national.valid_votes;
@@ -254,11 +344,20 @@ function buildScenarioDistricts() {
 
   const scaled = data.districts.map((district) => {
     const votes = {};
+    const provinceKey = normalizeName(district.province_base);
     for (const [id, value] of Object.entries(district.votes)) {
-      const factor = factors[id] || 0;
+      const factor = effectiveFactor(id, factors[id] || 0, provinceKey);
       if (factor > 0) votes[id] = value * factor;
     }
-    return { ...district, votes };
+    const projectedSeats =
+      state.year === "2028"
+        ? state.seatProjection?.districts?.[district.id]
+        : null;
+    return {
+      ...district,
+      seats: projectedSeats ?? district.seats,
+      votes,
+    };
   });
 
   const total = scaled.reduce(
@@ -322,8 +421,9 @@ function aggregateIlce(factors) {
   const ilce = new Map();
   for (const base of state.data.ilce) {
     const votes = {};
+    const provinceKey = base.province_key || normalizeName(base.province_base);
     for (const [id, value] of Object.entries(base.votes)) {
-      const factor = factors[id] || 0;
+      const factor = effectiveFactor(id, factors[id] || 0, provinceKey);
       if (factor > 0) votes[id] = value * factor;
     }
     const total = Object.values(votes).reduce((a, b) => a + b, 0);
@@ -439,6 +539,8 @@ function updateUrl() {
   params.set("t", (state.threshold * 100).toFixed(1));
   params.set("a", state.useAlliances ? "1" : "0");
   params.set("m", state.mapMode);
+  params.set("year", state.year);
+  params.set("ds", String(Math.round(state.swingStrength * 100)));
   try {
     history.replaceState(null, "", `?${params.toString()}`);
   } catch {
@@ -639,7 +741,11 @@ function showIlceDetail(geoId) {
 }
 
 function applyPollAverage() {
-  const shares = parliamentAggregate(state.pollData);
+  const shares = parliamentAggregate(state.pollData, state.election?.date || "2023-05-14");
+  if (!Object.keys(shares).length) {
+    updateElectionNote();
+    return;
+  }
   for (const id of MAIN_ORDER) {
     state.shares[id] = (shares[id] || 0) * 100;
   }

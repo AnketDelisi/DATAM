@@ -42,6 +42,12 @@
           yarılanma süresini ve kesim tarihini değiştirin.
         </p>
 
+        <div class="control-row">
+          <label for="election-year" class="control-label">Seçim</label>
+          <select id="election-year" class="demo-select"></select>
+        </div>
+        <p id="election-note" class="hint small"></p>
+
         <div id="race-switch" class="race-switch"></div>
 
         <div class="control-row">
@@ -117,6 +123,10 @@
         <h2>Anketler</h2>
         <span id="poll-list-meta" class="chart-subtitle"></span>
       </div>
+      <p class="hint small">
+        Her parti i?in solda ham anket, sa?da tarihsel pollster etkisi
+        uygulanm?? de?er g?sterilir. D?zeltme kapal?ysa iki s?tun ayn?d?r.
+      </p>
       <div class="table-wrap poll-table-wrap">
         <table class="poll-table">
           <thead id="poll-table-head"></thead>

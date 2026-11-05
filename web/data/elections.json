@@ -1,0 +1,21 @@
+{
+  "2023": {
+    "year": 2023,
+    "date": "2023-05-14",
+    "runoff_date": "2023-05-28",
+    "baseline": "2023",
+    "seat_source": "2023",
+    "status": "actual",
+    "polls": "polls_2023.json"
+  },
+  "2028": {
+    "year": 2028,
+    "date": "2028-05-14",
+    "runoff_date": "2028-05-28",
+    "baseline": "2023",
+    "seat_source": "2028_projection",
+    "status": "projection",
+    "polls": "polls_2028.json",
+    "note": "2023 tabanı ve 2028 sandalye projeksiyonu; seçim takvimi ve resmi sandalye dağılımı kesinleşmedi."
+  }
+}

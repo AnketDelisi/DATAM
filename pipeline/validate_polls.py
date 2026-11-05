@@ -16,10 +16,17 @@ from datetime import date
 from pathlib import Path
 
 POLLS = Path("polls")
-CUTOFFS = {
-    ("presidential", 1): date(2023, 5, 14),
-    ("presidential", 2): date(2023, 5, 28),
-    ("parliamentary", None): date(2023, 5, 14),
+CUTOFFS_BY_YEAR = {
+    2023: {
+        ("presidential", 1): date(2023, 5, 14),
+        ("presidential", 2): date(2023, 5, 28),
+        ("parliamentary", None): date(2023, 5, 14),
+    },
+    2028: {
+        ("presidential", 1): date(2028, 5, 14),
+        ("presidential", 2): date(2028, 5, 28),
+        ("parliamentary", None): date(2028, 5, 14),
+    },
 }
 PRESIDENT_KEYS = {"A", "B", "C", "D"}
 PARLIAMENT_KEY = re.compile(r"^P\d+$")
@@ -29,7 +36,7 @@ def parse_date(value: str) -> date:
     return date.fromisoformat(value)
 
 
-def validate_poll(poll: dict, seen_ids: set[str]) -> list[str]:
+def validate_poll(poll: dict, seen_ids: set[str], cutoffs: dict) -> list[str]:
     errors: list[str] = []
     required = {
         "poll_id",
@@ -75,10 +82,10 @@ def validate_poll(poll: dict, seen_ids: set[str]) -> list[str]:
     poll_type = poll["type"]
     round_number = poll["round"]
     key = (poll_type, round_number)
-    if key not in CUTOFFS:
+    if key not in cutoffs:
         errors.append(f"invalid type/round: {poll_type}/{round_number}")
     else:
-        cutoff = CUTOFFS[key]
+        cutoff = cutoffs[key]
         if end > cutoff:
             errors.append(f"field_end {end} is after the {cutoff} cutoff")
 
@@ -152,9 +159,12 @@ def validate_dataset(path: Path = POLLS) -> tuple[int, list[str], Counter, set]:
         if not isinstance(polls, list):
             errors.append(f"{file.name}: missing polls array")
             continue
+        match = re.match(r"^(\d{4})_", file.name)
+        year = int(match.group(1)) if match else 2023
+        cutoffs = CUTOFFS_BY_YEAR.get(year, CUTOFFS_BY_YEAR[2023])
         for index, poll in enumerate(polls):
             total += 1
-            poll_errors = validate_poll(poll, seen_ids)
+            poll_errors = validate_poll(poll, seen_ids, cutoffs)
             for error in poll_errors:
                 errors.append(f"{file.name}[{index}] {poll.get('poll_id', '?')}: {error}")
             if not poll_errors:

@@ -6,6 +6,7 @@ import {
   normalizeName,
 } from "./modules/format.js";
 import { presidentAggregate } from "./modules/poll_preset.js";
+import { CANDIDATE_OUTCOME, adjustedShare, tiltFor } from "./modules/projection.js";
 
 const CANDIDATE_ORDER = ["A", "B", "C", "D"];
 
@@ -13,6 +14,12 @@ const state = {
   data: null,
   geojson: null,
   pollData: null,
+  pollDataByYear: {},
+  elections: {},
+  year: "2023",
+  election: null,
+  demographicSwing: null,
+  swingStrength: 0.6,
   candidates: [],
   byId: new Map(),
   names: {},
@@ -52,7 +59,7 @@ function escapeHtml(value) {
 }
 
 async function main() {
-  const [data, geojson, pollData] = await Promise.all([
+  const [data, geojson, polls2023, polls2028, elections, demographicSwing] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -65,11 +72,25 @@ async function main() {
       if (!response.ok) throw new Error(`polls ${response.status}`);
       return response.json();
     }),
+    fetch("./data/polls_2028.json").then((response) => {
+      if (!response.ok) throw new Error(`polls 2028 ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/elections.json").then((response) => {
+      if (!response.ok) throw new Error(`elections ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/demographic_swing.json").then((response) => {
+      if (!response.ok) throw new Error(`swing ${response.status}`);
+      return response.json();
+    }),
   ]);
 
   state.data = data;
   state.geojson = geojson;
-  state.pollData = pollData;
+  state.pollDataByYear = { "2023": polls2023, "2028": polls2028 };
+  state.elections = elections;
+  state.demographicSwing = demographicSwing;
   state.candidates = data.president.candidates;
   state.byId = new Map(state.candidates.map((candidate) => [candidate.id, candidate]));
   state.names = Object.fromEntries(
@@ -96,9 +117,16 @@ async function main() {
   );
 
   readUrl();
+  state.election = state.elections[state.year] || state.elections["2023"];
+  state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
   normalizeShares();
+  buildElectionControl();
   buildCandidateControls();
   syncCandidateControls();
+  $("demographic-swing").checked = state.swingStrength > 0;
+  $("swing-strength").value = Math.round(state.swingStrength * 100);
+  $("swing-strength").disabled = state.swingStrength <= 0;
+  $("swing-strength-value").textContent = `${Math.round(state.swingStrength * 100)}%`;
   buildLegend();
   setGeneratedAt();
 
@@ -112,6 +140,16 @@ async function main() {
   $("copy-link").addEventListener("click", copyLink);
   $("round-first").addEventListener("click", () => setRound("first"));
   $("round-runoff").addEventListener("click", () => setRound("runoff"));
+  $("demographic-swing").addEventListener("change", (event) => {
+    state.swingStrength = event.target.checked ? Number($("swing-strength").value) / 100 : 0;
+    $("swing-strength").disabled = !event.target.checked;
+    render();
+  });
+  $("swing-strength").addEventListener("input", (event) => {
+    state.swingStrength = $("demographic-swing").checked ? Number(event.target.value) / 100 : 0;
+    $("swing-strength-value").textContent = `${event.target.value}%`;
+    render();
+  });
 
   setRound(state.mapRound);
 }
@@ -133,6 +171,44 @@ function readUrl() {
   }
   const round = params.get("m");
   if (round === "first" || round === "runoff") state.mapRound = round;
+  const year = params.get("year");
+  if (year && state.elections[year]) state.year = year;
+  if (params.has("ds")) {
+    const value = Number(params.get("ds"));
+    if (Number.isFinite(value)) state.swingStrength = clamp(value, 0, 100) / 100;
+  }
+}
+
+function buildElectionControl() {
+  const select = $("election-year");
+  select.innerHTML = Object.keys(state.elections)
+    .sort()
+    .map((year) => `<option value="${year}">${
+      year === "2023" ? "2023 sonucu" : `${year} projeksiyonu`
+    }</option>`)
+    .join("");
+  select.value = state.year;
+  select.addEventListener("change", () => {
+    state.year = select.value;
+    state.election = state.elections[state.year] || state.elections["2023"];
+    state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
+    updateElectionNote();
+    render();
+  });
+  updateElectionNote();
+}
+
+function updateElectionNote() {
+  const election = state.election || state.elections["2023"];
+  const datasets = state.pollData?.datasets || {};
+  const hasPolls =
+    (datasets.president?.polls?.length || 0) + (datasets.parliament?.polls?.length || 0) > 0;
+  $("election-note").textContent =
+    election.status === "projection"
+      ? `${election.year} projeksiyonu: 2023 tabanı; henüz anket verisi yok.`
+      : "2023 resmi sonucu ve anket ortalaması.";
+  $("apply-polls").disabled = !hasPolls;
+  $("apply-polls").textContent = hasPolls ? "Anket ortalaması" : "Anket verisi yok";
 }
 
 function buildCandidateControls() {
@@ -273,11 +349,14 @@ function buildFirstRound() {
 
   const provinces = state.data.president.first_round.provinces.map((province) => {
     const raw = {};
+    const provinceKey = province.geo_key || normalizeName(province.name);
     for (const candidate of state.candidates) {
       const id = candidate.id;
-      raw[id] = Math.max(
-        0,
-        (province.shares[id] || 0) + (target[id] || 0) - (baseNational[id] || 0)
+      raw[id] = adjustedShare(
+        province.shares[id] || 0,
+        (target[id] || 0) - (baseNational[id] || 0),
+        tiltFor(state.demographicSwing, provinceKey, CANDIDATE_OUTCOME[id]),
+        state.swingStrength
       );
     }
     const total = Object.values(raw).reduce((a, b) => a + b, 0);
@@ -558,7 +637,8 @@ function showProvinceDetail(key) {
 }
 
 function applyPollAverage() {
-  const shares = presidentAggregate(state.pollData, 1);
+  const shares = presidentAggregate(state.pollData, 1, state.election?.date || "2023-05-14");
+  if (!Object.keys(shares).length) { updateElectionNote(); return; }
   for (const candidate of state.candidates) {
     state.shares[candidate.id] = (shares[candidate.id] || 0) * 100;
   }
@@ -595,6 +675,8 @@ function updateUrl() {
     params.set(`t${id}`, (state.transfers[id] ?? state.defaultTransfer * 100).toFixed(1));
   }
   params.set("m", state.mapRound);
+  params.set("year", state.year);
+  params.set("ds", String(Math.round(state.swingStrength * 100)));
   try {
     history.replaceState(null, "", `?${params.toString()}`);
   } catch {

@@ -37,6 +37,10 @@ const ciFormat = new Intl.NumberFormat("tr-TR", {
 const state = {
   data: null,
   pollData: null,
+  pollDataByYear: {},
+  elections: {},
+  year: "2023",
+  election: null,
   historicalEffects: null,
   races: {},
   raceKey: "presidentFirst",
@@ -119,6 +123,8 @@ function parliamentActual(data) {
 function buildRaces() {
   const president = state.pollData.datasets.president;
   const parliament = state.pollData.datasets.parliament;
+  const electionDay = state.election?.date || "2023-05-14";
+  const runoffDay = state.election?.runoff_date || electionDay;
   const candidateMeta = new Map(
     state.data.president.candidates.map((candidate) => [candidate.id, candidate])
   );
@@ -131,7 +137,7 @@ function buildRaces() {
       key: "presidentFirst",
       label: "Cumhurbaşkanı 1. Tur",
       shortLabel: "CB 1. Tur",
-      electionDay: "2023-05-14",
+      electionDay,
       entities: ["A", "B", "C", "D"],
       actual: state.data.president.first_round.national.shares,
       meta: candidateMeta,
@@ -141,7 +147,7 @@ function buildRaces() {
       key: "presidentRunoff",
       label: "Cumhurbaşkanı 2. Tur",
       shortLabel: "CB 2. Tur",
-      electionDay: "2023-05-28",
+      electionDay: runoffDay,
       entities: ["A", "B"],
       actual: state.data.president.runoff.national.shares,
       meta: candidateMeta,
@@ -151,7 +157,7 @@ function buildRaces() {
       key: "parliament",
       label: "Milletvekili",
       shortLabel: "Milletvekili",
-      electionDay: "2023-05-14",
+      electionDay,
       entities: [...MAIN_PARTIES, OTHER],
       actual: parliamentActual(state.data),
       meta: partyMeta,
@@ -161,7 +167,7 @@ function buildRaces() {
 }
 
 async function main() {
-  const [data, pollData, historicalEffects] = await Promise.all([
+  const [data, polls2023, polls2028, elections, historicalEffects] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -170,18 +176,32 @@ async function main() {
       if (!response.ok) throw new Error(`polls ${response.status}`);
       return response.json();
     }),
+    fetch("./data/polls_2028.json").then((response) => {
+      if (!response.ok) throw new Error(`polls 2028 ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/elections.json").then((response) => {
+      if (!response.ok) throw new Error(`elections ${response.status}`);
+      return response.json();
+    }),
     fetch("./data/house_effects.json").then((response) => {
       if (!response.ok) throw new Error(`house effects ${response.status}`);
       return response.json();
     }),
   ]);
   state.data = data;
-  state.pollData = pollData;
+  state.pollDataByYear = { "2023": polls2023, "2028": polls2028 };
+  state.elections = elections;
   state.historicalEffects = historicalEffects;
+  readUrl();
+  state.election = state.elections[state.year] || state.elections["2023"];
+  state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
   buildRaces();
+  buildElectionControl();
   buildRaceSwitch();
   readUrl();
   attachControls();
+  updateElectionNote();
   setGeneratedAt();
   applyRace(state.raceKey, { keepCutoff: true });
 }
@@ -232,6 +252,39 @@ function readUrl() {
   if (params.has("cutoff")) state.cutoff = params.get("cutoff");
   if (params.has("he")) state.houseEffects = params.get("he") === "1";
   if (params.has("norm")) state.normalize = params.get("norm") !== "0";
+  const year = params.get("year");
+  if (year && state.elections[year]) state.year = year;
+}
+
+function buildElectionControl() {
+  const select = $("election-year");
+  select.innerHTML = Object.keys(state.elections)
+    .sort()
+    .map((year) => `<option value="${year}">${
+      year === "2023" ? "2023 sonucu" : `${year} projeksiyonu`
+    }</option>`)
+    .join("");
+  select.value = state.year;
+  select.addEventListener("change", () => {
+    state.year = select.value;
+    state.election = state.elections[state.year] || state.elections["2023"];
+    state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
+    buildRaces();
+    updateElectionNote();
+    applyRace(state.raceKey, { keepCutoff: false });
+  });
+}
+
+function updateElectionNote() {
+  const election = state.election || state.elections["2023"];
+  const datasets = state.pollData?.datasets || {};
+  const hasPolls =
+    (datasets.president?.polls?.length || 0) + (datasets.parliament?.polls?.length || 0) > 0;
+  $("election-note").textContent =
+    election.status === "projection"
+      ? `${election.year} projeksiyonu: henüz anket verisi yok; tablo boş kalır.`
+      : "2023 anketleri; ham ve düzeltilmiş değerler birlikte gösterilir.";
+  $("election-note").classList.toggle("warn", !hasPolls);
 }
 
 function attachControls() {
@@ -273,9 +326,10 @@ function attachControls() {
 
 function render() {
   const race = currentRace();
+  const rawPolls = race.polls;
   const polls = state.houseEffects && state.historicalEffects
-    ? applyHistoricalHouseEffects(race.polls, race.key, state.historicalEffects)
-    : race.polls;
+    ? applyHistoricalHouseEffects(rawPolls, race.key, state.historicalEffects)
+    : rawPolls;
   const entities = race.entities;
   const options = {
     halfLifeDays: state.halfLife,
@@ -302,7 +356,7 @@ function render() {
   drawChart(race, polls, trend, aggregate);
   updateAggregateTable(race, aggregate, uncertainty);
   updatePollsterTable(race, aggregate);
-  updatePollTable(race, polls);
+  updatePollTable(race, rawPolls, polls);
   updateMeta(race, aggregate, polls);
   updateUrl();
 }
@@ -527,33 +581,42 @@ function updatePollsterTable(race, aggregate) {
   container.innerHTML = `<div class="effect-head"><span>Pollster</span><span>Anket</span><span>En büyük</span></div>${rows}`;
 }
 
-function updatePollTable(race, polls) {
+function updatePollTable(race, rawPolls, adjustedPolls) {
   const head = $("poll-table-head");
+  const group = race.entities
+    .map((id) => `<th colspan="2">${entityMeta(race, id).short}</th>`)
+    .join("");
+  const subhead = race.entities
+    .map(() => `<th class="subhead">Ham</th><th class="subhead">Düz.</th>`)
+    .join("");
   head.innerHTML = `<tr>
-    <th>Tarih</th>
-    <th>Anket</th>
-    <th>Örneklem</th>
-    ${race.entities.map((id) => `<th>${entityMeta(race, id).short}</th>`).join("")}
-  </tr>`;
+    <th rowspan="2">Tarih</th>
+    <th rowspan="2">Anket</th>
+    <th rowspan="2">Örneklem</th>
+    ${group}
+  </tr><tr>${subhead}</tr>`;
 
-  const rows = [...polls]
+  const adjustedById = new Map(adjustedPolls.map((poll) => [poll.poll_id, poll]));
+  const rows = [...rawPolls]
     .sort((a, b) => (a.field_end < b.field_end ? 1 : a.field_end > b.field_end ? -1 : 0))
-    .map((poll) => {
-      const shares = normalizePoll(poll, race.entities, state.normalize);
-      if (!shares) return "";
+    .map((rawPoll) => {
+      const adjustedPoll = adjustedById.get(rawPoll.poll_id) || rawPoll;
+      const raw = normalizePoll(rawPoll, race.entities, state.normalize);
+      const adjusted = normalizePoll(adjustedPoll, race.entities, state.normalize);
+      if (!raw && !adjusted) return "";
       const cells = race.entities
-        .map((id) =>
-          shares[id] == null
-            ? `<td class="num">–</td>`
-            : `<td class="num">${formatPct(shares[id] * 100)}</td>`
-        )
+        .map((id) => {
+          const rawCell = raw?.[id] == null ? "?" : formatPct(raw[id] * 100);
+          const adjustedCell = adjusted?.[id] == null ? "?" : formatPct(adjusted[id] * 100);
+          return `<td class="num">${rawCell}</td><td class="num adjusted">${adjustedCell}</td>`;
+        })
         .join("");
       return `<tr>
-        <td title="${escapeHtml(poll.source_date_text || "")}">${formatDateShort(
-          poll.field_end
+        <td title="${escapeHtml(rawPoll.source_date_text || "")}">${formatDateShort(
+          rawPoll.field_end
         )}</td>
-        <td>${escapeHtml(poll.pollster)}</td>
-        <td class="num">${poll.sample_size == null ? "–" : formatInt(poll.sample_size)}</td>
+        <td>${escapeHtml(rawPoll.pollster)}</td>
+        <td class="num">${rawPoll.sample_size == null ? "?" : formatInt(rawPoll.sample_size)}</td>
         ${cells}
       </tr>`;
     })
@@ -582,6 +645,7 @@ function updateUrl() {
   params.set("cutoff", state.cutoff);
   params.set("he", state.houseEffects ? "1" : "0");
   params.set("norm", state.normalize ? "1" : "0");
+  params.set("year", state.year);
   try {
     history.replaceState(null, "", `?${params.toString()}`);
   } catch {

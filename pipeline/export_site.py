@@ -4,7 +4,8 @@
 
 Reads the processed 2023 parliamentary data, folds joint-list votes into the
 alliance's largest member in each district (the same rule the Python allocator
-uses), and writes web/data/parliament_2023.json.
+uses), and writes web/data/parliament_2023.json. Poll files are exported for
+each available election year (2023, 2028).
 """
 
 from __future__ import annotations
@@ -398,27 +399,28 @@ def main() -> None:
         f"{sum(p['seats'] for p in provinces)} seats"
     )
 
-    poll_files = {
-        "president": ROOT / "polls" / "2023_president.json",
-        "parliament": ROOT / "polls" / "2023_parliament.json",
-    }
-    poll_payload = {
-        "meta": {
-            "source": "Turkish Wikipedia",
-            "generated_at": datetime.now(timezone.utc).isoformat(),
-        },
-        "datasets": {},
-    }
-    for key, path in poll_files.items():
-        if path.exists():
-            poll_payload["datasets"][key] = json.loads(path.read_text(encoding="utf-8"))
-    if poll_payload["datasets"]:
-        poll_out = WEB_DATA / "polls_2023.json"
-        poll_out.write_text(
-            json.dumps(poll_payload, ensure_ascii=False, separators=(",", ":")),
-            encoding="utf-8",
-        )
-        print(f"wrote {poll_out} ({poll_out.stat().st_size/1024:.1f} KB)")
+    for year in (2023, 2028):
+        poll_files = {
+            "president": ROOT / "polls" / f"{year}_president.json",
+            "parliament": ROOT / "polls" / f"{year}_parliament.json",
+        }
+        poll_payload = {
+            "meta": {
+                "source": "Turkish Wikipedia" if year == 2023 else "pending",
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+            },
+            "datasets": {},
+        }
+        for key, path in poll_files.items():
+            if path.exists():
+                poll_payload["datasets"][key] = json.loads(path.read_text(encoding="utf-8"))
+        if poll_payload["datasets"]:
+            poll_out = WEB_DATA / f"polls_{year}.json"
+            poll_out.write_text(
+                json.dumps(poll_payload, ensure_ascii=False, separators=(",", ":")),
+                encoding="utf-8",
+            )
+            print(f"wrote {poll_out} ({poll_out.stat().st_size/1024:.1f} KB)")
 
 
 if __name__ == "__main__":
