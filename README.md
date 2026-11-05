@@ -10,6 +10,8 @@ seat-allocation, historical house-effect, and demographic datasets.
 - Reproduces the 2023 parliamentary and presidential baselines.
 - Simulates parliament (D'Hondt, 7% threshold, alliances) and presidential
   first round/runoff scenarios.
+- Drills from the 81-province map into a smoothly zoomed ilçe map with actual
+  parliamentary votes.
 - Backtests the aggregator against 2023 and reports uncertainty intervals.
 - Estimates two-level historical pollster effects from 2015–2024 polls.
 - Correlates province-level election results with TÜİK demographics in the

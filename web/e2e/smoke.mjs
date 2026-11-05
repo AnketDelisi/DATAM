@@ -40,6 +40,22 @@ await visit("index.html", async (p) => {
     throw new Error("empty 2028 polls should disable the apply button");
   }
   await p.check("#demographic-swing");
+  await p.locator("#map .province-path").first().click();
+  await p.waitForTimeout(800);
+  if (!(await p.textContent("#map-breadcrumb"))?.includes("/")) {
+    throw new Error("province drilldown breadcrumb missing");
+  }
+  if (!(await p.locator("#map-back").isVisible())) {
+    throw new Error("province drilldown back button missing");
+  }
+  if ((await p.locator("#map .ilce-path:visible").count()) === 0) {
+    throw new Error("province drilldown has no visible ilçe paths");
+  }
+  await p.click("#map-back");
+  await p.waitForTimeout(800);
+  if ((await p.textContent("#map-breadcrumb"))?.trim() !== "Türkiye") {
+    throw new Error("province drilldown did not reset");
+  }
 });
 
 await visit("president.html", async (p) => {

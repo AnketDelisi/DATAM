@@ -104,12 +104,8 @@
         <div class="panel-head map-head">
           <h2>Harita</h2>
           <div class="map-tools">
-            <div class="segmented" role="group" aria-label="Harita düzeyi">
-              <button id="map-province" class="segment active" type="button">
-                İl
-              </button>
-              <button id="map-ilce" class="segment" type="button">İlçe</button>
-            </div>
+            <button id="map-back" class="ghost" type="button" hidden>← Türkiye</button>
+            <span id="map-breadcrumb" class="chart-subtitle">Türkiye</span>
             <div id="map-legend" class="legend"></div>
           </div>
         </div>
@@ -119,14 +115,7 @@
             class="map-svg"
             viewBox="0 0 800 380"
             role="img"
-            aria-label="Türkiye il haritası"
-          ></svg>
-          <svg
-            id="ilce-map"
-            class="map-svg hidden"
-            viewBox="0 0 800 380"
-            role="img"
-            aria-label="Türkiye ilçe haritası"
+            aria-label="Türkiye il haritası; ilçe haritasına yakınlaşmak için bir ile tıklayın"
           ></svg>
           <div id="tooltip" class="tooltip" hidden></div>
         </div>

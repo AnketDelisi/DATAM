@@ -97,6 +97,7 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 
 - [x] Hemicycle, party table, threshold and alliance toggles.
 - [x] Province/ilçe maps and 2023 backtest.
+- [x] Province click → smoothly zoomed ilçe drilldown.
 
 ### M3 — polls + historical house effects (done)
 

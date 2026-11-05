@@ -1,6 +1,6 @@
 import { allocateDistricts } from "./modules/allocate.js";
 import { createHemicycle } from "./modules/hemicycle.js";
-import { createMap } from "./modules/map.js";
+import { createDrillMap } from "./modules/drill_map.js";
 import {
   clamp,
   formatInt,
@@ -38,12 +38,11 @@ const state = {
   threshold: 0.07,
   useAlliances: true,
   selectedKey: null,
-  mapMode: "province",
+  drilledProvince: null,
   provinces: new Map(),
   ilce: new Map(),
   result: null,
   map: null,
-  ilceMapView: null,
   hemicycle: null,
 };
 
@@ -128,22 +127,19 @@ async function main() {
   buildLegend();
   setGeneratedAt();
 
-  state.map = createMap($("map"), geojson, data.parties, {
-    onHover: handleProvinceHover,
-    onSelect: handleProvinceSelect,
-  });
-  state.ilceMapView = createMap($("ilce-map"), ilceGeo, data.parties, {
-    keyFn: (feature) => feature.properties.shapeID,
-    onHover: handleIlceHover,
-    onSelect: handleIlceSelect,
+  state.map = createDrillMap($("map"), geojson, ilceGeo, data.parties, {
+    onProvinceHover: handleProvinceHover,
+    onIlceHover: handleIlceHover,
+    onProvinceSelect: handleProvinceSelect,
+    onIlceSelect: handleIlceSelect,
+    onZoomChange: handleZoomChange,
   });
   state.hemicycle = createHemicycle($("hemicycle"), 600);
 
   $("reset").addEventListener("click", resetTo2023);
   $("apply-polls").addEventListener("click", applyPollAverage);
   $("copy-link").addEventListener("click", copyLink);
-  $("map-province").addEventListener("click", () => setMapMode("province"));
-  $("map-ilce").addEventListener("click", () => setMapMode("ilce"));
+  $("map-back").addEventListener("click", () => state.map.reset());
   $("threshold").addEventListener("input", (event) => {
     const value = Number(event.target.value);
     if (Number.isFinite(value)) state.threshold = clamp(value, 0, 15) / 100;
@@ -164,7 +160,6 @@ async function main() {
     render();
   });
 
-  setMapMode(state.mapMode);
   render();
 }
 
@@ -188,8 +183,6 @@ function readUrl() {
     const value = Number(params.get("ds"));
     if (Number.isFinite(value)) state.swingStrength = clamp(value, 0, 100) / 100;
   }
-  const mode = params.get("m");
-  if (mode === "province" || mode === "ilce") state.mapMode = mode;
 }
 
 function buildElectionControl() {
@@ -205,6 +198,7 @@ function buildElectionControl() {
     state.year = select.value;
     state.election = state.elections[state.year] || state.elections["2023"];
     state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
+    state.map?.reset();
     updateElectionNote();
     render();
   });
@@ -457,17 +451,15 @@ function render() {
   state.ilce = ilce;
 
   state.hemicycle.update(result.seatsByParty, state.data.parties);
-  state.map.update(provinces);
-  state.ilceMapView.update(ilce);
-  state.map.setSelected(state.mapMode === "province" ? state.selectedKey : null);
-  state.ilceMapView.setSelected(state.mapMode === "ilce" ? state.selectedKey : null);
+  state.map.update(provinces, ilce);
+  state.map.setSelected(state.selectedKey);
   updateTable(result);
   updateSummary(result);
   updateOtherShare();
   updateUrl();
   if (state.selectedKey) {
-    if (state.mapMode === "province") showProvinceDetail(state.selectedKey);
-    else showIlceDetail(state.selectedKey);
+    if (state.ilce.has(state.selectedKey)) showIlceDetail(state.selectedKey);
+    else showProvinceDetail(state.selectedKey);
   }
 }
 
@@ -541,7 +533,6 @@ function updateUrl() {
   for (const id of MAIN_ORDER) params.set(id.toLowerCase(), state.shares[id].toFixed(1));
   params.set("t", (state.threshold * 100).toFixed(1));
   params.set("a", state.useAlliances ? "1" : "0");
-  params.set("m", state.mapMode);
   params.set("year", state.year);
   params.set("ds", String(Math.round(state.swingStrength * 100)));
   try {
@@ -640,37 +631,34 @@ function handleIlceHover(feature, event) {
 }
 
 function handleProvinceSelect(feature) {
-  if (!feature || state.mapMode !== "province") return;
+  if (!feature) return;
   const key = normalizeName(feature.properties.shapeName);
-  state.selectedKey = state.selectedKey === key ? null : key;
-  state.map.setSelected(state.selectedKey);
-  state.ilceMapView.setSelected(null);
-  if (state.selectedKey) showProvinceDetail(state.selectedKey);
-  else $("province-detail").innerHTML = "";
+  state.selectedKey = key;
+  state.map.setSelected(key);
+  showProvinceDetail(key);
 }
 
 function handleIlceSelect(feature) {
-  if (!feature || state.mapMode !== "ilce") return;
+  if (!feature) return;
   const key = feature.properties.shapeID;
-  state.selectedKey = state.selectedKey === key ? null : key;
-  state.ilceMapView.setSelected(state.selectedKey);
-  state.map.setSelected(null);
-  if (state.selectedKey) showIlceDetail(state.selectedKey);
-  else $("province-detail").innerHTML = "";
+  state.selectedKey = key;
+  state.map.setSelected(key);
+  showIlceDetail(key);
 }
 
-function setMapMode(mode) {
-  state.mapMode = mode;
-  state.selectedKey = null;
-  if (state.map) state.map.setSelected(null);
-  if (state.ilceMapView) state.ilceMapView.setSelected(null);
-  $("map").classList.toggle("hidden", mode !== "province");
-  $("ilce-map").classList.toggle("hidden", mode !== "ilce");
-  $("map-province").classList.toggle("active", mode === "province");
-  $("map-ilce").classList.toggle("active", mode === "ilce");
-  $("province-detail").innerHTML = "";
-  hideTooltip();
-  updateUrl();
+function handleZoomChange(key) {
+  state.drilledProvince = key;
+  const back = $("map-back");
+  const breadcrumb = $("map-breadcrumb");
+  back.hidden = !key;
+  breadcrumb.textContent = key
+    ? `Türkiye / ${state.geoDisplay.get(key) || key}`
+    : "Türkiye";
+  if (!key) {
+    state.selectedKey = null;
+    $("province-detail").innerHTML = "";
+    hideTooltip();
+  }
 }
 
 function showProvinceDetail(key) {
@@ -755,8 +743,7 @@ function applyPollAverage() {
   normalizeShares();
   syncControls();
   state.selectedKey = null;
-  state.map.setSelected(null);
-  state.ilceMapView.setSelected(null);
+  state.map.reset();
   $("province-detail").innerHTML = "";
   hideTooltip();
   render();
@@ -772,10 +759,10 @@ function resetTo2023() {
   state.threshold = state.data.meta.threshold;
   state.useAlliances = true;
   state.selectedKey = null;
+  state.map.reset();
   $("threshold").value = (state.threshold * 100).toFixed(1);
   $("alliances").checked = true;
   state.map.setSelected(null);
-  state.ilceMapView.setSelected(null);
   $("province-detail").innerHTML = "";
   hideTooltip();
   syncControls();
