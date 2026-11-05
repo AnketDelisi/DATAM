@@ -41,10 +41,10 @@ export const REGION_LABELS = {
   Marmara: "Marmara",
   Ege: "Ege",
   Akdeniz: "Akdeniz",
-  "Ic Anadolu": "?? Anadolu",
+  "Ic Anadolu": "İç Anadolu",
   Karadeniz: "Karadeniz",
-  "Dogu Anadolu": "Do?u Anadolu",
-  "Guneydogu Anadolu": "G?neydo?u Anadolu",
+  "Dogu Anadolu": "Doğu Anadolu",
+  "Guneydogu Anadolu": "Güneydoğu Anadolu",
 };
 
 export function formatRegion(key) {

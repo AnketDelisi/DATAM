@@ -17,6 +17,8 @@ export function createDrillMap(
   } = {}
 ) {
   const d3 = globalThis.d3;
+  const reduceMotion = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const duration = (value) => (reduceMotion ? 0 : value);
   const root = d3.select(svg);
   root.selectAll("*").remove();
 
@@ -125,13 +127,13 @@ export function createDrillMap(
       .style("pointer-events", "all")
       .style("opacity", 0)
       .transition()
-      .duration(450)
+      .duration(duration(450))
       .style("opacity", 1);
-    provinceLayer.transition().duration(500).style("opacity", 0);
+    provinceLayer.transition().duration(duration(500)).style("opacity", 0);
     provincePaths.style("pointer-events", "none");
     zoomLayer
       .transition()
-      .duration(700)
+      .duration(duration(700))
       .ease(d3.easeCubicInOut)
       .attr("transform", `translate(${tx},${ty}) scale(${scale})`);
     onZoomChange?.(key);
@@ -140,11 +142,11 @@ export function createDrillMap(
   function reset() {
     drilled = null;
     selected = null;
-    provinceLayer.transition().duration(450).style("opacity", 1);
+    provinceLayer.transition().duration(duration(450)).style("opacity", 1);
     provincePaths.style("pointer-events", "all");
     ilceLayer
       .transition()
-      .duration(300)
+      .duration(duration(300))
       .style("opacity", 0)
       .on("end", () => {
         ilceLayer.style("display", "none").style("pointer-events", "none");
@@ -152,7 +154,7 @@ export function createDrillMap(
       });
     zoomLayer
       .transition()
-      .duration(650)
+      .duration(duration(650))
       .ease(d3.easeCubicInOut)
       .attr("transform", "translate(0,0) scale(1)");
     onZoomChange?.(null);

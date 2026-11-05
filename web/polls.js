@@ -606,8 +606,8 @@ function updatePollTable(race, rawPolls, adjustedPolls) {
       if (!raw && !adjusted) return "";
       const cells = race.entities
         .map((id) => {
-          const rawCell = raw?.[id] == null ? "?" : formatPct(raw[id] * 100);
-          const adjustedCell = adjusted?.[id] == null ? "?" : formatPct(adjusted[id] * 100);
+          const rawCell = raw?.[id] == null ? "–" : formatPct(raw[id] * 100);
+          const adjustedCell = adjusted?.[id] == null ? "–" : formatPct(adjusted[id] * 100);
           return `<td class="num">${rawCell}</td><td class="num adjusted">${adjustedCell}</td>`;
         })
         .join("");
@@ -616,7 +616,7 @@ function updatePollTable(race, rawPolls, adjustedPolls) {
           rawPoll.field_end
         )}</td>
         <td>${escapeHtml(rawPoll.pollster)}</td>
-        <td class="num">${rawPoll.sample_size == null ? "?" : formatInt(rawPoll.sample_size)}</td>
+        <td class="num">${rawPoll.sample_size == null ? "–" : formatInt(rawPoll.sample_size)}</td>
         ${cells}
       </tr>`;
     })
