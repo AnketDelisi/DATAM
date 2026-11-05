@@ -38,49 +38,9 @@ test("recency weighting favors the newer poll", () => {
   ];
   const result = aggregateAt(polls, ["A", "B"], "2023-05-10", {
     halfLifeDays: 7,
-    houseEffects: false,
   });
   assert.ok(result.shares.A > 0.5);
   assert.ok(result.shares.B < 0.5);
-});
-
-test("house effects shrink a persistent pollster bias", () => {
-  const polls = [
-    {
-      pollster: "Fair",
-      field_end: "2023-04-30",
-      sample_size: 1000,
-      results: { A: 0.4, B: 0.6 },
-    },
-    {
-      pollster: "Fair",
-      field_end: "2023-05-01",
-      sample_size: 1000,
-      results: { A: 0.4, B: 0.6 },
-    },
-    {
-      pollster: "Bias",
-      field_end: "2023-05-02",
-      sample_size: 1000,
-      results: { A: 0.6, B: 0.4 },
-    },
-    {
-      pollster: "Bias",
-      field_end: "2023-05-03",
-      sample_size: 1000,
-      results: { A: 0.6, B: 0.4 },
-    },
-  ];
-  const plain = aggregateAt(polls, ["A", "B"], "2023-05-03", {
-    halfLifeDays: 30,
-    houseEffects: false,
-  });
-  const adjusted = aggregateAt(polls, ["A", "B"], "2023-05-03", {
-    halfLifeDays: 30,
-    houseEffects: true,
-  });
-  assert.ok(adjusted.shares.A < plain.shares.A);
-  assert.ok(adjusted.effects.Bias.effects.A > 0);
 });
 
 test("2023 presidential first-round aggregate is in the expected range", () => {
@@ -90,7 +50,6 @@ test("2023 presidential first-round aggregate is in the expected range", () => {
   const polls = data.datasets.president.polls.filter((poll) => poll.round === 1);
   const result = aggregateAt(polls, ["A", "B", "C", "D"], "2023-05-14", {
     halfLifeDays: 28,
-    houseEffects: false,
     defaultSample: medianSample(polls),
   });
   assert.equal(result.nPolls, 82);
@@ -107,7 +66,6 @@ test("2023 runoff aggregate is in the expected range", () => {
   const polls = data.datasets.president.polls.filter((poll) => poll.round === 2);
   const result = aggregateAt(polls, ["A", "B"], "2023-05-28", {
     halfLifeDays: 28,
-    houseEffects: false,
     defaultSample: medianSample(polls),
   });
   assert.equal(result.nPolls, 14);
@@ -128,7 +86,6 @@ test("2023 parliamentary aggregate uses the main parties", () => {
   const entities = [...main, "OTHER"];
   const result = aggregateAt(polls, entities, "2023-05-14", {
     halfLifeDays: 28,
-    houseEffects: false,
     defaultSample: medianSample(polls),
   });
   assert.equal(result.nPolls, 49);

@@ -1,10 +1,4 @@
-import {
-  applyHouseEffects,
-  estimateHouseEffects,
-  medianSample,
-  normalizePoll,
-  weightedAverage,
-} from "./aggregate.js";
+import { medianSample, normalizePoll, weightedAverage } from "./aggregate.js";
 
 function mulberry32(seed) {
   let value = seed >>> 0;
@@ -50,17 +44,7 @@ export function bootstrapAggregate(
   const filtered = polls.filter((poll) => poll.field_end <= cutoff);
   const defaultSample = options.defaultSample || medianSample(filtered);
   const normalize = options.normalize !== false;
-  const houseEffects = options.houseEffects && normalize;
-
-  let effects = null;
-  let basePolls = filtered;
-  if (houseEffects) {
-    effects = estimateHouseEffects(filtered, entities, cutoff, {
-      halfLifeDays: options.halfLifeDays ?? 28,
-      defaultSample,
-    });
-    basePolls = applyHouseEffects(filtered, entities, effects, normalize);
-  }
+  const basePolls = filtered;
 
   const point = weightedAverage(basePolls, entities, cutoff, {
     ...options,
@@ -123,6 +107,5 @@ export function bootstrapAggregate(
     intervals,
     draws,
     nPolls: point.nPolls,
-    effects,
   };
 }

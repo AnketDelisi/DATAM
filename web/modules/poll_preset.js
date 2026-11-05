@@ -5,7 +5,6 @@ const OTHER = "OTHER";
 const OPTIONS = {
   halfLifeDays: 28,
   normalize: true,
-  houseEffects: false,
 };
 
 export function addOther(poll) {

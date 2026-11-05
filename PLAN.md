@@ -114,13 +114,14 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] Province-level demographic correlation with election shares/swing.
 - [x] Region + electorate-controlled partial correlations.
 - [x] Scatter, choropleth, and correlation-table explorer.
-- [x] Experimental demographic swing control for projections (default 60%).
+- [x] Experimental demographic swing control (default off; suggested 60% when enabled).
 - [x] Leave-one-province-out diagnostic for the 2018→2023 incumbent swing.
-- [x] 2028 projection scaffold (2023 baseline, configurable seat projection).
+- [x] 2028 scenario scaffold (2023 baseline, configurable seat projection).
 - [x] 2028 poll ingestion files and export/validation path.
 - [x] Poll table shows raw and house-effect-adjusted values side by side.
 - [ ] 2018/2024 extensions and fuller confounding diagnostics.
 - [ ] Final 2028 election calendar and official seat map.
+- [x] Browser smoke test in CI.
 - [ ] Accessibility and shareable scenario polish.
 
 ## Commands

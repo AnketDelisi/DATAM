@@ -63,8 +63,13 @@
 
         <label class="checkbox">
           <input id="house-effects" type="checkbox" />
-          Pollster etkisini düzelt
+          Tarihsel pollster etkisini uygula (deneysel)
         </label>
+        <p class="hint warn">
+          2023 backtest: 2015–2019 etkileri ham ortalamayı geçmedi
+          (parlamento 1,21'e karşı 1,17; cumhurbaşkanı 2,42'ye karşı 2,41 puan).
+          Varsayılan kapalı.
+        </p>
         <label class="checkbox">
           <input id="normalize" type="checkbox" checked />
           Payları %100’e normalize et
@@ -124,11 +129,11 @@
         <span id="poll-list-meta" class="chart-subtitle"></span>
       </div>
       <p class="hint small">
-        Her parti i?in solda ham anket, sa?da tarihsel pollster etkisi
-        uygulanm?? de?er g?sterilir. D?zeltme kapal?ysa iki s?tun ayn?d?r.
+        Her parti için solda ham anket, sağda tarihsel pollster etkisi
+        uygulanmış değer gösterilir. Düzeltme kapalıysa iki sütun aynıdır.
       </p>
       <div class="table-wrap poll-table-wrap">
-        <table class="poll-table">
+        <table class="poll-table" aria-label="Ham ve düzeltilmiş anket sonuçları">
           <thead id="poll-table-head"></thead>
           <tbody id="poll-table-body"></tbody>
         </table>

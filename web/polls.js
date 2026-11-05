@@ -261,7 +261,7 @@ function buildElectionControl() {
   select.innerHTML = Object.keys(state.elections)
     .sort()
     .map((year) => `<option value="${year}">${
-      year === "2023" ? "2023 sonucu" : `${year} projeksiyonu`
+      year === "2023" ? "2023 sonucu" : `${year} senaryosu`
     }</option>`)
     .join("");
   select.value = state.year;
@@ -282,7 +282,7 @@ function updateElectionNote() {
     (datasets.president?.polls?.length || 0) + (datasets.parliament?.polls?.length || 0) > 0;
   $("election-note").textContent =
     election.status === "projection"
-      ? `${election.year} projeksiyonu: henüz anket verisi yok; tablo boş kalır.`
+      ? `${election.year} senaryosu: henüz anket verisi yok; tablo boş kalır.`
       : "2023 anketleri; ham ve düzeltilmiş değerler birlikte gösterilir.";
   $("election-note").classList.toggle("warn", !hasPolls);
 }

@@ -3,6 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test modules/*.test.js"
+    "test": "node --test modules/*.test.js",
+    "e2e": "node e2e/smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
   }
 }

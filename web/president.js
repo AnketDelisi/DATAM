@@ -19,7 +19,8 @@ const state = {
   year: "2023",
   election: null,
   demographicSwing: null,
-  swingStrength: 0.6,
+  swingDefault: 0.6,
+  swingStrength: 0,
   candidates: [],
   byId: new Map(),
   names: {},
@@ -124,9 +125,11 @@ async function main() {
   buildCandidateControls();
   syncCandidateControls();
   $("demographic-swing").checked = state.swingStrength > 0;
-  $("swing-strength").value = Math.round(state.swingStrength * 100);
+  $("swing-strength").value = Math.round((state.swingStrength || state.swingDefault) * 100);
   $("swing-strength").disabled = state.swingStrength <= 0;
-  $("swing-strength-value").textContent = `${Math.round(state.swingStrength * 100)}%`;
+  $("swing-strength-value").textContent = state.swingStrength > 0
+    ? `${Math.round(state.swingStrength * 100)}%`
+    : "kapalı";
   buildLegend();
   setGeneratedAt();
 
@@ -184,7 +187,7 @@ function buildElectionControl() {
   select.innerHTML = Object.keys(state.elections)
     .sort()
     .map((year) => `<option value="${year}">${
-      year === "2023" ? "2023 sonucu" : `${year} projeksiyonu`
+      year === "2023" ? "2023 sonucu" : `${year} senaryosu`
     }</option>`)
     .join("");
   select.value = state.year;
@@ -205,7 +208,7 @@ function updateElectionNote() {
     (datasets.president?.polls?.length || 0) + (datasets.parliament?.polls?.length || 0) > 0;
   $("election-note").textContent =
     election.status === "projection"
-      ? `${election.year} projeksiyonu: 2023 tabanı; henüz anket verisi yok.`
+      ? `${election.year} senaryosu: 2023 tabanı; henüz anket verisi yok.`
       : "2023 resmi sonucu ve anket ortalaması.";
   $("apply-polls").disabled = !hasPolls;
   $("apply-polls").textContent = hasPolls ? "Anket ortalaması" : "Anket verisi yok";

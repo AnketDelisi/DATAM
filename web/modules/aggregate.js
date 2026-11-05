@@ -80,103 +80,19 @@ export function weightedAverage(
   return { shares, nPolls, lastPoll };
 }
 
-export function estimateHouseEffects(
-  polls,
-  entities,
-  cutoff,
-  { halfLifeDays = 28, defaultSample = 1000 } = {}
-) {
-  const filtered = polls.filter((poll) => poll.field_end <= cutoff);
-  const byPollster = new Map();
-
-  for (const poll of filtered) {
-    const others = filtered.filter(
-      (candidate) => candidate.pollster !== poll.pollster
-    );
-    const preliminary = weightedAverage(others, entities, poll.field_end, {
-      halfLifeDays,
-      normalize: true,
-      defaultSample,
-    });
-    if (preliminary.nPolls === 0) continue;
-    const shares = normalizePoll(poll, entities, true);
-    if (!shares) continue;
-    let entry = byPollster.get(poll.pollster);
-    if (!entry) {
-      entry = { n: 0, sums: {}, counts: {} };
-      byPollster.set(poll.pollster, entry);
-    }
-    entry.n += 1;
-    for (const [id, value] of Object.entries(shares)) {
-      if (preliminary.shares[id] === undefined) continue;
-      entry.sums[id] = (entry.sums[id] || 0) + (value - preliminary.shares[id]);
-      entry.counts[id] = (entry.counts[id] || 0) + 1;
-    }
-  }
-
-  const effects = {};
-  for (const [pollster, entry] of byPollster.entries()) {
-    const values = {};
-    for (const [id, sum] of Object.entries(entry.sums)) {
-      const count = entry.counts[id];
-      const mean = sum / count;
-      values[id] = mean * (count / (count + 2));
-    }
-    effects[pollster] = { n: entry.n, effects: values };
-  }
-  return effects;
-}
-
-export function applyHouseEffects(polls, entities, effects, normalize = true) {
-  return polls.map((poll) => {
-    const shares = normalizePoll(poll, entities, true);
-    if (!shares) return poll;
-    const adjustment = effects[poll.pollster]?.effects || {};
-    const adjusted = {};
-    let total = 0;
-    for (const [id, value] of Object.entries(shares)) {
-      const corrected = Math.max(0, value - (adjustment[id] || 0));
-      adjusted[id] = corrected;
-      total += corrected;
-    }
-    if (total <= 0) return poll;
-    const results = {};
-    for (const [id, value] of Object.entries(adjusted)) {
-      results[id] = normalize ? value / total : value;
-    }
-    return { ...poll, results };
-  });
-}
-
 export function aggregateAt(
   polls,
   entities,
   cutoff,
-  {
-    halfLifeDays = 28,
-    normalize = true,
-    houseEffects = false,
-    defaultSample = 1000,
-  } = {}
+  { halfLifeDays = 28, normalize = true, defaultSample = 1000 } = {}
 ) {
   const filtered = polls.filter((poll) => poll.field_end <= cutoff);
-  let adjusted = filtered;
-  let effects = null;
-
-  if (houseEffects && normalize) {
-    effects = estimateHouseEffects(filtered, entities, cutoff, {
-      halfLifeDays,
-      defaultSample,
-    });
-    adjusted = applyHouseEffects(filtered, entities, effects, normalize);
-  }
-
-  const result = weightedAverage(adjusted, entities, cutoff, {
+  const result = weightedAverage(filtered, entities, cutoff, {
     halfLifeDays,
     normalize,
     defaultSample,
   });
-  return { ...result, effects, polls: filtered };
+  return { ...result, polls: filtered };
 }
 
 export function buildTrend(

@@ -42,6 +42,12 @@ jobs:
         with:
           node-version: "20"
       - run: node --test web/modules/*.test.js
+      - run: npm ci
+        working-directory: web
+      - run: npx playwright install --with-deps chromium
+        working-directory: web
+      - run: node e2e/smoke.mjs
+        working-directory: web
 
       - uses: actions/configure-pages@v5
         with:
