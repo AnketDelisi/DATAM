@@ -1,20 +1,20 @@
 """Leave-one-province-out check for the demographic swing model.
 
-Tests whether demographics improve on a uniform province swing when predicting
-the 2018→2023 incumbent change. This is a diagnostic, not a 2028 forecast.
+Tests whether demographics improve on a uniform province swing for the
+2018→2023 incumbent and party-level changes. This is a diagnostic, not a
+2028 forecast.
 
     python pipeline/demographic_swing_backtest.py
 """
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-from pipeline.demographic_correlation import DEMOGRAPHICS
+from pipeline.demographic_correlation import DEMOGRAPHICS, SWING_OUTCOMES
 
 ROOT = Path(__file__).resolve().parent.parent
 FRAME = ROOT / "data" / "analysis" / "province_demographics.csv"
@@ -38,7 +38,7 @@ def design(frame: pd.DataFrame, region_columns: list[str]) -> np.ndarray:
     ])
 
 
-def loo_predictions(frame: pd.DataFrame) -> pd.DataFrame:
+def loo_predictions(frame: pd.DataFrame, target: str = TARGET) -> pd.DataFrame:
     region_columns = sorted(frame["region"].unique())[1:]
     rows = []
     for index in range(len(frame)):
@@ -53,14 +53,14 @@ def loo_predictions(frame: pd.DataFrame) -> pd.DataFrame:
 
         x_train = design(train_z, region_columns)
         x_test = design(test_z, region_columns)
-        beta, _, _, _ = np.linalg.lstsq(x_train, train[TARGET].to_numpy(dtype=float), rcond=None)
+        beta, _, _, _ = np.linalg.lstsq(x_train, train[target].to_numpy(dtype=float), rcond=None)
         demo_prediction = float((x_test @ beta).item())
 
         rows.append({
             "key": test.iloc[0]["key"],
             "province": test.iloc[0]["province"],
-            "actual": float(test.iloc[0][TARGET]),
-            "uniform": float(train[TARGET].mean()),
+            "actual": float(test.iloc[0][target]),
+            "uniform": float(train[target].mean()),
             "demographic": demo_prediction,
         })
     return pd.DataFrame(rows)
@@ -89,35 +89,42 @@ def score(predictions: pd.DataFrame) -> pd.DataFrame:
 
 
 def write_report(predictions: pd.DataFrame, scores: pd.DataFrame) -> None:
-    best = scores.loc[scores["mae"].idxmin()]
-    uniform = scores.loc[scores["strength"] == 0].iloc[0]
-    full = scores.loc[scores["strength"] == 1].iloc[0]
     lines = [
         "# Demographic swing: leave-one-province-out check",
         "",
-        "Target: 2018→2023 incumbent share change. Each province is held out",
-        "once; the model is fit on the other 80. `uniform` is the training mean.",
-        "`strength` blends the uniform and demographic predictions.",
+        "Each target is the 2018→2023 province-level change. Each province is",
+        "held out once; the model is fit on the other 80. `uniform` is the",
+        "training mean. `strength` blends the uniform and demographic predictions.",
         "",
-        f"- n: {len(predictions)}",
-        f"- uniform MAE: {uniform['mae']:.4f}",
-        f"- full demographic MAE: {full['mae']:.4f}",
-        f"- best strength: {best['strength']:.2f} (MAE {best['mae']:.4f})",
-        "",
-        "| strength | MAE | RMSE | correlation |",
-        "|---:|---:|---:|---:|",
     ]
-    for _, row in scores.iterrows():
-        correlation = (
-            "\u2013"
-            if not np.isfinite(row["correlation"])
-            else f"{row['correlation']:.3f}"
-        )
-        lines.append(
-            f"| {row['strength']:.2f} | {row['mae']:.4f} | "
-            f"{row['rmse']:.4f} | {correlation} |"
-        )
-    lines.append("")
+    for target in SWING_OUTCOMES:
+        target_predictions = predictions[predictions["target"] == target]
+        target_scores = scores[scores["target"] == target]
+        best = target_scores.loc[target_scores["mae"].idxmin()]
+        uniform = target_scores.loc[target_scores["strength"] == 0].iloc[0]
+        full = target_scores.loc[target_scores["strength"] == 1].iloc[0]
+        lines += [
+            f"## {target}",
+            "",
+            f"- n: {len(target_predictions)}",
+            f"- uniform MAE: {uniform['mae']:.4f}",
+            f"- full demographic MAE: {full['mae']:.4f}",
+            f"- best strength: {best['strength']:.2f} (MAE {best['mae']:.4f})",
+            "",
+            "| strength | MAE | RMSE | correlation |",
+            "|---:|---:|---:|---:|",
+        ]
+        for _, row in target_scores.iterrows():
+            correlation = (
+                "\u2013"
+                if not np.isfinite(row["correlation"])
+                else f"{row['correlation']:.3f}"
+            )
+            lines.append(
+                f"| {row['strength']:.2f} | {row['mae']:.4f} | "
+                f"{row['rmse']:.4f} | {correlation} |"
+            )
+        lines.append("")
     lines.append("This is a single-election cross-sectional check; it does not")
     lines.append("establish that the demographic tilt will improve 2028 forecasts.")
     (OUT / "demographic_swing_backtest.md").write_text(
@@ -127,13 +134,29 @@ def write_report(predictions: pd.DataFrame, scores: pd.DataFrame) -> None:
 
 def main() -> None:
     frame = pd.read_csv(FRAME)
-    predictions = loo_predictions(frame)
-    scores = score(predictions)
+    prediction_frames = []
+    score_frames = []
+    for target in SWING_OUTCOMES:
+        predictions = loo_predictions(frame, target)
+        predictions["target"] = target
+        target_scores = score(predictions)
+        target_scores["target"] = target
+        prediction_frames.append(predictions)
+        score_frames.append(target_scores)
+    predictions = pd.concat(prediction_frames, ignore_index=True)
+    scores = pd.concat(score_frames, ignore_index=True)
     predictions.to_csv(OUT / "demographic_swing_backtest.csv", index=False)
     scores.to_csv(OUT / "demographic_swing_backtest_scores.csv", index=False)
     write_report(predictions, scores)
     print(f"wrote {OUT.relative_to(ROOT)} (n={len(predictions)})")
-    print(scores.to_string(index=False))
+    for target in SWING_OUTCOMES:
+        target_scores = scores[scores["target"] == target]
+        best = target_scores.loc[target_scores["mae"].idxmin()]
+        uniform = target_scores.loc[target_scores["strength"] == 0].iloc[0]
+        print(
+            f"{target:20s} uniform {uniform['mae']:.4f} "
+            f"best {best['strength']:.2f} {best['mae']:.4f}"
+        )
 
 
 if __name__ == "__main__":

@@ -102,6 +102,17 @@ function entityMeta(race, id) {
   return race.meta.get(id) || { short: id, color: "#9e9e9e" };
 }
 
+function inkFor(hex) {
+  const value = String(hex).replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(value)) return "#fffdf8";
+  const r = parseInt(value.slice(0, 2), 16);
+  const g = parseInt(value.slice(2, 4), 16);
+  const b = parseInt(value.slice(4, 6), 16);
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.58
+    ? "#171714"
+    : "#fffdf8";
+}
+
 function addOther(poll) {
   const other = Object.entries(poll.results)
     .filter(([id, value]) => !MAIN_PARTIES.includes(id) && typeof value === "number")
@@ -587,7 +598,12 @@ function updatePollTable(race, rawPolls, adjustedPolls) {
     <th>Tarih</th>
     <th>Anket</th>
     <th>Örneklem</th>
-    ${race.entities.map((id) => `<th>${entityMeta(race, id).short}</th>`).join("")}
+    ${race.entities
+      .map((id) => {
+        const meta = entityMeta(race, id);
+        return `<th class="party-head" style="--party:${meta.color}">${meta.short}</th>`;
+      })
+      .join("")}
   </tr>`;
 
   const adjustedById = new Map(adjustedPolls.map((poll) => [poll.poll_id, poll]));
@@ -610,7 +626,7 @@ function updatePollTable(race, rawPolls, adjustedPolls) {
           const winnerClass = id === winner ? "winner" : "";
           return `<td class="num poll-cell ${winnerClass}" data-label="${escapeHtml(
             meta.short
-          )}" style="--winner:${meta.color}">
+          )}" style="--winner:${meta.color};--winner-ink:${inkFor(meta.color)}">
             <span class="poll-value"><strong>${main}</strong><span class="poll-sub">düz. ${sub}</span></span>
           </td>`;
         })

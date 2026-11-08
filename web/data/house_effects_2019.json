@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generated_at": "2026-11-05T16:04:45.733335+00:00",
-    "method": "two-level log-ratio: bloc effects, then within-bloc party residuals",
+    "generated_at": "2026-11-08T20:18:23.529213+00:00",
+    "method": "two-level log-ratio and one-level party effects; race-specific damping",
     "effect_sign": "log bias vs consensus; apply exp(-effect) to correct",
     "skipped_bloc_effects": [
       "OTHER"
@@ -55,6 +55,20 @@
       "provincial_council": 0.3,
       "local_other": 0.3
     },
+    "correction_strength": {
+      "parliamentary": 0.5,
+      "presidential_first": 1.0,
+      "presidential_runoff": 1.0,
+      "referendum": 0.0,
+      "local": 0.0
+    },
+    "correction_mode": {
+      "parliamentary": "one_level",
+      "presidential_first": "hierarchical",
+      "presidential_runoff": "hierarchical",
+      "referendum": "two_level",
+      "local": "two_level"
+    },
     "training_window": "2015-2019",
     "purpose": "2023 backtest only"
   },
@@ -87,7 +101,9 @@
         "KARAMOLLAOGLU": -0.090561,
         "YES": 0.0,
         "NO": -0.090561
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "ADA": {
       "n_polls": 3,
@@ -117,6 +133,20 @@
         "KARAMOLLAOGLU": -0.005088,
         "YES": 0.0,
         "NO": -0.005088
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.009967476231937458,
+          "CHP": -0.022493791637025553
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.011343572714749506,
+          "CHP": -0.017790548345905058
+        }
       }
     },
     "AKAM": {
@@ -157,6 +187,30 @@
         "KARAMOLLAOGLU": 0.167004,
         "YES": 0.0,
         "NO": 0.167004
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.11519899420312797,
+          "CHP": 0.014127676302334418,
+          "MHP": 0.01806715428676216,
+          "HDP_DEM": 0.062211930647240496,
+          "OTHER": -0.07448519441702872,
+          "YES": -0.1345007314154005,
+          "NO": 0.1348745896720494
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.11593147773688904,
+          "CHP": 0.016500968983539685,
+          "MHP": 0.031344540896478194,
+          "HDP_DEM": 0.05330820629378184,
+          "OTHER": -0.10828794794022568,
+          "YES": -0.14667721047194926,
+          "NO": 0.14903071442033758
+        }
       }
     },
     "ANAR": {
@@ -176,7 +230,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "AREA": {
       "n_polls": 4,
@@ -206,6 +262,22 @@
         "KARAMOLLAOGLU": 0.015383,
         "YES": 0.0,
         "NO": 0.015383
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.04357985165352868,
+          "CHP": -0.03181818163636179,
+          "OTHER": 0.026043481015700684
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.04477183216072589,
+          "CHP": -0.027774824925580463,
+          "OTHER": -0.027006529124946346
+        }
       }
     },
     "Aksoy": {
@@ -225,7 +297,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "Andy-AR": {
       "n_polls": 7,
@@ -265,6 +339,26 @@
         "KARAMOLLAOGLU": -0.00299,
         "YES": 0.0,
         "NO": -0.00299
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.0036994334349206904,
+          "CHP": 0.004070077828752864,
+          "MHP": 0.023087687834812822,
+          "HDP_DEM": -0.006829402436026741,
+          "OTHER": -0.07953683248527621
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.004455754967371523,
+          "CHP": 0.006590047565128656,
+          "MHP": 0.03769796884337998,
+          "HDP_DEM": -0.016360896997121087,
+          "OTHER": -0.1135287128972271
+        }
       }
     },
     "Ankara Analitik": {
@@ -284,7 +378,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "Argetus": {
       "n_polls": 4,
@@ -324,6 +420,26 @@
         "KARAMOLLAOGLU": -0.058122,
         "YES": 0.0,
         "NO": -0.058122
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.0030186476093850825,
+          "CHP": -0.04135386064528812,
+          "MHP": -0.015376039684419801,
+          "HDP_DEM": -0.03461977253725427,
+          "OTHER": 0.09448196178114687
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.004379960734158845,
+          "CHP": -0.036816901087335645,
+          "MHP": 0.010950172912480224,
+          "HDP_DEM": -0.05179823823773459,
+          "OTHER": 0.033429680659599254
+        }
       }
     },
     "Avrasya": {
@@ -354,6 +470,24 @@
         "KARAMOLLAOGLU": 0.121685,
         "YES": 0.0,
         "NO": 0.121685
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.030336135434580882,
+          "CHP": 0.15828126239709658,
+          "OTHER": -0.16031553900278345,
+          "IYI": 0.0498860745252658
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.029977294138446818,
+          "CHP": 0.15953726006965416,
+          "OTHER": -0.17576578435394336,
+          "IYI": 0.1716710387778716
+        }
       }
     },
     "BETİMAR": {
@@ -373,7 +507,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "Benenson SG": {
       "n_polls": 1,
@@ -392,7 +528,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "Denge": {
       "n_polls": 6,
@@ -436,6 +574,28 @@
         "KARAMOLLAOGLU": 0.005516,
         "YES": 0.0,
         "NO": 0.005516
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.019622194393807427,
+          "CHP": 0.011355361608091682,
+          "MHP": -0.03153834413725417,
+          "HDP_DEM": -0.01655992411812703,
+          "SP": 0.29992485826472925,
+          "OTHER": -0.14297706540268612
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.018650761221158378,
+          "CHP": 0.014587821887239002,
+          "MHP": -0.012764142390238084,
+          "HDP_DEM": -0.02880411124964316,
+          "SP": 0.632543950380849,
+          "OTHER": -0.18779661445696205
+        }
       }
     },
     "EMAX": {
@@ -466,6 +626,22 @@
         "KARAMOLLAOGLU": -0.089435,
         "YES": 0.0,
         "NO": -0.089435
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.0017647070621300866,
+          "CHP": -0.097098682988218,
+          "OTHER": 0.10165599442546776
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.0026151479552029046,
+          "CHP": -0.09458743208407404,
+          "OTHER": 0.06786335366401261
+        }
       }
     },
     "Ethno-Forschung Germany": {
@@ -485,7 +661,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "GENAR": {
       "n_polls": 6,
@@ -525,6 +703,30 @@
         "KARAMOLLAOGLU": -0.051648,
         "YES": 0.0,
         "NO": -0.051648
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.0353421742100955,
+          "CHP": -0.03882075951530916,
+          "MHP": -0.07016351231489595,
+          "HDP_DEM": -0.07008869366067486,
+          "OTHER": 0.1091082987855252,
+          "YES": 0.03405228001999855,
+          "NO": -0.03376353704182553
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.03670150007644432,
+          "CHP": -0.034300732248714424,
+          "MHP": -0.04383799424295229,
+          "HDP_DEM": -0.08711789776608708,
+          "OTHER": 0.04829846439288388,
+          "YES": 0.01701441360204204,
+          "NO": -0.01393676656953257
+        }
       }
     },
     "Gezici": {
@@ -575,6 +777,44 @@
         "KARAMOLLAOGLU": -0.326649,
         "YES": 0.0,
         "NO": 0.019049
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.06956218619078951,
+          "CHP": 0.08543126911080107,
+          "MHP": 0.1611770809983497,
+          "HDP_DEM": 0.005085116262358028,
+          "OTHER": -0.249036903051348,
+          "SP": 0.6891327623521025,
+          "YES": -0.11431353389211703,
+          "NO": 0.1364568826202642,
+          "ERDOGAN": 0.1228104663163039,
+          "INCE_2018": 0.17051169969025975,
+          "AKSENER": 0.09941888224244194,
+          "DEMIRTAS": 0.10404441652223687,
+          "KARAMOLLAOGLU": -0.3723035944027213,
+          "PERINCEK": 0.009219576634787596
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.06934506083973488,
+          "CHP": 0.0861880272448884,
+          "MHP": 0.16709296463580564,
+          "HDP_DEM": 0.0012808729910188804,
+          "OTHER": -0.25934759746096103,
+          "SP": 0.7,
+          "YES": -0.12510585907238353,
+          "NO": 0.14884338036021147,
+          "ERDOGAN": 0.07078869781806249,
+          "INCE_2018": 0.14704278088704387,
+          "AKSENER": 0.12901578815770887,
+          "DEMIRTAS": 0.10832485672495461,
+          "KARAMOLLAOGLU": -0.279191856543097,
+          "PERINCEK": -0.18578183600609766
+        }
       }
     },
     "KONDA": {
@@ -615,6 +855,26 @@
         "KARAMOLLAOGLU": -0.032027,
         "YES": 0.0,
         "NO": -0.032027
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.05692003049693649,
+          "CHP": -0.009239590094656677,
+          "MHP": -0.0517413104286044,
+          "HDP_DEM": 0.011951608865830875,
+          "OTHER": 0.10886774845813177
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.057600650903360064,
+          "CHP": -0.006971775644764,
+          "MHP": -0.03858371943502861,
+          "HDP_DEM": 0.0033869630982018284,
+          "OTHER": 0.0783459142499657
+        }
       }
     },
     "KamuAR": {
@@ -659,6 +919,28 @@
         "KARAMOLLAOGLU": 0.078746,
         "YES": 0.0,
         "NO": 0.078746
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.1679290408922034,
+          "CHP": -0.027788662754412143,
+          "MHP": 0.15104763355351503,
+          "HDP_DEM": -0.2149317708013982,
+          "SP": 0.5776868851699952,
+          "OTHER": -0.06478216160841045
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.16890410443807471,
+          "CHP": -0.02455330778685575,
+          "MHP": 0.16983056826685644,
+          "HDP_DEM": -0.22731499696134266,
+          "SP": 0.7,
+          "OTHER": -0.10892659224333802
+        }
       }
     },
     "Konsensus": {
@@ -699,6 +981,30 @@
         "KARAMOLLAOGLU": 0.075043,
         "YES": 0.0,
         "NO": 0.075043
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.1470487512999418,
+          "CHP": 0.20174640463737695,
+          "MHP": 0.06435418207615579,
+          "HDP_DEM": 0.07534121715341066,
+          "OTHER": -0.22002296203811086,
+          "YES": -0.02744137721592185,
+          "NO": 0.02764050666136482
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.14600713486465344,
+          "CHP": 0.20517663641544392,
+          "MHP": 0.08346762548903273,
+          "HDP_DEM": 0.06219494972338992,
+          "OTHER": -0.2653406282644393,
+          "YES": -0.04447880587313167,
+          "NO": 0.047459092393966694
+        }
       }
     },
     "Kurd-Tek": {
@@ -718,7 +1024,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "LRC": {
       "n_polls": 1,
@@ -737,7 +1045,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "MAK": {
       "n_polls": 15,
@@ -781,6 +1091,32 @@
         "KARAMOLLAOGLU": -0.06566,
         "YES": 0.0,
         "NO": -0.06566
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.016259515208830233,
+          "CHP": -0.015365017947044724,
+          "MHP": -0.0353671640721045,
+          "HDP_DEM": -0.13801402735731502,
+          "SP": 0.5275012244634529,
+          "OTHER": -0.15202133210997573,
+          "YES": 0.0717570679595462,
+          "NO": -0.07144363637523886
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.015655454279836722,
+          "CHP": -0.013375741879425624,
+          "MHP": -0.024227079497030263,
+          "HDP_DEM": -0.1456270750309353,
+          "SP": 0.7,
+          "OTHER": -0.18028588169196497,
+          "YES": 0.05471959200682683,
+          "NO": -0.05161513026393846
+        }
       }
     },
     "Mediar": {
@@ -829,6 +1165,40 @@
         "KARAMOLLAOGLU": 0.423428,
         "YES": 0.0,
         "NO": 0.275356
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "CHP": -0.06313416833244259,
+          "IYI": 0.42829040571774996,
+          "HDP_DEM": -0.0404049764311332,
+          "MHP": -0.2588875112290566,
+          "SP": 0.6181919400202721,
+          "AKP": -0.07043937596672446,
+          "OTHER": -0.41604135715259843,
+          "ERDOGAN": -0.15301944530121434,
+          "INCE_2018": -0.14743018558492377,
+          "AKSENER": -0.02198543271916736,
+          "DEMIRTAS": -0.005353332137548725,
+          "KARAMOLLAOGLU": 0.1310449301350704
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "CHP": -0.061076685361783276,
+          "IYI": 0.529786580533168,
+          "HDP_DEM": -0.054574189841811796,
+          "MHP": -0.23254292954846184,
+          "SP": 0.7,
+          "AKP": -0.07112895009371799,
+          "OTHER": -0.45023197774283685,
+          "ERDOGAN": -0.20508512011628643,
+          "INCE_2018": -0.17095362688788127,
+          "AKSENER": 0.007700962566966604,
+          "DEMIRTAS": -0.001072651589028313,
+          "KARAMOLLAOGLU": 0.2224995402794685
+        }
       }
     },
     "MetroPOLL": {
@@ -873,6 +1243,28 @@
         "KARAMOLLAOGLU": 0.035864,
         "YES": 0.0,
         "NO": 0.035864
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.0065484504192313015,
+          "CHP": 0.025228700837565416,
+          "MHP": 0.09251895886428155,
+          "HDP_DEM": 0.06321581195621016,
+          "SP": 0.520111200841588,
+          "OTHER": -0.38486924658151395
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.006113435922741672,
+          "CHP": 0.02667212596561359,
+          "MHP": 0.10083350898785781,
+          "HDP_DEM": 0.05753744393167476,
+          "SP": 0.7,
+          "OTHER": -0.40422651885820166
+        }
       }
     },
     "NET": {
@@ -892,7 +1284,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "NETAR": {
       "n_polls": 1,
@@ -911,7 +1305,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "ORC": {
       "n_polls": 41,
@@ -955,6 +1351,32 @@
         "KARAMOLLAOGLU": -0.191963,
         "YES": 0.0,
         "NO": -0.191963
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.04272320831436636,
+          "CHP": -0.06759690244314687,
+          "MHP": 0.20264335902576452,
+          "HDP_DEM": -0.17637704092925113,
+          "OTHER": -0.04056432900787898,
+          "YES": 0.07227294609048233,
+          "NO": -0.07130426751131458,
+          "IYI": -0.1108695848694141
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.04252159478346582,
+          "CHP": -0.06688104287883524,
+          "MHP": 0.20852900404443697,
+          "HDP_DEM": -0.18016231990568998,
+          "OTHER": -0.049592258121413366,
+          "YES": 0.060103253651318814,
+          "NO": -0.05713358854852741,
+          "IYI": -0.027796497846483692
+        }
       }
     },
     "Optimar": {
@@ -989,6 +1411,22 @@
         "KARAMOLLAOGLU": -0.051877,
         "YES": 0.0,
         "NO": -0.051877
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.06896662800907033,
+          "CHP": 0.04493969447960359,
+          "OTHER": -0.1391381969684727
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.06793010043589094,
+          "CHP": 0.048365326283023855,
+          "OTHER": -0.20498034889252417
+        }
       }
     },
     "Perspektif": {
@@ -1029,6 +1467,26 @@
         "KARAMOLLAOGLU": 0.06044,
         "YES": 0.0,
         "NO": 0.06044
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.121640710527166,
+          "CHP": -0.046582661373945865,
+          "MHP": -0.036276318682884785,
+          "HDP_DEM": -0.07012222609789533,
+          "OTHER": 0.1361986969633974
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.12261361301083268,
+          "CHP": -0.043349866050265244,
+          "MHP": -0.017505276870598843,
+          "HDP_DEM": -0.082321468309937,
+          "OTHER": 0.09270468839066764
+        }
       }
     },
     "Piar": {
@@ -1075,6 +1533,30 @@
         "KARAMOLLAOGLU": 0.209508,
         "YES": 0.0,
         "NO": 0.209508
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.1116564613192515,
+          "CHP": -0.03310901705213626,
+          "IYI": 0.46558185945928815,
+          "HDP_DEM": 0.24191846387995003,
+          "MHP": -0.06074763111964253,
+          "OTHER": -0.30487118500140986,
+          "SP": 0.7
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.11212782647682577,
+          "CHP": -0.03155829543323596,
+          "IYI": 0.5517582095869318,
+          "HDP_DEM": 0.22904849484576917,
+          "MHP": -0.03955230385919391,
+          "OTHER": -0.32464559665886517,
+          "SP": 0.7
+        }
       }
     },
     "Politics": {
@@ -1094,7 +1576,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "Pollmark": {
       "n_polls": 5,
@@ -1134,6 +1618,26 @@
         "KARAMOLLAOGLU": -0.00414,
         "YES": 0.0,
         "NO": -0.00414
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.019350369475585064,
+          "CHP": -0.03537430016790987,
+          "MHP": -0.03615667669569846,
+          "HDP_DEM": -0.05555086967697058,
+          "OTHER": 0.14205284740435606
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.020345066981712866,
+          "CHP": -0.03188304103187288,
+          "MHP": -0.009824921572698125,
+          "HDP_DEM": -0.07282412483074006,
+          "OTHER": 0.09107243811745497
+        }
       }
     },
     "Qriously": {
@@ -1153,7 +1657,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "REMRES": {
       "n_polls": 7,
@@ -1195,6 +1701,28 @@
         "KARAMOLLAOGLU": 0.592752,
         "YES": 0.0,
         "NO": 0.248248
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "ERDOGAN": -0.13332660101675886,
+          "INCE_2018": -0.04466356523181824,
+          "AKSENER": 0.11348012384676161,
+          "DEMIRTAS": 0.07229098998816541,
+          "KARAMOLLAOGLU": 0.5514955087477447,
+          "PERINCEK": -0.5338702276909199
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "ERDOGAN": -0.17049178041730914,
+          "INCE_2018": -0.06144147515453749,
+          "AKSENER": 0.1346042130147381,
+          "DEMIRTAS": 0.07534862127438473,
+          "KARAMOLLAOGLU": 0.6168158587150421,
+          "PERINCEK": -0.6698698395366289
+        }
       }
     },
     "SAMER": {
@@ -1214,7 +1742,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "SAROS": {
       "n_polls": 2,
@@ -1233,7 +1763,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "SONAR": {
       "n_polls": 14,
@@ -1279,6 +1811,40 @@
         "KARAMOLLAOGLU": 0.210366,
         "YES": 0.0,
         "NO": 0.092922
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.05111902993484829,
+          "CHP": 0.03495070783742943,
+          "MHP": 0.10508358596501283,
+          "HDP_DEM": -0.022655546317221907,
+          "OTHER": -0.12196475368365445,
+          "YES": -0.04743079019147189,
+          "NO": 0.04769931974676402,
+          "ERDOGAN": -0.14730336353078016,
+          "INCE_2018": -0.12516083982381165,
+          "AKSENER": -0.02994748364998858,
+          "DEMIRTAS": -0.17023550126465425,
+          "KARAMOLLAOGLU": 0.09841335910306928
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": -0.051875972395282126,
+          "CHP": 0.0374698970408221,
+          "MHP": 0.11970222274276392,
+          "HDP_DEM": -0.03220785325152627,
+          "OTHER": -0.15735887235810958,
+          "YES": -0.06162601940710169,
+          "NO": 0.06421370210396213,
+          "ERDOGAN": -0.1993817891713913,
+          "INCE_2018": -0.1486797597600092,
+          "AKSENER": -0.00029638155093114626,
+          "DEMIRTAS": -0.16594786740617765,
+          "KARAMOLLAOGLU": 0.1899191615984441
+        }
       }
     },
     "TAVAK": {
@@ -1298,7 +1864,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "THEMİS": {
       "n_polls": 2,
@@ -1317,7 +1885,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "Themis": {
       "n_polls": 1,
@@ -1336,7 +1906,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "TÜSİAR": {
       "n_polls": 4,
@@ -1376,6 +1948,26 @@
         "KARAMOLLAOGLU": -0.066561,
         "YES": 0.0,
         "NO": -0.066561
+      },
+      "one_level_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.07636094098681791,
+          "CHP": 0.028517836103799876,
+          "MHP": 0.004113765370685388,
+          "HDP_DEM": -0.12007819496060629,
+          "OTHER": -0.08376347235703234
+        }
+      },
+      "hierarchical_effects": {
+        "bloc_effects": {},
+        "party_effects": {
+          "AKP": 0.07499926100042664,
+          "CHP": 0.033051943881815926,
+          "MHP": 0.03048894306117432,
+          "HDP_DEM": -0.13779165244178854,
+          "OTHER": -0.14666785740036586
+        }
       }
     },
     "Varyans": {
@@ -1395,7 +1987,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "Vera": {
       "n_polls": 2,
@@ -1414,7 +2008,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "İstanbul Ekonomi": {
       "n_polls": 1,
@@ -1433,7 +2029,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     },
     "İvem": {
       "n_polls": 2,
@@ -1452,7 +2050,9 @@
         "YRP": 0.0,
         "ERDOGAN": 0.0,
         "YES": 0.0
-      }
+      },
+      "one_level_effects": {},
+      "hierarchical_effects": {}
     }
   }
 }

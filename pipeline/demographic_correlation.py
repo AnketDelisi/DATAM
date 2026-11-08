@@ -24,6 +24,7 @@ OUT = ROOT / "data" / "analysis"
 TUIK = ROOT / "data" / "tuik_2023.csv"
 ACTUALS = ROOT / "data" / "actuals_2023.csv"
 PRIOR = ROOT / "data" / "prior_2018.csv"
+PRIOR_PARTIES = ROOT / "data" / "2018_party_shares.csv"
 PARLIAMENT = ROOT / "web" / "data" / "parliament_2023.json"
 WEB_OUT = ROOT / "web" / "data" / "demographics.json"
 REGIONS = ROOT / "config" / "regions.yaml"
@@ -50,13 +51,16 @@ PARTY_IDS = {
     "P8": "BBP",
 }
 
+PARTY_SWINGS = ["AKP", "CHP", "MHP", "IYI", "HDP_DEM"]
+SWING_OUTCOMES = ["incumbent_swing", *(f"{party}_swing" for party in PARTY_SWINGS)]
+
 OUTCOMES = [
     "erdogan",
     "kilicdaroglu",
     "ogan",
     "ince",
     "turnout",
-    "incumbent_swing",
+    *SWING_OUTCOMES,
     "AKP",
     "CHP",
     "MHP",
@@ -151,6 +155,13 @@ def load_parliament() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def load_prior_parties() -> pd.DataFrame:
+    frame = pd.read_csv(PRIOR_PARTIES)
+    return frame[["key", *PARTY_SWINGS]].rename(
+        columns={party: f"{party}_2018" for party in PARTY_SWINGS}
+    )
+
+
 def build_dataset() -> pd.DataFrame:
     actuals = pd.read_csv(ACTUALS)
     actuals["key"] = actuals["province"].map(normalize_province)
@@ -161,10 +172,13 @@ def build_dataset() -> pd.DataFrame:
 
     frame = actuals.merge(prior, on="key", how="left", validate="one_to_one")
     frame = frame.merge(load_parliament(), on="key", how="left", validate="one_to_one")
+    frame = frame.merge(load_prior_parties(), on="key", how="left", validate="one_to_one")
     frame = frame.merge(load_demographics(), on="key", how="left", validate="one_to_one")
     regions = load_regions()
     frame["region"] = frame["key"].map(regions)
     frame["incumbent_swing"] = frame["erdogan"] - frame["incumbent_share"]
+    for party in PARTY_SWINGS:
+        frame[f"{party}_swing"] = frame[party] - frame[f"{party}_2018"]
 
     missing = frame[DEMOGRAPHICS + OUTCOMES + ["region"]].isna().sum()
     missing = missing[missing > 0]

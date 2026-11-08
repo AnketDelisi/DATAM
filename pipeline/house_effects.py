@@ -84,6 +84,8 @@ class Model:
         self.local_bloc_only = bool(he_cfg.get("local_bloc_only", True))
         self.election_weights = he_cfg.get("election_type_weights", {})
         self.race_weights = he_cfg.get("race_type_weights", {})
+        self.correction_strength = he_cfg.get("correction_strength", {})
+        self.correction_mode = he_cfg.get("correction_mode", {})
 
         self.bloc_of = {
             party_id: party["bloc"]
@@ -312,11 +314,19 @@ def load_polls() -> list[dict]:
     return polls
 
 
-def payload_for_web(effects: dict, polls: list[dict], model: Model) -> dict:
+def payload_for_web(effects: dict, polls: list[dict], model: Model,
+                    one_level: dict | None = None,
+                    hierarchical: dict | None = None) -> dict:
+    if one_level is not None:
+        for pollster, effect in effects.items():
+            effect["one_level_effects"] = one_level.get(pollster, {})
+    if hierarchical is not None:
+        for pollster, effect in effects.items():
+            effect["hierarchical_effects"] = hierarchical.get(pollster, {})
     return {
         "meta": {
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "method": "two-level log-ratio: bloc effects, then within-bloc party residuals",
+            "method": "two-level log-ratio and one-level party effects; race-specific damping",
             "effect_sign": "log bias vs consensus; apply exp(-effect) to correct",
             "skipped_bloc_effects": sorted(SKIP_BLOC_EFFECTS),
             "reference_bloc": REFERENCE_BLOC,
@@ -330,6 +340,8 @@ def payload_for_web(effects: dict, polls: list[dict], model: Model) -> dict:
             "bloc_of": model.bloc_of,
             "election_type_weights": model.election_weights,
             "race_type_weights": model.race_weights,
+            "correction_strength": model.correction_strength,
+            "correction_mode": model.correction_mode,
         },
         "pollsters": effects,
     }
@@ -427,6 +439,64 @@ def fit_one_level(model: Model) -> dict:
     return output
 
 
+def fit_hierarchical_one_level(model: Model) -> dict:
+    records: dict[str, dict[str, list[tuple[float, float]]]] = defaultdict(lambda: defaultdict(list))
+    for poll in model.polls:
+        parties = model.party_shares(poll)
+        consensus = model.consensus(poll)
+        if not parties or not consensus:
+            continue
+        consensus_parties = consensus[0]
+        common = [
+            key for key in parties
+            if key in consensus_parties
+            and parties[key] > 0
+            and consensus_parties[key] > 0
+        ]
+        if len(common) < 2:
+            continue
+        weight = model.poll_weight(poll)
+        log_p = {key: math.log(parties[key]) for key in common}
+        log_c = {key: math.log(consensus_parties[key]) for key in common}
+        mean_p = sum(log_p.values()) / len(common)
+        mean_c = sum(log_c.values()) / len(common)
+        for key in common:
+            diff = (log_p[key] - mean_p) - (log_c[key] - mean_c)
+            entity_weight = weight * math.sqrt(min(parties[key], consensus_parties[key]) + 1e-4)
+            records[poll["pollster"]][key].append((diff, entity_weight))
+
+    stats = {}
+    global_values: dict[str, list[tuple[float, float]]] = defaultdict(list)
+    for pollster, by_party in records.items():
+        stats[pollster] = {}
+        for key, values in by_party.items():
+            result = weighted_mean(values)
+            if not result:
+                continue
+            mean, effective_n = result
+            if effective_n < model.min_effective:
+                continue
+            stats[pollster][key] = (mean, effective_n)
+            global_values[key].append((mean, effective_n))
+
+    global_mean = {}
+    for key, values in global_values.items():
+        result = weighted_mean(values)
+        if result:
+            global_mean[key] = result[0]
+
+    output = {}
+    for pollster, by_party in stats.items():
+        effects = {}
+        for key, (mean, effective_n) in by_party.items():
+            group = global_mean.get(key, 0.0)
+            shrink = effective_n / (effective_n + model.shrink_prior)
+            effects[key] = clamp(group + (mean - group) * shrink)
+        if effects:
+            output[pollster] = {"bloc_effects": {}, "party_effects": effects}
+    return output
+
+
 def apply_one_level(shares: dict[str, float], party_effects: dict[str, float]) -> dict[str, float]:
     adjusted = {
         key: value * math.exp(-party_effects.get(key, 0.0))
@@ -509,7 +579,9 @@ def main() -> None:
     reference_date = max(date.fromisoformat(poll["field_end"]) for poll in all_polls)
     model = Model(all_polls, entities_cfg, he_cfg, reference_date)
     effects = model.fit()
-    payload = payload_for_web(effects, all_polls, model)
+    one_level = fit_one_level(model)
+    hierarchical = fit_hierarchical_one_level(model)
+    payload = payload_for_web(effects, all_polls, model, one_level, hierarchical)
     WEB_OUT.parent.mkdir(parents=True, exist_ok=True)
     WEB_OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"wrote {WEB_OUT.relative_to(ROOT)} ({len(effects)} pollsters)")
@@ -517,7 +589,11 @@ def main() -> None:
     train = [poll for poll in all_polls if poll["election_id"] in TRAIN_ELECTIONS]
     train_model = Model(train, entities_cfg, he_cfg, date.fromisoformat("2023-05-14"))
     train_effects = train_model.fit()
-    train_payload = payload_for_web(train_effects, train, train_model)
+    train_one_level = fit_one_level(train_model)
+    train_hierarchical = fit_hierarchical_one_level(train_model)
+    train_payload = payload_for_web(
+        train_effects, train, train_model, train_one_level, train_hierarchical
+    )
     train_payload["meta"]["training_window"] = "2015-2019"
     train_payload["meta"]["purpose"] = "2023 backtest only"
     WEB_BACKTEST_OUT.write_text(

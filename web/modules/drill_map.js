@@ -149,6 +149,7 @@ export function createDrillMap(
       .duration(duration(300))
       .style("opacity", 0)
       .on("end", () => {
+        if (drilled) return;
         ilceLayer.style("display", "none").style("pointer-events", "none");
         ilcePaths.style("display", "none");
       });

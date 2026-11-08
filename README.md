@@ -40,7 +40,7 @@ Requires Python 3.9+ and [uv](https://github.com/astral-sh/uv).
 ```bash
 uv sync
 uv run python -m unittest discover -s pipeline/tests -v
-node --test web/modules/*.test.js
+cd web && node --test modules
 cd web && npm ci && npx playwright install chromium && node e2e/smoke.mjs
 ```
 
@@ -50,7 +50,9 @@ cd web && npm ci && npx playwright install chromium && node e2e/smoke.mjs
 uv run python pipeline/validate_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
+uv run python pipeline/house_effects_hierarchical.py
 uv run python pipeline/export_site.py
+uv run python pipeline/scrape_2018_parties.py
 uv run python pipeline/demographic_correlation.py
 uv run python pipeline/demographic_swing.py
 uv run python pipeline/demographic_swing_backtest.py
@@ -61,15 +63,19 @@ uv run python pipeline/project_2028_seats.py
 The demographic correlation script writes `data/analysis/province_demographics.csv`,
 `demographic_correlations.csv`, and `demographic_correlations.md`. It reports raw,
 electorate-weighted, and region + electorate-controlled partial correlations.
-`pipeline/demographic_swing.py` turns those profiles into a province-level tilt
-used by the experimental demographic-swing control. It is off by default;
-when enabled, the suggested strength is 60%, chosen by a leave-one-province-out
-check: uniform-swing MAE 0.0254 vs 0.0218 at 0.60 for the 2018→2023 incumbent
-change. This is a diagnostic, not a 2028 forecast guarantee.
+`pipeline/scrape_2018_parties.py` writes province-level 2018 party shares from
+the YSK-derived Wikipedia table. `demographic_correlation.py` uses these to add
+2018→2023 swing outcomes for AKP, CHP, MHP, İYİ, and HDP/DEM. The experimental
+demographic-swing control uses those party swings; parties without a 2018 result
+are left untilted. It is off by default; the suggested global strength is 60%.
+The 60% control scales each party toward its own best leave-one-province-out
+strength: AKP 0.60, CHP 0.40, MHP/İYİ 0.20, HDP/DEM 0.70. Incumbent-swing MAE
+improves from 0.0254 to 0.0218. This is a diagnostic, not a 2028 guarantee.
 
 `pipeline/scrape_kurdish_support.py` builds the HDP/YSP political-support
-index (2015?2023). It is a political-support measure, not a Kurdish population
-estimate. An il?e approximation is also exported, scaled by 2023 HDP/DEM il?e
+index (2015–2023). It is a political-support measure, not a Kurdish population
+estimate. The simulator clips its `index_z` at ±2 before applying it to
+HDP/DEM. An ilçe approximation is also exported, scaled by 2023 HDP/DEM ilçe
 votes; it is for exploration and is not used in seat allocation.
 
 `web/data/elections.json` defines the 2023 baseline and the 2028 scenario.
@@ -78,9 +84,13 @@ weighted by projected electorate growth). `polls/2028_*.json` are ready for
 next-election polls; `export_site.py` combines them into `polls_2028.json`.
 
 The 2023 backtest fits house effects on 2015–2019 polls only, so 2023 polls do
-not leak into the correction. In the current model the two-level correction did
-not beat the raw average; `web/data/house_effects_2019.json` records the
-leak-free estimates and the site keeps the effect toggle off by default.
+not leak into the correction. The two-level correction did not beat the raw
+average. Presidential races now use hierarchical one-level effects, with party
+effects partially pooled toward the cross-pollster mean. The president check
+improves from 2.41 to 2.34 points. Parliament stays on one-level effects damped
+to 50%, because hierarchical pooling is slightly worse there (1.18 vs 1.17).
+The effect toggle stays off by default, and
+`web/data/house_effects_2019.json` records the leak-free estimates.
 
 ## Local preview
 

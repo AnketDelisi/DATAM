@@ -12,6 +12,7 @@ class TestDemographicSwingBacktest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         frame = pd.read_csv(ROOT / "data" / "analysis" / "province_demographics.csv")
+        cls.frame = frame
         cls.predictions = loo_predictions(frame)
         cls.scores = score(cls.predictions)
 
@@ -24,6 +25,11 @@ class TestDemographicSwingBacktest(unittest.TestCase):
         self.assertEqual(self.scores["strength"].min(), 0.0)
         self.assertEqual(self.scores["strength"].max(), 1.0)
         self.assertTrue((self.scores["mae"] > 0).all())
+
+    def test_party_swing_target_is_supported(self):
+        predictions = loo_predictions(self.frame, "AKP_swing")
+        self.assertEqual(len(predictions), 81)
+        self.assertTrue(predictions[["actual", "uniform", "demographic"]].notna().all().all())
 
 
 if __name__ == "__main__":

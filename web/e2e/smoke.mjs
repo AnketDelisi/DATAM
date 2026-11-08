@@ -32,6 +32,14 @@ await visit("index.html", async (p) => {
   if (await p.isChecked("#demographic-swing")) {
     throw new Error("demographic swing should default off");
   }
+  const shares = async () =>
+    (await p.locator("#party-table").innerText()).match(/\d+,\d+%/g)?.join("|");
+  const beforeSwing = await shares();
+  await p.check("#demographic-swing");
+  if ((await shares()) !== beforeSwing) {
+    throw new Error("demographic swing changed national party shares");
+  }
+  await p.uncheck("#demographic-swing");
   await p.selectOption("#election-year", "2028");
   if (!(await p.textContent("#election-note"))?.includes("2028")) {
     throw new Error("2028 scenario note missing");
@@ -45,15 +53,21 @@ await visit("index.html", async (p) => {
   }
   await p.check("#kurdish-swing");
   await p.locator("#map .province-path").first().click();
-  await p.waitForTimeout(800);
-  if (!(await p.textContent("#map-breadcrumb"))?.includes("/")) {
-    throw new Error("province drilldown breadcrumb missing");
-  }
+  await p.waitForFunction(
+    () => document.querySelector("#map-breadcrumb")?.textContent?.includes("/"),
+    null,
+    { timeout: 3000 }
+  );
+  await p.waitForFunction(
+    () =>
+      [...document.querySelectorAll("#map .ilce-path")].some(
+        (element) => getComputedStyle(element).display !== "none"
+      ),
+    null,
+    { timeout: 3000 }
+  );
   if (!(await p.locator("#map-back").isVisible())) {
     throw new Error("province drilldown back button missing");
-  }
-  if ((await p.locator("#map .ilce-path:visible").count()) === 0) {
-    throw new Error("province drilldown has no visible ilçe paths");
   }
   await p.click("#map-back");
   await p.waitForTimeout(800);

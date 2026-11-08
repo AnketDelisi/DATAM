@@ -35,6 +35,12 @@ export function pollsterKey(value) {
     .replace(/[^A-Z0-9]/g, "");
 }
 
+const RACE_STRENGTH_KEY = {
+  parliament: "parliamentary",
+  presidentFirst: "presidential_first",
+  presidentRunoff: "presidential_runoff",
+};
+
 function normalize(values) {
   const clean = {};
   let total = 0;
@@ -49,13 +55,14 @@ function normalize(values) {
   return clean;
 }
 
-export function applyTwoLevel(shares, pollsterEffect, blocOf = {}) {
+export function applyTwoLevel(shares, pollsterEffect, blocOf = {}, strength = 1) {
   const blocEffects = pollsterEffect?.bloc_effects || {};
   const partyEffects = pollsterEffect?.party_effects || {};
+  const weight = Math.max(0, Math.min(1, Number(strength) || 0));
   let adjusted = {};
   for (const [key, value] of Object.entries(shares)) {
     const bloc = blocOf[key] || "OTHER";
-    adjusted[key] = value * Math.exp(-(blocEffects[bloc] || 0));
+    adjusted[key] = value * Math.exp(-(blocEffects[bloc] || 0) * weight);
   }
   adjusted = normalize(adjusted);
   if (!adjusted) return null;
@@ -69,7 +76,7 @@ export function applyTwoLevel(shares, pollsterEffect, blocOf = {}) {
     const before = keys.reduce((sum, key) => sum + adjusted[key], 0);
     if (before <= 0) continue;
     for (const key of keys) {
-      adjusted[key] *= Math.exp(-(partyEffects[key] || 0));
+      adjusted[key] *= Math.exp(-(partyEffects[key] || 0) * weight);
     }
     const after = keys.reduce((sum, key) => sum + adjusted[key], 0);
     if (after > 0) {
@@ -79,9 +86,44 @@ export function applyTwoLevel(shares, pollsterEffect, blocOf = {}) {
   return normalize(adjusted);
 }
 
-export function applyHistoricalHouseEffects(polls, raceKey, payload) {
+function applyPartyEffects(shares, partyEffects, strength) {
+  const weight = Math.max(0, Math.min(1, Number(strength) || 0));
+  const adjusted = {};
+  for (const [key, value] of Object.entries(shares)) {
+    adjusted[key] = value * Math.exp(-(partyEffects[key] || 0) * weight);
+  }
+  return normalize(adjusted);
+}
+
+export function applyOneLevel(shares, pollsterEffect, strength = 1) {
+  const partyEffects =
+    pollsterEffect?.one_level_effects?.party_effects ||
+    pollsterEffect?.party_effects ||
+    {};
+  return applyPartyEffects(shares, partyEffects, strength);
+}
+
+export function applyHierarchical(shares, pollsterEffect, strength = 1) {
+  const partyEffects =
+    pollsterEffect?.hierarchical_effects?.party_effects ||
+    pollsterEffect?.one_level_effects?.party_effects ||
+    pollsterEffect?.party_effects ||
+    {};
+  return applyPartyEffects(shares, partyEffects, strength);
+}
+
+export function applyHistoricalHouseEffects(polls, raceKey, payload, strength) {
   const entityMap = RACE_ENTITY_MAP[raceKey];
   if (!entityMap || !payload?.pollsters) return polls;
+  const configured = payload.meta?.correction_strength?.[RACE_STRENGTH_KEY[raceKey]];
+  const weight = Number.isFinite(strength)
+    ? strength
+    : Number.isFinite(configured)
+      ? configured
+      : 1;
+  if (weight <= 0) return polls;
+  const raceStrengthKey = RACE_STRENGTH_KEY[raceKey];
+  const mode = payload.meta?.correction_mode?.[raceStrengthKey] || "two_level";
   const blocOf = payload.meta?.bloc_of || {};
   const byKey = new Map(
     Object.entries(payload.pollsters).map(([name, effect]) => [pollsterKey(name), effect])
@@ -104,7 +146,12 @@ export function applyHistoricalHouseEffects(polls, raceKey, payload) {
     }
     const shares = normalize(canonical);
     if (!shares) return poll;
-    const adjusted = applyTwoLevel(shares, effect, blocOf);
+    const adjusted =
+      mode === "hierarchical"
+        ? applyHierarchical(shares, effect, weight)
+        : mode === "one_level"
+          ? applyOneLevel(shares, effect, weight)
+          : applyTwoLevel(shares, effect, blocOf, weight);
     if (!adjusted) return poll;
     const results = {};
     for (const [key, value] of Object.entries(adjusted)) {
@@ -123,8 +170,17 @@ export function largestHistoricalEffect(payload, raceKey, pollster) {
   for (const [uiId, canonical] of Object.entries(entityMap)) {
     if (!(canonical in reverse)) reverse[canonical] = uiId;
   }
+  const mode = payload.meta?.correction_mode?.[RACE_STRENGTH_KEY[raceKey]] || "two_level";
+  const values =
+    mode === "hierarchical"
+      ? effect.hierarchical_effects?.party_effects ||
+        effect.one_level_effects?.party_effects ||
+        {}
+      : mode === "one_level"
+        ? effect.one_level_effects?.party_effects || {}
+        : effect.total_effects || {};
   let largest = null;
-  for (const [canonical, value] of Object.entries(effect.total_effects || {})) {
+  for (const [canonical, value] of Object.entries(values)) {
     const uiId = reverse[canonical];
     if (!uiId || !Number.isFinite(value)) continue;
     if (!largest || Math.abs(value) > Math.abs(largest.value)) {

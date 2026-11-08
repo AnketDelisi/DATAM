@@ -24,3 +24,19 @@ race_type_weights:
 # For local races, use bloc effects only. Party effects are estimated from
 # general elections and (where available) local council party shares.
 local_bloc_only: true
+
+# Race-specific damping. Walk-forward checks favour within-bloc party effects
+# over the two-level correction; parliament is damped further.
+correction_strength:
+  parliamentary: 0.5
+  presidential_first: 1.0
+  presidential_runoff: 1.0
+  referendum: 0.0
+  local: 0.0
+
+correction_mode:
+  parliamentary: one_level
+  presidential_first: hierarchical
+  presidential_runoff: hierarchical
+  referendum: two_level
+  local: two_level

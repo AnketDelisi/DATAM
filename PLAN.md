@@ -41,9 +41,9 @@ A static GitHub Pages tool that:
 | `polls/2023_president.json` | 82 first-round + 14 runoff polls | have |
 | `polls/2023_parliament.json` | 49 parliamentary polls | have |
 | `polls/historical/` | 2015–2024 polls for house effects | have |
-| `web/data/house_effects.json` | full historical two-level effects | have |
+| `web/data/house_effects.json` | full historical two-level + one-level effects | have |
 | `web/data/house_effects_2019.json` | leak-free 2023 backtest effects | have |
-| `data/analysis/kurdish_support.csv` | HDP/YSP political-support index, 2015?2023 | have |
+| `data/analysis/kurdish_support.csv` | HDP/YSP political-support index, 2015–2023 | have |
 
 ## Model
 
@@ -110,6 +110,7 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] 2015–2024 historical poll archive and pollster/party aliases.
 - [x] Two-level bloc + within-bloc party house-effect model.
 - [x] Leak-free 2015–2019 effects for the 2023 backtest.
+- [x] Race-specific one-level damping; parliament 50%, president hierarchical.
 
 ### M4 — demographics + polish (started)
 
@@ -117,12 +118,13 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] Region + electorate-controlled partial correlations.
 - [x] Scatter, choropleth, and correlation-table explorer.
 - [x] Experimental demographic swing control (default off; suggested 60% when enabled).
-- [x] Leave-one-province-out diagnostic for the 2018→2023 incumbent swing.
+- [x] Leave-one-province-out diagnostic for the 2018→2023 incumbent and party swings.
+- [x] 2018 province-level party shares for party swing targets.
 - [x] 2028 scenario scaffold (2023 baseline, configurable seat projection).
 - [x] 2028 poll ingestion files and export/validation path.
-- [x] HDP/YSP political-support index, 2015?2023 (not a population estimate).
-- [x] Poll table shows raw and house-effect-adjusted values side by side.
-- [ ] 2018/2024 extensions and fuller confounding diagnostics.
+- [x] HDP/YSP political-support index, 2015–2023 (not a population estimate).
+- [x] Poll table shows raw values with adjusted subtext and winner highlight.
+- [ ] 2024 extensions and fuller confounding diagnostics.
 - [ ] Final 2028 election calendar and official seat map.
 - [x] Browser smoke test in CI.
 - [ ] Accessibility and shareable scenario polish.
@@ -132,11 +134,13 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 ```bash
 uv sync
 uv run python -m unittest discover -s pipeline/tests -v
-node --test web/modules/*.test.js
+cd web; node --test modules
 uv run python pipeline/validate_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
+uv run python pipeline/house_effects_hierarchical.py
 uv run python pipeline/export_site.py
+uv run python pipeline/scrape_2018_parties.py
 uv run python pipeline/demographic_correlation.py
 uv run python pipeline/demographic_swing.py
 uv run python pipeline/demographic_swing_backtest.py

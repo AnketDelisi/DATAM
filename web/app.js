@@ -12,7 +12,13 @@ import {
   MAIN_PARTIES,
   parliamentAggregate,
 } from "./modules/poll_preset.js";
-import { PARTY_OUTCOME, swingFactor, tiltFor } from "./modules/projection.js";
+import {
+  PARTY_OUTCOME,
+  rakeToTargets,
+  scaledStrength,
+  swingFactor,
+  tiltFor,
+} from "./modules/projection.js";
 
 const MAIN_ORDER = [...MAIN_PARTIES];
 const OTHER_COLOR = "#9e9e9e";
@@ -337,16 +343,17 @@ function updateOtherShare() {
 }
 
 function effectiveFactor(id, factor, provinceKey) {
+  const useKurdish = id === "P12" && state.kurdishStrength > 0;
   let adjusted = swingFactor(
     factor,
-    tiltFor(state.demographicSwing, provinceKey, PARTY_OUTCOME[id]),
-    state.swingStrength
+    useKurdish ? 0 : tiltFor(state.demographicSwing, provinceKey, PARTY_OUTCOME[id]),
+    scaledStrength(id, state.swingStrength)
   );
-  if (id === "P12" && state.kurdishStrength > 0) {
+  if (useKurdish) {
     const support = state.kurdishByKey.get(provinceKey);
     adjusted = swingFactor(
       adjusted,
-      support?.index_z || 0,
+      clamp(support?.index_z || 0, -2, 2),
       state.kurdishStrength
     );
   }
@@ -363,14 +370,18 @@ function buildScenarioDistricts() {
   const baseMain = MAIN_ORDER.reduce((total, id) => total + (base[id] || 0), 0);
   const baseOther = totalValid - baseMain;
 
+  const targets = {};
   const factors = {};
   for (const [id, votes] of Object.entries(base)) {
     if (mainIds.has(id)) {
       const target = (state.shares[id] / 100) * totalValid;
+      targets[id] = target;
       factors[id] = votes > 0 ? target / votes : 0;
     } else {
-      const target = (otherShare / 100) * totalValid;
-      factors[id] = baseOther > 0 ? target / baseOther : 0;
+      const share = baseOther > 0 ? votes / baseOther : 0;
+      const target = otherShare * share * totalValid / 100;
+      targets[id] = target;
+      factors[id] = votes > 0 ? target / votes : 0;
     }
   }
 
@@ -392,18 +403,8 @@ function buildScenarioDistricts() {
     };
   });
 
-  const total = scaled.reduce(
-    (sum, district) =>
-      sum + Object.values(district.votes).reduce((a, b) => a + b, 0),
-    0
-  );
-  if (total > 0) {
-    const norm = totalValid / total;
-    for (const district of scaled) {
-      for (const id of Object.keys(district.votes)) district.votes[id] *= norm;
-    }
-  }
-  return { districts: scaled, factors };
+  const districts = rakeToTargets(scaled, targets);
+  return { districts, factors };
 }
 
 function aggregateProvinces(districts, result) {

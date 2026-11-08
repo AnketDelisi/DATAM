@@ -3,6 +3,7 @@ import unittest
 from pipeline.demographic_correlation import (
     DEMOGRAPHICS,
     OUTCOMES,
+    PARTY_SWINGS,
     build_dataset,
     build_web_payload,
     compute_correlations,
@@ -20,6 +21,11 @@ class TestDemographicCorrelation(unittest.TestCase):
         self.assertEqual(len(self.frame), 81)
         self.assertEqual(self.frame["key"].nunique(), 81)
         self.assertFalse(self.frame[DEMOGRAPHICS + OUTCOMES + ["region"]].isna().any().any())
+
+    def test_party_swings_are_present(self):
+        for party in PARTY_SWINGS:
+            self.assertIn(f"{party}_swing", self.frame)
+            self.assertTrue(self.frame[f"{party}_swing"].notna().all())
 
     def test_regions_cover_all_provinces(self):
         regions = load_regions()
@@ -46,7 +52,9 @@ class TestDemographicCorrelation(unittest.TestCase):
         payload = build_web_payload(self.frame, correlations)
         self.assertEqual(payload["meta"]["n"], 81)
         self.assertEqual(len(payload["provinces"]), 81)
-        self.assertEqual(len(payload["correlations"]), 126)
+        self.assertEqual(
+            len(payload["correlations"]), len(OUTCOMES) * len(DEMOGRAPHICS)
+        )
 
     def test_province_names_normalize_across_sources(self):
         self.assertEqual(

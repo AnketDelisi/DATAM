@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from pipeline.house_effects import Model, apply_effect_set
+from pipeline.house_effects import Model, apply_effect_set, fit_hierarchical_one_level
 from pipeline.house_effects_proportional import apply_proportional_effect, fit_proportional
 
 
@@ -48,6 +48,14 @@ class TestHouseEffects(unittest.TestCase):
         self.assertLess(adjusted["A"], 0.7)
         self.assertGreater(adjusted["B"], 0.3)
         self.assertAlmostEqual(sum(adjusted.values()), 1.0, places=9)
+
+    def test_hierarchical_one_level_is_centered(self):
+        model = Model(self.polls, self.entities, self.cfg, date(2024, 1, 2))
+        effects = fit_hierarchical_one_level(model)
+        self.assertIn("Bias", effects)
+        self.assertAlmostEqual(
+            sum(effects["Bias"]["party_effects"].values()), 0.0, places=9
+        )
 
     def test_proportional_bias_is_detected_and_corrected(self):
         model = Model(self.polls, self.entities, self.cfg, date(2024, 1, 2))

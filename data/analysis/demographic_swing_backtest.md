@@ -1,8 +1,10 @@
 # Demographic swing: leave-one-province-out check
 
-Target: 2018→2023 incumbent share change. Each province is held out
-once; the model is fit on the other 80. `uniform` is the training mean.
-`strength` blends the uniform and demographic predictions.
+Each target is the 2018→2023 province-level change. Each province is
+held out once; the model is fit on the other 80. `uniform` is the
+training mean. `strength` blends the uniform and demographic predictions.
+
+## incumbent_swing
 
 - n: 81
 - uniform MAE: 0.0254
@@ -22,6 +24,111 @@ once; the model is fit on the other 80. `uniform` is the training mean.
 | 0.80 | 0.0221 | 0.0321 | 0.433 |
 | 0.90 | 0.0226 | 0.0325 | 0.435 |
 | 1.00 | 0.0231 | 0.0330 | 0.436 |
+
+## AKP_swing
+
+- n: 81
+- uniform MAE: 0.0374
+- full demographic MAE: 0.0348
+- best strength: 0.60 (MAE 0.0330)
+
+| strength | MAE | RMSE | correlation |
+|---:|---:|---:|---:|
+| 0.00 | 0.0374 | 0.0498 | -1.000 |
+| 0.10 | 0.0361 | 0.0485 | 0.267 |
+| 0.20 | 0.0350 | 0.0473 | 0.354 |
+| 0.30 | 0.0339 | 0.0464 | 0.381 |
+| 0.40 | 0.0333 | 0.0456 | 0.395 |
+| 0.50 | 0.0330 | 0.0452 | 0.402 |
+| 0.60 | 0.0330 | 0.0449 | 0.408 |
+| 0.70 | 0.0332 | 0.0450 | 0.411 |
+| 0.80 | 0.0336 | 0.0452 | 0.414 |
+| 0.90 | 0.0341 | 0.0457 | 0.416 |
+| 1.00 | 0.0348 | 0.0465 | 0.418 |
+
+## CHP_swing
+
+- n: 81
+- uniform MAE: 0.0315
+- full demographic MAE: 0.0349
+- best strength: 0.40 (MAE 0.0305)
+
+| strength | MAE | RMSE | correlation |
+|---:|---:|---:|---:|
+| 0.00 | 0.0315 | 0.0442 | -1.000 |
+| 0.10 | 0.0311 | 0.0435 | 0.091 |
+| 0.20 | 0.0308 | 0.0429 | 0.195 |
+| 0.30 | 0.0306 | 0.0425 | 0.229 |
+| 0.40 | 0.0305 | 0.0423 | 0.245 |
+| 0.50 | 0.0307 | 0.0422 | 0.255 |
+| 0.60 | 0.0312 | 0.0423 | 0.261 |
+| 0.70 | 0.0319 | 0.0426 | 0.266 |
+| 0.80 | 0.0327 | 0.0430 | 0.270 |
+| 0.90 | 0.0338 | 0.0436 | 0.272 |
+| 1.00 | 0.0349 | 0.0443 | 0.274 |
+
+## MHP_swing
+
+- n: 81
+- uniform MAE: 0.0300
+- full demographic MAE: 0.0330
+- best strength: 0.20 (MAE 0.0294)
+
+| strength | MAE | RMSE | correlation |
+|---:|---:|---:|---:|
+| 0.00 | 0.0300 | 0.0442 | -1.000 |
+| 0.10 | 0.0295 | 0.0439 | -0.095 |
+| 0.20 | 0.0294 | 0.0438 | 0.019 |
+| 0.30 | 0.0295 | 0.0438 | 0.058 |
+| 0.40 | 0.0297 | 0.0439 | 0.077 |
+| 0.50 | 0.0300 | 0.0442 | 0.088 |
+| 0.60 | 0.0305 | 0.0446 | 0.096 |
+| 0.70 | 0.0310 | 0.0451 | 0.101 |
+| 0.80 | 0.0315 | 0.0457 | 0.105 |
+| 0.90 | 0.0322 | 0.0465 | 0.108 |
+| 1.00 | 0.0330 | 0.0473 | 0.111 |
+
+## IYI_swing
+
+- n: 81
+- uniform MAE: 0.0282
+- full demographic MAE: 0.0325
+- best strength: 0.20 (MAE 0.0278)
+
+| strength | MAE | RMSE | correlation |
+|---:|---:|---:|---:|
+| 0.00 | 0.0282 | 0.0429 | -1.000 |
+| 0.10 | 0.0279 | 0.0423 | 0.096 |
+| 0.20 | 0.0278 | 0.0417 | 0.201 |
+| 0.30 | 0.0279 | 0.0413 | 0.235 |
+| 0.40 | 0.0283 | 0.0411 | 0.252 |
+| 0.50 | 0.0289 | 0.0410 | 0.262 |
+| 0.60 | 0.0296 | 0.0410 | 0.268 |
+| 0.70 | 0.0303 | 0.0413 | 0.273 |
+| 0.80 | 0.0310 | 0.0416 | 0.276 |
+| 0.90 | 0.0318 | 0.0422 | 0.279 |
+| 1.00 | 0.0325 | 0.0428 | 0.281 |
+
+## HDP_DEM_swing
+
+- n: 81
+- uniform MAE: 0.0115
+- full demographic MAE: 0.0096
+- best strength: 0.70 (MAE 0.0090)
+
+| strength | MAE | RMSE | correlation |
+|---:|---:|---:|---:|
+| 0.00 | 0.0115 | 0.0157 | -1.000 |
+| 0.10 | 0.0110 | 0.0152 | 0.325 |
+| 0.20 | 0.0105 | 0.0148 | 0.407 |
+| 0.30 | 0.0100 | 0.0144 | 0.433 |
+| 0.40 | 0.0097 | 0.0141 | 0.445 |
+| 0.50 | 0.0093 | 0.0139 | 0.453 |
+| 0.60 | 0.0091 | 0.0138 | 0.457 |
+| 0.70 | 0.0090 | 0.0138 | 0.461 |
+| 0.80 | 0.0090 | 0.0138 | 0.463 |
+| 0.90 | 0.0092 | 0.0139 | 0.465 |
+| 1.00 | 0.0096 | 0.0142 | 0.467 |
 
 This is a single-election cross-sectional check; it does not
 establish that the demographic tilt will improve 2028 forecasts.
