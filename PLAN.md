@@ -131,6 +131,8 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] Year-aware party registry for YENİ and A; baseline lineage metadata in place.
 - [x] Baseline allocation for new parties via baseline_mix and raking.
 - [x] 2028 parliamentary poll scraper and editable alliance config.
+- [x] 2028 presidential candidate registry and multi-candidate poll scraper.
+- [x] Candidate baseline mapping (candidate/party profiles) for 2028.
 - [x] Complete 2024 city/district data and fuller confounding diagnostics.
 - [ ] Final 2028 election calendar and official seat map.
 - [x] Browser smoke test in CI.
@@ -144,6 +146,7 @@ uv run python -m unittest discover -s pipeline/tests -v
 cd web; node --test modules
 uv run python pipeline/validate_polls.py
 uv run python pipeline/scrape_2028_polls.py
+uv run python pipeline/scrape_2028_president_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
 uv run python pipeline/house_effects_hierarchical.py

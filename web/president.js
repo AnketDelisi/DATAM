@@ -8,8 +8,6 @@ import {
 import { presidentAggregate } from "./modules/poll_preset.js";
 import { CANDIDATE_OUTCOME, adjustedShare, tiltFor } from "./modules/projection.js";
 
-const CANDIDATE_ORDER = ["A", "B", "C", "D"];
-
 const state = {
   data: null,
   geojson: null,
@@ -92,24 +90,7 @@ async function main() {
   state.pollDataByYear = { "2023": polls2023, "2028": polls2028 };
   state.elections = elections;
   state.demographicSwing = demographicSwing;
-  state.candidates = data.president.candidates;
-  state.byId = new Map(state.candidates.map((candidate) => [candidate.id, candidate]));
-  state.names = Object.fromEntries(
-    state.candidates.map((candidate) => [candidate.id, candidate.short])
-  );
-  state.shares = Object.fromEntries(
-    state.candidates.map((candidate) => [
-      candidate.id,
-      (data.president.first_round.national.shares[candidate.id] || 0) * 100,
-    ])
-  );
   state.defaultTransfer = data.president.transfer_default ?? 0.5;
-  state.transfers = Object.fromEntries(
-    state.candidates.map((candidate) => [
-      candidate.id,
-      state.defaultTransfer * 100,
-    ])
-  );
   state.geoDisplay = new Map(
     geojson.features.map((feature) => [
       normalizeName(feature.properties.shapeName),
@@ -159,6 +140,9 @@ async function main() {
 
 function readUrl() {
   const params = new URLSearchParams(location.search);
+  const year = params.get("year");
+  if (year && state.elections[year]) state.year = year;
+  setYearCandidates();
   for (const candidate of state.candidates) {
     const id = candidate.id;
     const share = params.get(id.toLowerCase());
@@ -174,12 +158,41 @@ function readUrl() {
   }
   const round = params.get("m");
   if (round === "first" || round === "runoff") state.mapRound = round;
-  const year = params.get("year");
-  if (year && state.elections[year]) state.year = year;
   if (params.has("ds")) {
     const value = Number(params.get("ds"));
     if (Number.isFinite(value)) state.swingStrength = clamp(value, 0, 100) / 100;
   }
+}
+
+function candidatesForYear(year) {
+  if (year === "2023") return state.data.president.candidates;
+  const registry = state.pollDataByYear[year]?.datasets.president.meta?.candidates || {};
+  const candidates = Object.entries(registry)
+    .filter(([id]) => id !== "OTHER")
+    .map(([id, candidate]) => ({ id, ...candidate }));
+  return candidates.length ? candidates : state.data.president.candidates;
+}
+
+function setYearCandidates() {
+  state.candidates = candidatesForYear(state.year);
+  state.byId = new Map(
+    state.candidates.map((candidate) => [candidate.id, candidate])
+  );
+  state.names = Object.fromEntries(
+    state.candidates.map((candidate) => [candidate.id, candidate.short])
+  );
+  state.shares = Object.fromEntries(
+    state.candidates.map((candidate) => [
+      candidate.id,
+      (state.data.president.first_round.national.shares[candidate.id] || 0) * 100,
+    ])
+  );
+  state.transfers = Object.fromEntries(
+    state.candidates.map((candidate) => [
+      candidate.id,
+      (state.defaultTransfer ?? 0.5) * 100,
+    ])
+  );
 }
 
 function buildElectionControl() {
@@ -195,6 +208,11 @@ function buildElectionControl() {
     state.year = select.value;
     state.election = state.elections[state.year] || state.elections["2023"];
     state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
+    setYearCandidates();
+    buildCandidateControls();
+    syncCandidateControls();
+    state.map?.setParties(state.candidates);
+    buildLegend();
     updateElectionNote();
     render();
   });
@@ -208,7 +226,9 @@ function updateElectionNote() {
     (datasets.president?.polls?.length || 0) + (datasets.parliament?.polls?.length || 0) > 0;
   $("election-note").textContent =
     election.status === "projection"
-      ? `${election.year} senaryosu: 2023 tabanı; henüz anket verisi yok.`
+      ? `${election.year} senaryosu: 2023 tabanı; ${
+          hasPolls ? "2028 anket ortalaması kullanılabilir." : "henüz anket verisi yok."
+        }`
       : "2023 resmi sonucu ve anket ortalaması.";
   $("apply-polls").disabled = !hasPolls;
   $("apply-polls").textContent = hasPolls ? "Anket ortalaması" : "Anket verisi yok";
@@ -262,13 +282,15 @@ function syncCandidateControls() {
 }
 
 function normalizeShares() {
-  let total = CANDIDATE_ORDER.reduce((sum, id) => sum + (state.shares[id] || 0), 0);
+  const ids = state.candidates.map((candidate) => candidate.id);
+  let total = ids.reduce((sum, id) => sum + (state.shares[id] || 0), 0);
   if (total <= 0) {
-    for (const id of CANDIDATE_ORDER) state.shares[id] = 25;
+    const equal = 100 / Math.max(1, ids.length);
+    for (const id of ids) state.shares[id] = equal;
     total = 100;
   }
   const scale = 100 / total;
-  for (const id of CANDIDATE_ORDER) state.shares[id] = (state.shares[id] || 0) * scale;
+  for (const id of ids) state.shares[id] = (state.shares[id] || 0) * scale;
 }
 
 function setShare(id, value) {
@@ -341,6 +363,9 @@ function buildTransferControls() {
 
 function buildFirstRound() {
   const baseNational = state.data.president.first_round.national.shares;
+  const partyShares = new Map(
+    state.data.provinces.map((province) => [province.geo_key, province.shares])
+  );
   const target = {};
   for (const candidate of state.candidates) {
     target[candidate.id] = (state.shares[candidate.id] || 0) / 100;
@@ -355,10 +380,18 @@ function buildFirstRound() {
     const provinceKey = province.geo_key || normalizeName(province.name);
     for (const candidate of state.candidates) {
       const id = candidate.id;
+      const source = candidate.baseline || id;
+      const isCandidateBaseline = ["A", "B", "C", "D"].includes(source);
+      const sourceShare = isCandidateBaseline
+        ? province.shares[source] || 0
+        : partyShares.get(provinceKey)?.[source] || 0;
+      const sourceNational = isCandidateBaseline
+        ? baseNational[source] || 0
+        : state.data.national.shares[source] || 0;
       raw[id] = adjustedShare(
-        province.shares[id] || 0,
-        (target[id] || 0) - (baseNational[id] || 0),
-        tiltFor(state.demographicSwing, provinceKey, CANDIDATE_OUTCOME[id]),
+        sourceShare,
+        (target[id] || 0) - sourceNational,
+        tiltFor(state.demographicSwing, provinceKey, CANDIDATE_OUTCOME[source]),
         state.swingStrength
       );
     }
@@ -640,7 +673,12 @@ function showProvinceDetail(key) {
 }
 
 function applyPollAverage() {
-  const shares = presidentAggregate(state.pollData, 1, state.election?.date || "2023-05-14");
+  const shares = presidentAggregate(
+    state.pollData,
+    1,
+    state.election?.date || "2023-05-14",
+    state.candidates.map((candidate) => candidate.id)
+  );
   if (!Object.keys(shares).length) { updateElectionNote(); return; }
   for (const candidate of state.candidates) {
     state.shares[candidate.id] = (shares[candidate.id] || 0) * 100;

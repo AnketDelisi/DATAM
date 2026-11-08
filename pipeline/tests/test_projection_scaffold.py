@@ -16,8 +16,14 @@ class TestProjectionScaffold(unittest.TestCase):
 
     def test_2028_poll_file_is_valid(self):
         payload = json.loads((WEB / "polls_2028.json").read_text(encoding="utf-8"))
-        self.assertEqual(payload["datasets"]["president"]["polls"], [])
+        president = payload["datasets"]["president"]["polls"]
         parliament = payload["datasets"]["parliament"]["polls"]
+        self.assertGreater(len(president), 0)
+        self.assertTrue(any("IMAMOGLU" in poll["results"] for poll in president))
+        for poll in president:
+            self.assertEqual(poll["type"], "presidential")
+            self.assertEqual(poll["round"], 1)
+            self.assertGreaterEqual(len(poll["results"]), 2)
         self.assertGreater(len(parliament), 0)
         self.assertTrue(any("YENI" in poll["results"] for poll in parliament))
         self.assertTrue(any("A" in poll["results"] for poll in parliament))

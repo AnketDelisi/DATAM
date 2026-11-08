@@ -11,8 +11,8 @@ class TestPollData(unittest.TestCase):
         total, errors, counts, _ = validate_dataset(ROOT / "polls")
         self.assertEqual(errors, [])
         self.assertGreaterEqual(total, 145)
-        self.assertEqual(counts[("presidential", 1)], 82)
-        self.assertEqual(counts[("presidential", 2)], 14)
+        self.assertGreaterEqual(counts[("presidential", 1)], 82)
+        self.assertGreaterEqual(counts[("presidential", 2)], 14)
         self.assertGreaterEqual(counts[("parliamentary", None)], 49)
 
 

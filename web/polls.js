@@ -142,9 +142,21 @@ function buildRaces() {
   const parliament = state.pollData.datasets.parliament;
   const electionDay = state.election?.date || "2023-05-14";
   const runoffDay = state.election?.runoff_date || electionDay;
+  const extraCandidates =
+    Number(state.year) >= 2028
+      ? Object.entries(
+          state.pollData.datasets.president.meta?.candidates || {}
+        ).map(([id, candidate]) => ({ id, ...candidate }))
+      : [];
   const candidateMeta = new Map(
-    state.data.president.candidates.map((candidate) => [candidate.id, candidate])
+    [...state.data.president.candidates, ...extraCandidates].map((candidate) => [
+      candidate.id,
+      candidate,
+    ])
   );
+  const presidentEntities = extraCandidates.length
+    ? extraCandidates.map((candidate) => candidate.id)
+    : ["A", "B", "C", "D"];
   const partyMeta = new Map(
     state.data.parties.map((party) => [party.id, party])
   );
@@ -155,7 +167,7 @@ function buildRaces() {
       label: "Cumhurbaşkanı 1. Tur",
       shortLabel: "CB 1. Tur",
       electionDay,
-      entities: ["A", "B", "C", "D"],
+      entities: presidentEntities,
       actual: state.data.president.first_round.national.shares,
       meta: candidateMeta,
       polls: president.polls.filter((poll) => poll.round === 1),

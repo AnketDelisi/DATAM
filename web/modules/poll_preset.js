@@ -26,11 +26,15 @@ export function parliamentActual(data, mainParties = MAIN_PARTIES) {
   return actual;
 }
 
-export function presidentAggregate(pollPayload, round = 1, cutoff = "2023-05-14") {
+export function presidentAggregate(
+  pollPayload,
+  round = 1,
+  cutoff = "2023-05-14",
+  entities = round === 1 ? ["A", "B", "C", "D"] : ["A", "B"]
+) {
   const polls = pollPayload.datasets.president.polls.filter(
     (poll) => poll.round === round
   );
-  const entities = round === 1 ? ["A", "B", "C", "D"] : ["A", "B"];
   const result = aggregateAt(polls, entities, cutoff, {
     ...OPTIONS,
     defaultSample: medianSample(polls),

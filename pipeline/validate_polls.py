@@ -15,6 +15,9 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
 POLLS = Path("polls")
 CUTOFFS_BY_YEAR = {
     2023: {
@@ -28,7 +31,10 @@ CUTOFFS_BY_YEAR = {
         ("parliamentary", None): date(2028, 5, 14),
     },
 }
-PRESIDENT_KEYS = {"A", "B", "C", "D"}
+PRESIDENT_KEYS = {
+    "A", "B", "C", "D",
+    *yaml.safe_load((ROOT / "config" / "candidates_2028.yaml").read_text(encoding="utf-8"))["candidates"].keys(),
+}
 PARLIAMENT_EXTRA_KEYS = {"YENI", "A"}
 PARLIAMENT_KEY = re.compile(r"^P\d+$")
 

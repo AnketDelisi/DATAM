@@ -54,6 +54,11 @@ export function createMap(
       }
     });
 
+  function setParties(nextParties) {
+    colors.clear();
+    for (const party of nextParties) colors.set(party.id, party.color);
+  }
+
   function update(dataMap) {
     paths.attr("fill", (feature) => {
       const row = dataMap.get(keyFn(feature));
@@ -68,5 +73,5 @@ export function createMap(
       .attr("stroke-width", (feature) => (keyFn(feature) === geoKey ? 1.8 : 0.6));
   }
 
-  return { update, setSelected, paths };
+  return { update, setSelected, setParties, paths };
 }

@@ -95,6 +95,19 @@ await visit("president.html", async (p) => {
   if (!(await p.textContent("#election-note"))?.includes("2028")) {
     throw new Error("president 2028 scenario note missing");
   }
+  if ((await p.locator("#candidate-controls .candidate-row").count()) < 5) {
+    throw new Error("president 2028 candidate registry missing");
+  }
+  await p.waitForTimeout(300);
+  if (await p.isDisabled("#apply-polls")) {
+    throw new Error("president 2028 apply button is disabled");
+  }
+  await p.click("#apply-polls");
+  await p.waitForTimeout(300);
+  const presidentBars = await p.locator("#first-bars").innerText();
+  if (!presidentBars.includes("Erdo")) {
+    throw new Error(`president 2028 poll average did not render: ${presidentBars.slice(0, 120)}`);
+  }
 });
 
 await visit("polls.html", async (p) => {

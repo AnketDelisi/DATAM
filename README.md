@@ -49,6 +49,7 @@ cd web && npm ci && npx playwright install chromium && node e2e/smoke.mjs
 ```bash
 uv run python pipeline/validate_polls.py
 uv run python pipeline/scrape_2028_polls.py
+uv run python pipeline/scrape_2028_president_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
 uv run python pipeline/house_effects_hierarchical.py
@@ -89,8 +90,13 @@ lineage mix as the district baseline and rakes to the national poll targets.
 
 `pipeline/scrape_2028_polls.py` loads the Turkish Wikipedia 2028 polling
 tables into `polls/2028_parliament.json` (2023–2026 polls, including YENİ and
-A when listed). `config/alliances_2028.yaml` is intentionally empty until the
-2028 alliances are known; edit it then to activate the alliance threshold.
+A when listed). `pipeline/scrape_2028_president_polls.py` fills
+`polls/2028_president.json` with multi-candidate polls using
+`config/candidates_2028.yaml`; pairwise candidate polls are excluded for now.
+Each candidate has a 2023 `baseline` (candidate A/B/C/D or parliamentary
+profile P12/P10/P22) so new candidates inherit a geographic profile.
+`config/alliances_2028.yaml` is intentionally empty until the 2028 alliances
+are known; edit it then to activate the alliance threshold.
 
 `web/data/elections.json` defines the 2023 baseline and the 2028 scenario.
 `config/2028_seats.yaml` controls the 2028 seat apportionment (2023 seats
