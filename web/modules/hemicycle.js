@@ -25,15 +25,20 @@ export function createHemicycle(svg, total = 600, rows = 20, perRow = 30) {
   positions.sort((a, b) => a.angle - b.angle || a.row - b.row);
   const seats = positions.slice(0, total);
 
+  const triangle = (d) => {
+    const size = 4.1;
+    return `M${d.x},${d.y - size} L${d.x + size * 0.9},${d.y + size * 0.75} L${d.x - size * 0.9},${d.y + size * 0.75} Z`;
+  };
+
   const group = root.append("g").attr("class", "hemicycle-seats");
-  const circles = group
-    .selectAll("circle")
+  const shapes = group
+    .selectAll("path")
     .data(seats)
-    .join("circle")
-    .attr("cx", (d) => d.x)
-    .attr("cy", (d) => d.y)
-    .attr("r", 3.1)
-    .attr("fill", "#d7dbe0");
+    .join("path")
+    .attr("d", triangle)
+    .attr("fill", "#d7dbe0")
+    .attr("stroke", "#fffdf8")
+    .attr("stroke-width", 0.45);
 
   root
     .append("text")
@@ -58,7 +63,7 @@ export function createHemicycle(svg, total = 600, rows = 20, perRow = 30) {
       for (let i = 0; i < count; i += 1) order.push(party.id);
     }
 
-    circles.attr("fill", (_, index) => {
+    shapes.attr("fill", (_, index) => {
       const id = order[index];
       return id ? colors.get(id) || "#9e9e9e" : "#d7dbe0";
     });

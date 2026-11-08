@@ -32,12 +32,73 @@ export function createDrillMap(
 
   const zoomLayer = root.append("g");
   const provinceLayer = zoomLayer.append("g");
+  const seatLayer = zoomLayer.append("g").attr("class", "seat-layer").style("pointer-events", "none");
   const ilceLayer = zoomLayer.append("g").style("display", "none");
 
   let provinceData = new Map();
   let ilceData = new Map();
   let drilled = null;
   let selected = null;
+
+  function renderSeats() {
+    seatLayer.selectAll("*").remove();
+    if (drilled) return;
+    for (const [key, row] of provinceData) {
+      const feature = provinceFeatures.get(key);
+      if (!feature || !row.seats) continue;
+      const [cx, cy] = anchorFor(feature);
+      const [[x0, y0], [x1, y1]] = path.bounds(feature);
+      const width = Math.max(1, x1 - x0);
+      const height = Math.max(1, y1 - y0);
+      const counts = Object.entries(row.scenario_seats || {}).filter(([, n]) => n > 0);
+      const orderedIds = counts.length
+        ? counts.flatMap(([id, n]) => Array(n).fill(id))
+        : Array(row.seats).fill(row.winner || "OTHER");
+      const total = Math.min(row.seats, orderedIds.length);
+      const cols = Math.max(1, Math.ceil(Math.sqrt(total)));
+      const rows = Math.ceil(total / cols);
+      const size = Math.max(1.1, Math.min(4.2, Math.min(width, height) / (Math.max(cols, rows) * 2.1)));
+      const spacing = size * 1.8;
+      const startX = cx - ((cols - 1) * spacing) / 2;
+      const startY = cy - ((rows - 1) * spacing) / 2;
+      for (let index = 0; index < total; index += 1) {
+        const x = startX + (index % cols) * spacing;
+        const y = startY + Math.floor(index / cols) * spacing;
+        const id = orderedIds[index];
+        const color = colorsFor(id);
+        seatLayer
+          .append("path")
+          .attr("d", `M${x},${y - size} L${x + size * 0.9},${y + size * 0.75} L${x - size * 0.9},${y + size * 0.75} Z`)
+          .attr("fill", color)
+          .attr("stroke", "#fffdf8")
+          .attr("stroke-width", 0.3);
+      }
+    }
+  }
+
+  function colorsFor(id) {
+    return colors.get(id) || "#9e9e9e";
+  }
+
+  function anchorFor(feature) {
+    const centroid = path.centroid(feature);
+    const inverse = projection.invert?.(centroid);
+    if (inverse && d3.geoContains(feature, inverse)) return centroid;
+    const geometry = feature.geometry;
+    const polygons = geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
+    let best = null;
+    let bestArea = 0;
+    for (const coordinates of polygons) {
+      const polygon = { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates } };
+      const area = path.area(polygon);
+      if (area > bestArea) {
+        bestArea = area;
+        best = polygon;
+      }
+    }
+    if (best) return projection(d3.geoCentroid(best));
+    return centroid;
+  }
 
   const provinceKey = (feature) => normalizeName(feature.properties.shapeName);
   const ilceKey = (feature) => feature.properties.shapeID;
@@ -116,6 +177,7 @@ export function createDrillMap(
     if (!feature) return;
     drilled = key;
     selected = null;
+    seatLayer.style("display", "none");
     const [[x0, y0], [x1, y1]] = path.bounds(feature);
     const scale = Math.min(WIDTH / (x1 - x0), HEIGHT / (y1 - y0)) * 0.82;
     const tx = WIDTH / 2 - scale * ((x0 + x1) / 2);
@@ -142,6 +204,8 @@ export function createDrillMap(
   function reset() {
     drilled = null;
     selected = null;
+    seatLayer.style("display", "block");
+    renderSeats();
     provinceLayer.transition().duration(duration(450)).style("opacity", 1);
     provincePaths.style("pointer-events", "all");
     ilceLayer
@@ -182,6 +246,7 @@ export function createDrillMap(
       return row?.winner ? colors.get(row.winner) || "#9e9e9e" : "#dfe3e8";
     });
     paintSelection();
+    renderSeats();
   }
 
   function setSelected(value) {

@@ -99,9 +99,12 @@ profile P12/P10/P22) so new candidates inherit a geographic profile.
 are known; edit it then to activate the alliance threshold.
 
 `web/data/elections.json` defines the 2023 baseline and the 2028 scenario.
-`config/2028_seats.yaml` controls the 2028 seat apportionment (2023 seats
-weighted by projected electorate growth). `polls/2028_*.json` are ready for
-next-election polls; `export_site.py` combines them into `polls_2028.json`.
+`config/2028_seats.yaml` contains the 2028 district seat numbers imported
+from the 600 repo's Turkey model (`prDistricts`, 87 districts, 600 seats).
+`project_2028_seats.py` preserves those counts in
+`web/data/seat_projection_2028.json`; the old growth model remains as a
+fallback. `polls/2028_*.json` are ready for next-election polls;
+`export_site.py` combines them into `polls_2028.json`.
 
 The 2023 backtest fits house effects on 2015–2019 polls only, so 2023 polls do
 not leak into the correction. The two-level correction did not beat the raw

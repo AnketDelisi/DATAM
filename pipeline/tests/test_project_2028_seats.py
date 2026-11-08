@@ -17,8 +17,18 @@ class Test2028Seats(unittest.TestCase):
         )
         cls.cfg = load_config()
 
-    def test_uniform_growth_preserves_2023_seats(self):
+    def test_imported_600_seat_numbers(self):
         projected = project_seats(self.frame, self.cfg)
+        self.assertEqual(int(projected["seats"].sum()), 600)
+        seats = dict(zip(projected["district_id"], projected["seats"]))
+        self.assertEqual(seats["34_404601"], 25)
+        self.assertEqual(seats["6_404520"], 13)
+        self.assertEqual(seats["16_404560"], 11)
+
+    def test_uniform_growth_falls_back_to_2023_seats(self):
+        cfg = dict(self.cfg)
+        cfg.pop("district_seats", None)
+        projected = project_seats(self.frame, cfg)
         self.assertEqual(int(projected["seats"].sum()), 600)
         self.assertTrue((projected["seats"] == projected["base_seats"]).all())
 

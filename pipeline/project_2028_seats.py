@@ -67,6 +67,10 @@ def project_seats(frame: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         seats.loc[index] += 1
         remaining -= 1
     projected["seats"] = seats
+    overrides = cfg.get("district_seats") or {}
+    if overrides:
+        override = projected["district_id"].map(overrides)
+        projected["seats"] = override.fillna(projected["seats"]).astype(int)
     return projected
 
 
@@ -83,7 +87,12 @@ def main() -> None:
             "target_year": cfg["target_year"],
             "total_seats": cfg["total_seats"],
             "national_annual_growth": cfg.get("national_annual_growth", 0),
-            "method": "2023 seats weighted by projected electorate growth, largest remainder",
+            "method": (
+                "district seat counts imported from the 600 repo Turkey model"
+                if cfg.get("district_seats")
+                else "2023 seats weighted by projected electorate growth, largest remainder"
+            ),
+            "source": cfg.get("source"),
             "note": "scenario apportionment, not an official 2028 map",
         },
         "districts": {
