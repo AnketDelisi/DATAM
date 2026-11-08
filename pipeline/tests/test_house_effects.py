@@ -2,6 +2,7 @@ import unittest
 from datetime import date
 
 from pipeline.house_effects import Model, apply_effect_set
+from pipeline.house_effects_proportional import apply_proportional_effect, fit_proportional
 
 
 class TestHouseEffects(unittest.TestCase):
@@ -44,6 +45,18 @@ class TestHouseEffects(unittest.TestCase):
         bias = effects["Bias"]["bloc_effects"]["OPPOSITION"]
         self.assertLess(bias, 0)
         adjusted = apply_effect_set({"A": 0.7, "B": 0.3}, effects["Bias"], model.bloc_of)
+        self.assertLess(adjusted["A"], 0.7)
+        self.assertGreater(adjusted["B"], 0.3)
+        self.assertAlmostEqual(sum(adjusted.values()), 1.0, places=9)
+
+    def test_proportional_bias_is_detected_and_corrected(self):
+        model = Model(self.polls, self.entities, self.cfg, date(2024, 1, 2))
+        effects = fit_proportional(model)
+        bias = effects["Bias"]["bloc_effects"]["OPPOSITION"]
+        self.assertLess(bias, 0)
+        adjusted = apply_proportional_effect(
+            {"A": 0.7, "B": 0.3}, effects["Bias"], model.bloc_of
+        )
         self.assertLess(adjusted["A"], 0.7)
         self.assertGreater(adjusted["B"], 0.3)
         self.assertAlmostEqual(sum(adjusted.values()), 1.0, places=9)
