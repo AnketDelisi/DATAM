@@ -27,7 +27,11 @@ const state = {
   year: "2023",
   election: null,
   demographicSwing: null,
+  kurdishSupport: null,
+  kurdishByKey: new Map(),
   swingDefault: 0.6,
+  kurdishDefault: 0.5,
+  kurdishStrength: 0,
   seatProjection: null,
   swingStrength: 0,
   partiesById: new Map(),
@@ -51,7 +55,7 @@ function $(id) {
 }
 
 async function main() {
-  const [data, geojson, ilceGeo, polls2023, polls2028, elections, demographicSwing, seatProjection] = await Promise.all([
+  const [data, geojson, ilceGeo, polls2023, polls2028, elections, demographicSwing, kurdishSupport, seatProjection] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -80,6 +84,10 @@ async function main() {
       if (!response.ok) throw new Error(`swing ${response.status}`);
       return response.json();
     }),
+    fetch("./data/kurdish_support.json").then((response) => {
+      if (!response.ok) throw new Error(`kurdish support ${response.status}`);
+      return response.json();
+    }),
     fetch("./data/seat_projection_2028.json").then((response) => {
       if (!response.ok) throw new Error(`seat projection ${response.status}`);
       return response.json();
@@ -91,6 +99,10 @@ async function main() {
   state.pollDataByYear = { "2023": polls2023, "2028": polls2028 };
   state.elections = elections;
   state.demographicSwing = demographicSwing;
+  state.kurdishSupport = kurdishSupport;
+  state.kurdishByKey = new Map(
+    kurdishSupport.provinces.map((province) => [province.key, province])
+  );
   state.seatProjection = seatProjection;
   state.partiesById = new Map(data.parties.map((party) => [party.id, party]));
   state.mainParties = MAIN_ORDER.map((id) => state.partiesById.get(id)).filter(Boolean);
@@ -159,6 +171,16 @@ async function main() {
     $("swing-strength-value").textContent = `${event.target.value}%`;
     render();
   });
+  $("kurdish-swing").addEventListener("change", (event) => {
+    state.kurdishStrength = event.target.checked ? Number($("kurdish-strength").value) / 100 : 0;
+    $("kurdish-strength").disabled = !event.target.checked;
+    render();
+  });
+  $("kurdish-strength").addEventListener("input", (event) => {
+    state.kurdishStrength = $("kurdish-swing").checked ? Number(event.target.value) / 100 : 0;
+    $("kurdish-strength-value").textContent = `${event.target.value}%`;
+    render();
+  });
 
   render();
 }
@@ -182,6 +204,10 @@ function readUrl() {
   if (params.has("ds")) {
     const value = Number(params.get("ds"));
     if (Number.isFinite(value)) state.swingStrength = clamp(value, 0, 100) / 100;
+  }
+  if (params.has("ks")) {
+    const value = Number(params.get("ks"));
+    if (Number.isFinite(value)) state.kurdishStrength = clamp(value, 0, 100) / 100;
   }
 }
 
@@ -311,11 +337,20 @@ function updateOtherShare() {
 }
 
 function effectiveFactor(id, factor, provinceKey) {
-  return swingFactor(
+  let adjusted = swingFactor(
     factor,
     tiltFor(state.demographicSwing, provinceKey, PARTY_OUTCOME[id]),
     state.swingStrength
   );
+  if (id === "P12" && state.kurdishStrength > 0) {
+    const support = state.kurdishByKey.get(provinceKey);
+    adjusted = swingFactor(
+      adjusted,
+      support?.index_z || 0,
+      state.kurdishStrength
+    );
+  }
+  return adjusted;
 }
 
 function buildScenarioDistricts() {
@@ -535,6 +570,7 @@ function updateUrl() {
   params.set("a", state.useAlliances ? "1" : "0");
   params.set("year", state.year);
   params.set("ds", String(Math.round(state.swingStrength * 100)));
+  params.set("ks", String(Math.round(state.kurdishStrength * 100)));
   try {
     history.replaceState(null, "", `?${params.toString()}`);
   } catch {

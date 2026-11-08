@@ -40,6 +40,10 @@ await visit("index.html", async (p) => {
     throw new Error("empty 2028 polls should disable the apply button");
   }
   await p.check("#demographic-swing");
+  if (await p.isChecked("#kurdish-swing")) {
+    throw new Error("kurdish support should default off");
+  }
+  await p.check("#kurdish-swing");
   await p.locator("#map .province-path").first().click();
   await p.waitForTimeout(800);
   if (!(await p.textContent("#map-breadcrumb"))?.includes("/")) {

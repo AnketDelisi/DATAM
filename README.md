@@ -54,6 +54,7 @@ uv run python pipeline/export_site.py
 uv run python pipeline/demographic_correlation.py
 uv run python pipeline/demographic_swing.py
 uv run python pipeline/demographic_swing_backtest.py
+uv run python pipeline/scrape_kurdish_support.py
 uv run python pipeline/project_2028_seats.py
 ```
 
@@ -65,6 +66,11 @@ used by the experimental demographic-swing control. It is off by default;
 when enabled, the suggested strength is 60%, chosen by a leave-one-province-out
 check: uniform-swing MAE 0.0254 vs 0.0218 at 0.60 for the 2018→2023 incumbent
 change. This is a diagnostic, not a 2028 forecast guarantee.
+
+`pipeline/scrape_kurdish_support.py` builds the HDP/YSP political-support
+index (2015?2023). It is a political-support measure, not a Kurdish population
+estimate. An il?e approximation is also exported, scaled by 2023 HDP/DEM il?e
+votes; it is for exploration and is not used in seat allocation.
 
 `web/data/elections.json` defines the 2023 baseline and the 2028 scenario.
 `config/2028_seats.yaml` controls the 2028 seat apportionment (2023 seats
