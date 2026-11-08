@@ -55,23 +55,28 @@ export function createDrillMap(
         ? counts.flatMap(([id, n]) => Array(n).fill(id))
         : Array(row.seats).fill(row.winner || "OTHER");
       const total = Math.min(row.seats, orderedIds.length);
-      const cols = Math.max(1, Math.ceil(Math.sqrt(total)));
-      const rows = Math.ceil(total / cols);
-      const size = Math.max(1.1, Math.min(4.2, Math.min(width, height) / (Math.max(cols, rows) * 2.1)));
-      const spacing = size * 1.8;
-      const startX = cx - ((cols - 1) * spacing) / 2;
-      const startY = cy - ((rows - 1) * spacing) / 2;
-      for (let index = 0; index < total; index += 1) {
-        const x = startX + (index % cols) * spacing;
-        const y = startY + Math.floor(index / cols) * spacing;
-        const id = orderedIds[index];
-        const color = colorsFor(id);
-        seatLayer
-          .append("path")
-          .attr("d", `M${x},${y - size} L${x + size * 0.9},${y + size * 0.75} L${x - size * 0.9},${y + size * 0.75} Z`)
-          .attr("fill", color)
-          .attr("stroke", "#fffdf8")
-          .attr("stroke-width", 0.3);
+      const rows = Math.max(1, Math.ceil((Math.sqrt(8 * total + 1) - 1) / 2));
+      const size = Math.max(1.0, Math.min(4.2, width / (rows * 2.3), height / (rows * 1.8)));
+      const spacingX = size * 1.8;
+      const spacingY = size * 1.55;
+      const startY = cy - ((rows - 1) * spacingY) / 2;
+      let index = 0;
+      for (let row = 1; row <= rows && index < total; row += 1) {
+        const count = Math.min(row, total - index);
+        const rowWidth = (count - 1) * spacingX;
+        const y = startY + (row - 1) * spacingY;
+        for (let col = 0; col < count; col += 1) {
+          const x = cx - rowWidth / 2 + col * spacingX;
+          const id = orderedIds[index];
+          const color = colorsFor(id);
+          seatLayer
+            .append("path")
+            .attr("d", `M${x},${y - size} L${x + size * 0.9},${y + size * 0.75} L${x - size * 0.9},${y + size * 0.75} Z`)
+            .attr("fill", color)
+            .attr("stroke", "#fffdf8")
+            .attr("stroke-width", 0.3);
+          index += 1;
+        }
       }
     }
   }
