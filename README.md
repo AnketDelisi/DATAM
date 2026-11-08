@@ -17,6 +17,10 @@ seat-allocation, historical house-effect, and demographic datasets.
 - Correlates province-level election results with TÜİK demographics in the
   Demografi explorer.
 
+## Typography
+
+The interface uses the self-hosted **Tomorrow** typeface (Google Fonts, SIL Open Font License). Font files and the license live in `web/assets/fonts/`.
+
 ## Repository layout
 
 ```

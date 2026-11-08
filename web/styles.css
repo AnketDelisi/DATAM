@@ -1,3 +1,57 @@
+@font-face {
+  font-family: "Tomorrow";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/tomorrow-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Tomorrow";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/tomorrow-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Tomorrow";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./assets/fonts/tomorrow-500-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Tomorrow";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./assets/fonts/tomorrow-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Tomorrow";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./assets/fonts/tomorrow-700-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Tomorrow";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./assets/fonts/tomorrow-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: light;
   --paper: #f1f1ed;
@@ -10,8 +64,8 @@
   --rule-dark: #bab5a6;
   --signal: #c63a27;
   --white: #fffdf8;
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  --font-sans: "Tomorrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Tomorrow", ui-monospace, SFMono-Regular, Consolas, monospace;
   --shadow: none;
   --radius: 0;
 }
@@ -117,7 +171,7 @@ a:hover {
   margin: 0;
   color: #c9c7bd;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -175,8 +229,8 @@ a:hover {
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(280px, 330px) minmax(0, 1fr) minmax(330px, 390px);
-  gap: 20px;
+  grid-template-columns: 320px minmax(0, 1fr) 380px;
+  gap: 18px;
   max-width: 1720px;
   margin: 0 auto;
   padding: 20px 24px;
@@ -206,7 +260,7 @@ a:hover {
   gap: 8px;
   margin: 0;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -225,6 +279,16 @@ a:hover {
   position: sticky;
   top: 18px;
   padding: 15px;
+}
+
+.map-panel,
+.chart-panel {
+  grid-column: 2;
+}
+
+.results-panel,
+.aggregate-panel {
+  grid-column: 3;
 }
 
 .hint {
@@ -252,7 +316,7 @@ h3 {
 h3.subhead {
   margin: 16px 0 6px;
   font-size: 0.8rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -262,7 +326,7 @@ h3.subhead {
   padding-top: 9px;
   border-top: 1px solid var(--rule);
   font-size: 0.7rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -428,7 +492,7 @@ button {
   color: var(--white);
   font-family: var(--font-sans);
   font-size: 0.7rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -616,7 +680,6 @@ button.ghost:hover {
 .map-panel {
   display: flex;
   flex-direction: column;
-  align-self: stretch;
   padding: 14px;
 }
 
@@ -646,10 +709,6 @@ button.ghost:hover {
   overflow: hidden;
   border: 2px solid var(--ink);
   background-color: var(--panel-alt);
-  background-image:
-    linear-gradient(to right, rgba(23, 23, 20, 0.055) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(23, 23, 20, 0.055) 1px, transparent 1px);
-  background-size: 32px 32px;
 }
 
 .map-svg {
@@ -701,7 +760,7 @@ button.ghost:hover {
 .tip-title {
   margin-bottom: 3px;
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -822,7 +881,7 @@ button.ghost:hover {
 }
 
 .summary strong {
-  font-weight: 800;
+  font-weight: 700;
 }
 
 #hemicycle {
@@ -1105,7 +1164,7 @@ button.ghost:hover {
   margin-top: 1px;
   font-family: var(--font-mono);
   font-size: 0.98rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .demo-map-panel {
@@ -1198,19 +1257,38 @@ footer {
 
 @media (max-width: 1280px) {
   .layout {
-    grid-template-columns: minmax(270px, 310px) minmax(0, 1fr);
-  }
-
-  .results-panel {
-    grid-column: 1 / -1;
+    grid-template-columns: 300px minmax(0, 1fr);
   }
 
   .controls {
     position: static;
   }
 
+  .map-panel,
+  .chart-panel {
+    grid-column: 2;
+  }
+
+  .results-panel,
+  .aggregate-panel {
+    grid-column: 1 / -1;
+  }
+
   .backtest-tables {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1080px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map-panel,
+  .results-panel,
+  .chart-panel,
+  .aggregate-panel {
+    grid-column: auto;
   }
 }
 
@@ -1254,7 +1332,55 @@ footer {
   }
 
   .poll-list .poll-table {
-    min-width: 980px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .poll-list .poll-table thead {
+    display: none;
+  }
+
+  .poll-list .poll-table tbody {
+    display: block;
+  }
+
+  .poll-list .poll-table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px 14px;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .poll-list .poll-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 2px 0;
+    border: 0;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .poll-list .poll-table tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .poll-list .poll-table tbody td:first-child {
+    position: static;
+    background: transparent;
+  }
+
+  .poll-list .poll-table tbody td[data-label$="Ham"] {
+    grid-column: 1;
+  }
+
+  .poll-list .poll-table tbody td[data-label$="D?z."] {
+    grid-column: 2;
   }
 
   footer {

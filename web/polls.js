@@ -608,15 +608,16 @@ function updatePollTable(race, rawPolls, adjustedPolls) {
         .map((id) => {
           const rawCell = raw?.[id] == null ? "–" : formatPct(raw[id] * 100);
           const adjustedCell = adjusted?.[id] == null ? "–" : formatPct(adjusted[id] * 100);
-          return `<td class="num">${rawCell}</td><td class="num adjusted">${adjustedCell}</td>`;
+          const label = escapeHtml(entityMeta(race, id).short);
+          return `<td class="num" data-label="${label} · Ham">${rawCell}</td><td class="num adjusted" data-label="${label} · Düz.">${adjustedCell}</td>`;
         })
         .join("");
       return `<tr>
-        <td title="${escapeHtml(rawPoll.source_date_text || "")}">${formatDateShort(
+        <td data-label="Tarih" title="${escapeHtml(rawPoll.source_date_text || "")}">${formatDateShort(
           rawPoll.field_end
         )}</td>
-        <td>${escapeHtml(rawPoll.pollster)}</td>
-        <td class="num">${rawPoll.sample_size == null ? "–" : formatInt(rawPoll.sample_size)}</td>
+        <td data-label="Anket">${escapeHtml(rawPoll.pollster)}</td>
+        <td class="num" data-label="Örneklem">${rawPoll.sample_size == null ? "–" : formatInt(rawPoll.sample_size)}</td>
         ${cells}
       </tr>`;
     })
