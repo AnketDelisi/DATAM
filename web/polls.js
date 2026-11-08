@@ -583,18 +583,12 @@ function updatePollsterTable(race, aggregate) {
 
 function updatePollTable(race, rawPolls, adjustedPolls) {
   const head = $("poll-table-head");
-  const group = race.entities
-    .map((id) => `<th colspan="2">${entityMeta(race, id).short}</th>`)
-    .join("");
-  const subhead = race.entities
-    .map(() => `<th class="subhead">Ham</th><th class="subhead">Düz.</th>`)
-    .join("");
   head.innerHTML = `<tr>
-    <th rowspan="2">Tarih</th>
-    <th rowspan="2">Anket</th>
-    <th rowspan="2">Örneklem</th>
-    ${group}
-  </tr><tr>${subhead}</tr>`;
+    <th>Tarih</th>
+    <th>Anket</th>
+    <th>Örneklem</th>
+    ${race.entities.map((id) => `<th>${entityMeta(race, id).short}</th>`).join("")}
+  </tr>`;
 
   const adjustedById = new Map(adjustedPolls.map((poll) => [poll.poll_id, poll]));
   const rows = [...rawPolls]
@@ -604,12 +598,21 @@ function updatePollTable(race, rawPolls, adjustedPolls) {
       const raw = normalizePoll(rawPoll, race.entities, state.normalize);
       const adjusted = normalizePoll(adjustedPoll, race.entities, state.normalize);
       if (!raw && !adjusted) return "";
+      const values = raw || adjusted;
+      const winner = values
+        ? Object.entries(values).sort((a, b) => b[1] - a[1])[0]?.[0]
+        : null;
       const cells = race.entities
         .map((id) => {
-          const rawCell = raw?.[id] == null ? "–" : formatPct(raw[id] * 100);
-          const adjustedCell = adjusted?.[id] == null ? "–" : formatPct(adjusted[id] * 100);
-          const label = escapeHtml(entityMeta(race, id).short);
-          return `<td class="num" data-label="${label} · Ham">${rawCell}</td><td class="num adjusted" data-label="${label} · Düz.">${adjustedCell}</td>`;
+          const meta = entityMeta(race, id);
+          const main = raw?.[id] == null ? "–" : formatPct(raw[id] * 100);
+          const sub = adjusted?.[id] == null ? "–" : formatPct(adjusted[id] * 100);
+          const winnerClass = id === winner ? "winner" : "";
+          return `<td class="num poll-cell ${winnerClass}" data-label="${escapeHtml(
+            meta.short
+          )}" style="--winner:${meta.color}">
+            <span class="poll-value"><strong>${main}</strong><span class="poll-sub">düz. ${sub}</span></span>
+          </td>`;
         })
         .join("");
       return `<tr>

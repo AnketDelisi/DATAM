@@ -70,9 +70,12 @@ await visit("president.html", async (p) => {
 });
 
 await visit("polls.html", async (p) => {
-  const headers = (await p.locator("#poll-table-head").innerText()).toLowerCase();
-  if (!headers.includes("ham") || !headers.includes("düz.")) {
-    throw new Error("raw/adjusted poll headers missing");
+  const subtext = (await p.locator(".poll-sub").first().innerText()).toLowerCase();
+  if (!subtext.includes("düz.")) {
+    throw new Error("adjusted poll subtext missing");
+  }
+  if ((await p.locator(".poll-cell.winner").count()) === 0) {
+    throw new Error("poll winner highlight missing");
   }
   await p.selectOption("#election-year", "2028");
   if (!(await p.textContent("#election-note"))?.includes("2028")) {
