@@ -44,6 +44,9 @@ A static GitHub Pages tool that:
 | `web/data/house_effects.json` | full historical two-level + one-level effects | have |
 | `web/data/house_effects_2019.json` | leak-free 2023 backtest effects | have |
 | `data/analysis/kurdish_support.csv` | HDP/YSP political-support index, 2015–2023 | have |
+| `data/2024_local_actuals.csv` | 81 city + 973 district mayors, 2024 | have |
+| `data/analysis/house_effects_2024.md` | 2024 local house-effect backtest | have |
+| `data/analysis/demographic_confounding.md` | VIF + region-stability diagnostics | have |
 
 ## Model
 
@@ -111,6 +114,7 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] Two-level bloc + within-bloc party house-effect model.
 - [x] Leak-free 2015–2019 effects for the 2023 backtest.
 - [x] Race-specific one-level damping; parliament 50%, president hierarchical.
+- [x] Complete 2024 local backtest: 81 cities + 973 districts; one-level improves overall MAE and winners.
 
 ### M4 — demographics + polish (started)
 
@@ -124,7 +128,7 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] 2028 poll ingestion files and export/validation path.
 - [x] HDP/YSP political-support index, 2015–2023 (not a population estimate).
 - [x] Poll table shows raw values with adjusted subtext and winner highlight.
-- [ ] 2024 extensions and fuller confounding diagnostics.
+- [x] Complete 2024 city/district data and fuller confounding diagnostics.
 - [ ] Final 2028 election calendar and official seat map.
 - [x] Browser smoke test in CI.
 - [ ] Accessibility and shareable scenario polish.
@@ -139,9 +143,12 @@ uv run python pipeline/validate_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
 uv run python pipeline/house_effects_hierarchical.py
+uv run --no-project --python 3.13 --with ysk --with pyyaml python pipeline/build_2024_local.py
+uv run python pipeline/backtest_2024_local.py
 uv run python pipeline/export_site.py
 uv run python pipeline/scrape_2018_parties.py
 uv run python pipeline/demographic_correlation.py
+uv run python pipeline/demographic_confounding.py
 uv run python pipeline/demographic_swing.py
 uv run python pipeline/demographic_swing_backtest.py
 uv run python pipeline/scrape_kurdish_support.py

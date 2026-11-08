@@ -51,9 +51,12 @@ uv run python pipeline/validate_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
 uv run python pipeline/house_effects_hierarchical.py
+uv run --no-project --python 3.13 --with ysk --with pyyaml python pipeline/build_2024_local.py
+uv run python pipeline/backtest_2024_local.py
 uv run python pipeline/export_site.py
 uv run python pipeline/scrape_2018_parties.py
 uv run python pipeline/demographic_correlation.py
+uv run python pipeline/demographic_confounding.py
 uv run python pipeline/demographic_swing.py
 uv run python pipeline/demographic_swing_backtest.py
 uv run python pipeline/scrape_kurdish_support.py
@@ -91,6 +94,22 @@ improves from 2.41 to 2.34 points. Parliament stays on one-level effects damped
 to 50%, because hierarchical pooling is slightly worse there (1.18 vs 1.17).
 The effect toggle stays off by default, and
 `web/data/house_effects_2019.json` records the leak-free estimates.
+
+`pipeline/build_2024_local.py` uses the `ysk` package to build complete
+31 March 2024 actuals: 81 city mayors and 973 district mayors. It requires
+Python 3.13 because of that package, so it is run outside the project
+environment. The 2024 backtest trains on 2015–2023 polls only and scores all
+129 scopes with matching polls: 51 city and 78 district. One-level improves
+overall MAE from 2.921 to 2.879 points and winner accuracy from 67.4% to 72.9%;
+two-level is marginally better on MAE but worse on winners. The production
+local-race mode stays one-level. The 2024 result is diagnostic only, not
+production training data.
+
+`pipeline/demographic_confounding.py` reports VIF, pairwise demographic
+correlations, swing-model fit, and leave-one-region-out coefficient stability.
+Household shares and education shares each sum to one, so their individual OLS
+coefficients are not identified even though the composite tilt is; the report
+flags this explicitly.
 
 ## Local preview
 

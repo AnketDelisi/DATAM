@@ -32,11 +32,11 @@ correction_strength:
   presidential_first: 1.0
   presidential_runoff: 1.0
   referendum: 0.0
-  local: 0.0
+  local: 1.0
 
 correction_mode:
   parliamentary: one_level
   presidential_first: hierarchical
   presidential_runoff: hierarchical
   referendum: two_level
-  local: two_level
+  local: one_level

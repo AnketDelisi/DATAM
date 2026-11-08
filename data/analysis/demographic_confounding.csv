@@ -1,0 +1,10 @@
+demographic,r2,vif
+hh_1_2,1.0,inf
+edu_high_school,1.0,inf
+hh_3_4,1.0,inf
+hh_5plus,1.0,inf
+edu_primary,1.0,inf
+edu_university,1.0,inf
+edu_secondary,1.0,inf
+median_age,0.9469240555183855,18.84092708602483
+female_share,0.47923982592766934,1.9202697321879028
