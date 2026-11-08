@@ -84,6 +84,22 @@ await visit("demographics.html", async () => {
   await page.waitForSelector("#scatter path, #demo-map path", {
     timeout: 5000,
   });
+  if ((await page.evaluate(() => document.body.dataset.view)) !== "simple") {
+    throw new Error("simple correlation view missing");
+  }
+  if (!(await page.locator("#plain-summary").isVisible())) {
+    throw new Error("plain summary missing");
+  }
+  await page.click("#view-expert");
+  await page.waitForTimeout(100);
+  if ((await page.evaluate(() => document.body.dataset.view)) !== "expert") {
+    throw new Error("expert correlation view missing");
+  }
+  const expertStats = (await page.locator("#corr-stats").innerText()).toUpperCase();
+  if (!expertStats.includes("PEARSON")) {
+    throw new Error("expert statistics missing");
+  }
+  await page.click("#view-simple");
 });
 
 await browser.close();

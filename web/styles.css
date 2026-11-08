@@ -160,11 +160,14 @@ a:hover {
   outline-color: var(--white);
 }
 
-.brand-logo {
+.brand-wordmark {
   display: block;
-  width: auto;
-  height: 31px;
-  filter: invert(1);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
 }
 
 .topbar-title p {
@@ -1137,6 +1140,86 @@ button.ghost:hover {
 }
 
 /* Demographics */
+
+.mode-switch {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.mode-switch .segment {
+  flex: 1;
+}
+
+.plain-summary {
+  margin: 12px 0 0;
+  padding: 10px;
+  border: 2px solid var(--ink);
+  background: var(--panel-alt);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.simple-only {
+  display: none;
+}
+
+body[data-view="simple"] .simple-only {
+  display: block;
+}
+
+body[data-view="simple"] .expert-only {
+  display: none;
+}
+
+body[data-view="expert"] .simple-only {
+  display: none;
+}
+
+.explain {
+  margin-top: 12px;
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.explain summary {
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.explain p {
+  margin: 7px 0 0;
+  line-height: 1.5;
+}
+
+.strength {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.strength.pos {
+  color: var(--ink);
+}
+
+.strength.neg {
+  color: var(--signal);
+}
+
+.stat small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.3;
+}
 
 .stat-grid {
   display: grid;

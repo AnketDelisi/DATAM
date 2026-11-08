@@ -18,6 +18,7 @@ const state = {
   outcome: "CHP",
   demographic: "hh_5plus",
   mapMode: "demographic",
+  viewMode: "simple",
 };
 
 function $(id) {
@@ -75,6 +76,14 @@ async function main() {
     state.mapMode = "outcome";
     render();
   });
+  $("view-simple").addEventListener("click", () => {
+    state.viewMode = "simple";
+    render();
+  });
+  $("view-expert").addEventListener("click", () => {
+    state.viewMode = "expert";
+    render();
+  });
 
   $("generated-at").textContent = state.data.meta.source;
   render();
@@ -85,11 +94,13 @@ function readUrl() {
   const outcome = params.get("outcome");
   const demographic = params.get("demo");
   const mapMode = params.get("map");
+  const view = params.get("view");
   if (outcome && state.data.meta.outcomes.includes(outcome)) state.outcome = outcome;
   if (demographic && state.data.meta.demographics.includes(demographic)) {
     state.demographic = demographic;
   }
   if (mapMode === "outcome" || mapMode === "demographic") state.mapMode = mapMode;
+  if (view === "simple" || view === "expert") state.viewMode = view;
 }
 
 function selectedCorrelation() {
@@ -99,6 +110,9 @@ function selectedCorrelation() {
 }
 
 function render() {
+  document.body.dataset.view = state.viewMode;
+  $("view-simple").classList.toggle("active", state.viewMode === "simple");
+  $("view-expert").classList.toggle("active", state.viewMode === "expert");
   const rows = correlationsFor(state.data.correlations, state.outcome);
   renderStats(rows);
   renderScatter();
@@ -107,21 +121,75 @@ function render() {
   updateUrl();
 }
 
+function strengthLabel(value) {
+  const absolute = Math.abs(value);
+  if (absolute >= 0.7) return "Çok güçlü";
+  if (absolute >= 0.5) return "Güçlü";
+  if (absolute >= 0.3) return "Orta";
+  if (absolute >= 0.15) return "Zayıf";
+  return "Çok zayıf";
+}
+
+function directionLabel(value) {
+  if (Math.abs(value) < 0.05) return "İlişki yok";
+  return value > 0 ? "Aynı yönlü" : "Ters yönlü";
+}
+
+function groupMeans() {
+  const rows = state.data.provinces
+    .filter(
+      (row) =>
+        Number.isFinite(row[state.demographic]) &&
+        Number.isFinite(row[state.outcome])
+    )
+    .sort((a, b) => b[state.demographic] - a[state.demographic]);
+  const size = Math.max(5, Math.round(rows.length * 0.2));
+  const average = (items) =>
+    items.reduce((sum, row) => sum + row[state.outcome], 0) / items.length;
+  return {
+    top: average(rows.slice(0, size)),
+    bottom: average(rows.slice(-size)),
+  };
+}
+
 function renderStats(rows) {
   const selected = selectedCorrelation();
   const strongest = rows[0];
-  const cards = [
-    ["Pearson r", selected ? formatCorrelation(selected.pearson_r) : "–"],
-    ["Partial r", selected ? formatCorrelation(selected.partial_r) : "–"],
-    ["Ağırlıklı r", selected ? formatCorrelation(selected.weighted_r) : "–"],
-    ["n", selected ? formatInt(selected.n) : "–"],
-  ];
+  let cards;
+  if (state.viewMode === "simple" && selected) {
+    const means = groupMeans();
+    cards = [
+      ["İlişki", strengthLabel(selected.pearson_r), directionLabel(selected.pearson_r)],
+      ["Yüksek grup", formatMetric(state.outcome, means.top), "gösterge en yüksek %20"],
+      ["Düşük grup", formatMetric(state.outcome, means.bottom), "gösterge en düşük %20"],
+      ["İl", formatInt(selected.n), "gözlem"],
+    ];
+  } else {
+    cards = [
+      ["Pearson r", selected ? formatCorrelation(selected.pearson_r) : "–", ""],
+      ["Partial r", selected ? formatCorrelation(selected.partial_r) : "–", "bölge + seçmen"],
+      ["Ağırlıklı r", selected ? formatCorrelation(selected.weighted_r) : "–", "seçmen ağırlıklı"],
+      ["n", selected ? formatInt(selected.n) : "–", "il"],
+    ];
+  }
   $("corr-stats").innerHTML = cards
     .map(
-      ([label, value]) =>
-        `<div class="stat"><span>${label}</span><strong>${value}</strong></div>`
+      ([label, value, note]) =>
+        `<div class="stat"><span>${label}</span><strong>${value}</strong>${
+          note ? `<small>${note}</small>` : ""
+        }</div>`
     )
     .join("");
+
+  $("plain-summary").innerHTML = selected
+    ? `${formatDemographic(state.demographic)} yüksek olan illerde ` +
+      `${formatOutcome(state.outcome)} daha ${
+        selected.pearson_r >= 0 ? "yüksek" : "düşük"
+      }. İlişki <strong>${strengthLabel(selected.pearson_r).toLowerCase()}</strong> ` +
+      `ve ${directionLabel(selected.pearson_r).toLowerCase()}. ` +
+      `<span class="muted">Bu nedensellik değildir.</span>`
+    : "";
+
   $("scatter-subtitle").textContent = `${formatOutcome(state.outcome)} × ${formatDemographic(
     state.demographic
   )}`;
@@ -280,17 +348,27 @@ function renderScatter() {
 }
 
 function renderTable(rows) {
+  const simple = state.viewMode === "simple";
+  $("corr-table-head").innerHTML = simple
+    ? "<tr><th>Gösterge</th><th>İlişki</th></tr>"
+    : "<tr><th>Gösterge</th><th>r</th><th>partial r</th><th>r̄</th></tr>";
   $("corr-table").innerHTML = rows
     .map(
       (row) => `<tr data-demographic="${row.demographic}" class="${
         row.demographic === state.demographic ? "selected" : ""
       }">
         <td>${formatDemographic(row.demographic)}</td>
-        <td class="num ${row.pearson_r >= 0 ? "pos" : "neg"}">${formatCorrelation(
-          row.pearson_r
-        )}</td>
+        ${
+          simple
+            ? `<td><span class="strength ${row.pearson_r >= 0 ? "pos" : "neg"}">${strengthLabel(
+                row.pearson_r
+              )} ${directionLabel(row.pearson_r).toLowerCase()}</span></td>`
+            : `<td class="num ${row.pearson_r >= 0 ? "pos" : "neg"}">${formatCorrelation(
+                row.pearson_r
+              )}</td>
         <td class="num">${formatCorrelation(row.partial_r)}</td>
-        <td class="num">${formatCorrelation(row.weighted_r)}</td>
+        <td class="num">${formatCorrelation(row.weighted_r)}</td>`
+        }
       </tr>`
     )
     .join("");
@@ -372,6 +450,7 @@ function updateUrl() {
   params.set("outcome", state.outcome);
   params.set("demo", state.demographic);
   params.set("map", state.mapMode);
+  params.set("view", state.viewMode);
   try {
     history.replaceState(null, "", `?${params.toString()}`);
   } catch {
