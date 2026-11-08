@@ -12,8 +12,8 @@ import {
   pollsterKey,
 } from "./modules/historical_effects.js";
 import { bootstrapAggregate } from "./modules/uncertainty.js";
+import { MAIN_PARTIES, MAIN_PARTIES_2028 } from "./modules/poll_preset.js";
 
-const MAIN_PARTIES = ["P9", "P21", "P11", "P22", "P12", "P10", "P13", "P24"];
 const OTHER = "OTHER";
 const TR_MONTHS = [
   "Oca",
@@ -113,20 +113,26 @@ function inkFor(hex) {
     : "#fffdf8";
 }
 
+function mainPartyIds() {
+  return Number(state.year) >= 2028 ? MAIN_PARTIES_2028 : MAIN_PARTIES;
+}
+
 function addOther(poll) {
+  const parties = mainPartyIds();
   const other = Object.entries(poll.results)
-    .filter(([id, value]) => !MAIN_PARTIES.includes(id) && typeof value === "number")
+    .filter(([id, value]) => !parties.includes(id) && typeof value === "number")
     .reduce((sum, [, value]) => sum + value, 0);
   return { ...poll, results: { ...poll.results, [OTHER]: other } };
 }
 
 function parliamentActual(data) {
+  const parties = mainPartyIds();
   const shares = data.national.shares;
   const other = Object.entries(shares)
-    .filter(([id]) => !MAIN_PARTIES.includes(id))
+    .filter(([id]) => !parties.includes(id))
     .reduce((sum, [, value]) => sum + value, 0);
   const actual = {};
-  for (const id of MAIN_PARTIES) actual[id] = shares[id] || 0;
+  for (const id of parties) actual[id] = shares[id] || 0;
   actual[OTHER] = other;
   return actual;
 }
@@ -169,7 +175,7 @@ function buildRaces() {
       label: "Milletvekili",
       shortLabel: "Milletvekili",
       electionDay,
-      entities: [...MAIN_PARTIES, OTHER],
+      entities: [...mainPartyIds(), OTHER],
       actual: parliamentActual(state.data),
       meta: partyMeta,
       polls: parliament.polls.map(addOther),

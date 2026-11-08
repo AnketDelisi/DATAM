@@ -1,0 +1,23 @@
+parties:
+  YENI:
+    name: "Yeni Parti"
+    short: "YENİ"
+    color: "#D32F2F"
+    seat_order: 25
+    main_order: 25
+    main: true
+    active_from: 2028
+    baseline_mix:
+      P21: 1.0
+  A:
+    name: "A Parti (Anahtar Parti)"
+    short: "A"
+    color: "#455A64"
+    seat_order: 45
+    main_order: 45
+    main: true
+    active_from: 2028
+    baseline_mix:
+      P22: 0.7
+      P9: 0.2
+      P11: 0.1

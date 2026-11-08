@@ -14,10 +14,17 @@ class TestProjectionScaffold(unittest.TestCase):
         self.assertEqual(election["baseline"], "2023")
         self.assertEqual(election["seat_source"], "2028_projection")
 
-    def test_2028_poll_file_is_empty_but_valid(self):
+    def test_2028_poll_file_is_valid(self):
         payload = json.loads((WEB / "polls_2028.json").read_text(encoding="utf-8"))
         self.assertEqual(payload["datasets"]["president"]["polls"], [])
-        self.assertEqual(payload["datasets"]["parliament"]["polls"], [])
+        parliament = payload["datasets"]["parliament"]["polls"]
+        self.assertGreater(len(parliament), 0)
+        self.assertTrue(any("YENI" in poll["results"] for poll in parliament))
+        self.assertTrue(any("A" in poll["results"] for poll in parliament))
+        for poll in parliament:
+            self.assertEqual(poll["type"], "parliamentary")
+            self.assertIsNone(poll["round"])
+            self.assertGreaterEqual(len(poll["results"]), 2)
 
     def test_demographic_swing_covers_every_province(self):
         swing = json.loads(

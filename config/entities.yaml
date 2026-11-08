@@ -39,6 +39,14 @@ parties:
     name: "TİP"
     aliases: ["TIP", "TİP", "TURKIYE ISCI PARTISI", "TÜRKİYE İŞÇİ PARTİSİ"]
     bloc: OTHER
+  YENI:
+    name: "Yeni Parti"
+    aliases: ["YENI", "YENİ", "YENI PARTI", "YENİ PARTİ", "YEP", "YENI PARTI (2026)"]
+    bloc: OPPOSITION
+  A:
+    name: "A Parti (Anahtar Parti)"
+    aliases: ["A", "A PARTI", "A PARTİ", "ANAHTAR", "ANAHTAR PARTI", "ANAHTAR PARTİ"]
+    bloc: OTHER
   OTHER:
     name: "Diğer"
     aliases: ["DIGER", "DİĞER", "DIGERLERI", "DİĞERLERİ", "BAGIMSIZ", "BAĞIMSIZ", "AP", "VP", "DEVA", "GP", "DP", "HUDA", "HÜDA", "DSP", "BTP", "TDP", "ANAP", "YP", "MP", "GBP", "AB", "HKP", "MILLI YOL", "MİLLİ YOL", "VATAN", "VATAN PARTISI", "VATAN PARTİSİ"]

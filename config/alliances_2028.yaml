@@ -1,0 +1,18 @@
+# 2028 parliamentary scenario. Alliances are intentionally empty until the
+# actual 2028 electoral alliances are known; edit this file when they are.
+election_id: 2028
+threshold: 0.07
+joint_lists: {}
+alliances: {}
+
+parties:
+  P9:   {name: "AK Parti", alliance: null}
+  P21:  {name: "CHP", alliance: null}
+  P11:  {name: "MHP", alliance: null}
+  P22:  {name: "İYİ Parti", alliance: null}
+  P12:  {name: "DEM Parti", alliance: null}
+  P10:  {name: "YRP", alliance: null}
+  P13:  {name: "TİP", alliance: null}
+  P24:  {name: "Zafer", alliance: null}
+  YENI: {name: "Yeni Parti", alliance: null}
+  A:    {name: "A Parti", alliance: null}

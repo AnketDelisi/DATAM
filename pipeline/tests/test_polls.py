@@ -10,10 +10,10 @@ class TestPollData(unittest.TestCase):
     def test_scraped_polls_are_valid(self):
         total, errors, counts, _ = validate_dataset(ROOT / "polls")
         self.assertEqual(errors, [])
-        self.assertEqual(total, 145)
+        self.assertGreaterEqual(total, 145)
         self.assertEqual(counts[("presidential", 1)], 82)
         self.assertEqual(counts[("presidential", 2)], 14)
-        self.assertEqual(counts[("parliamentary", None)], 49)
+        self.assertGreaterEqual(counts[("parliamentary", None)], 49)
 
 
 if __name__ == "__main__":

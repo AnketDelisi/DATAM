@@ -8,11 +8,9 @@ import {
   formatSigned,
   normalizeName,
 } from "./modules/format.js";
+import { parliamentAggregate } from "./modules/poll_preset.js";
 import {
-  MAIN_PARTIES,
-  parliamentAggregate,
-} from "./modules/poll_preset.js";
-import {
+  baselineVotesFor,
   PARTY_OUTCOME,
   rakeToTargets,
   scaledStrength,
@@ -20,7 +18,6 @@ import {
   tiltFor,
 } from "./modules/projection.js";
 
-const MAIN_ORDER = [...MAIN_PARTIES];
 const OTHER_COLOR = "#9e9e9e";
 
 const state = {
@@ -42,6 +39,7 @@ const state = {
   swingStrength: 0,
   partiesById: new Map(),
   mainParties: [],
+  mainOrder: [],
   geoDisplay: new Map(),
   ilceDisplay: new Map(),
   shares: {},
@@ -111,7 +109,7 @@ async function main() {
   );
   state.seatProjection = seatProjection;
   state.partiesById = new Map(data.parties.map((party) => [party.id, party]));
-  state.mainParties = MAIN_ORDER.map((id) => state.partiesById.get(id)).filter(Boolean);
+  rebuildActiveParties();
   state.geoDisplay = new Map(
     geojson.features.map((feature) => [
       normalizeName(feature.properties.shapeName),
@@ -193,6 +191,9 @@ async function main() {
 
 function readUrl() {
   const params = new URLSearchParams(location.search);
+  const year = params.get("year");
+  if (year && state.elections[year]) state.year = year;
+  rebuildActiveParties();
   for (const party of state.mainParties) {
     const key = party.id.toLowerCase();
     if (params.has(key)) {
@@ -205,8 +206,6 @@ function readUrl() {
     if (Number.isFinite(value)) state.threshold = clamp(value, 0, 15) / 100;
   }
   if (params.has("a")) state.useAlliances = params.get("a") !== "0";
-  const year = params.get("year");
-  if (year && state.elections[year]) state.year = year;
   if (params.has("ds")) {
     const value = Number(params.get("ds"));
     if (Number.isFinite(value)) state.swingStrength = clamp(value, 0, 100) / 100;
@@ -230,6 +229,12 @@ function buildElectionControl() {
     state.year = select.value;
     state.election = state.elections[state.year] || state.elections["2023"];
     state.pollData = state.pollDataByYear[state.year] || state.pollDataByYear["2023"];
+    const nextThreshold = state.data.meta[`threshold_${state.year}`];
+    if (Number.isFinite(nextThreshold)) state.threshold = nextThreshold;
+    rebuildActiveParties();
+    buildControls();
+    buildLegend();
+    syncControls();
     state.map?.reset();
     updateElectionNote();
     render();
@@ -244,7 +249,9 @@ function updateElectionNote() {
     (datasets.president?.polls?.length || 0) + (datasets.parliament?.polls?.length || 0) > 0;
   $("election-note").textContent =
     election.status === "projection"
-      ? `${election.year} senaryosu: 2023 tabanı ve 2028 sandalye projeksiyonu; henüz anket verisi yok.`
+      ? `${election.year} senaryosu: 2023 tabanı ve 2028 sandalye projeksiyonu; ${
+          hasPolls ? "anket ortalaması kullanılabilir." : "henüz anket verisi yok."
+        }`
       : "2023 resmi sonucu ve anket ortalaması.";
   $("apply-polls").disabled = !hasPolls;
   $("apply-polls").textContent = hasPolls ? "Anket ortalaması" : "Anket verisi yok";
@@ -310,11 +317,22 @@ function setGeneratedAt() {
   $("generated-at").textContent = `Veri: ${formatted}`;
 }
 
+function rebuildActiveParties() {
+  const year = Number(state.year) || 2023;
+  state.mainParties = state.data.parties
+    .filter((party) => party.main && (party.active_from ?? 2023) <= year)
+    .sort((left, right) => (left.main_order ?? 999) - (right.main_order ?? 999));
+  state.mainOrder = state.mainParties.map((party) => party.id);
+  for (const party of state.mainParties) {
+    if (!Number.isFinite(state.shares[party.id])) state.shares[party.id] = 0;
+  }
+}
+
 function normalizeShares() {
-  const sum = MAIN_ORDER.reduce((total, id) => total + (state.shares[id] || 0), 0);
+  const sum = state.mainOrder.reduce((total, id) => total + (state.shares[id] || 0), 0);
   if (sum > 100 && sum > 0) {
     const scale = 100 / sum;
-    for (const id of MAIN_ORDER) state.shares[id] = (state.shares[id] || 0) * scale;
+    for (const id of state.mainOrder) state.shares[id] = (state.shares[id] || 0) * scale;
   }
 }
 
@@ -338,7 +356,7 @@ function setShare(id, value) {
 }
 
 function updateOtherShare() {
-  const sum = MAIN_ORDER.reduce((total, id) => total + (state.shares[id] || 0), 0);
+  const sum = state.mainOrder.reduce((total, id) => total + (state.shares[id] || 0), 0);
   $("other-share").textContent = formatPct(Math.max(0, 100 - sum));
 }
 
@@ -364,33 +382,53 @@ function buildScenarioDistricts() {
   const { data } = state;
   const totalValid = data.national.valid_votes;
   const base = data.national.votes;
-  const mainIds = new Set(MAIN_ORDER);
-  const sumMain = MAIN_ORDER.reduce((total, id) => total + state.shares[id], 0);
+  const mainIds = new Set(state.mainOrder);
+  const sumMain = state.mainOrder.reduce((total, id) => total + state.shares[id], 0);
   const otherShare = Math.max(0, 100 - sumMain);
-  const baseMain = MAIN_ORDER.reduce((total, id) => total + (base[id] || 0), 0);
+  const historicalMainIds = state.mainParties
+    .filter((party) => (party.active_from ?? 2023) <= 2023)
+    .map((party) => party.id);
+  const baseMain = historicalMainIds.reduce((total, id) => total + (base[id] || 0), 0);
   const baseOther = totalValid - baseMain;
 
   const targets = {};
   const factors = {};
+  for (const party of state.mainParties) {
+    const target = (state.shares[party.id] / 100) * totalValid;
+    const baseline = data.districts.reduce(
+      (sum, district) =>
+        sum + baselineVotesFor(district.votes, party.id, party.baseline_mix),
+      0
+    );
+    targets[party.id] = target;
+    factors[party.id] = baseline > 0 ? target / baseline : 0;
+  }
   for (const [id, votes] of Object.entries(base)) {
-    if (mainIds.has(id)) {
-      const target = (state.shares[id] / 100) * totalValid;
-      targets[id] = target;
-      factors[id] = votes > 0 ? target / votes : 0;
-    } else {
-      const share = baseOther > 0 ? votes / baseOther : 0;
-      const target = otherShare * share * totalValid / 100;
-      targets[id] = target;
-      factors[id] = votes > 0 ? target / votes : 0;
-    }
+    if (mainIds.has(id)) continue;
+    const share = baseOther > 0 ? votes / baseOther : 0;
+    const target = otherShare * share * totalValid / 100;
+    targets[id] = target;
+    factors[id] = votes > 0 ? target / votes : 0;
   }
 
   const scaled = data.districts.map((district) => {
     const votes = {};
     const provinceKey = normalizeName(district.province_base);
-    for (const [id, value] of Object.entries(district.votes)) {
+    for (const [id] of Object.entries(district.votes)) {
+      const party = state.partiesById.get(id);
+      const baseValue = baselineVotesFor(district.votes, id, party?.baseline_mix);
       const factor = effectiveFactor(id, factors[id] || 0, provinceKey);
-      if (factor > 0) votes[id] = value * factor;
+      if (factor > 0 && baseValue > 0) votes[id] = baseValue * factor;
+    }
+    for (const party of state.mainParties) {
+      if (district.votes[party.id] != null) continue;
+      const baseValue = baselineVotesFor(
+        district.votes,
+        party.id,
+        party.baseline_mix
+      );
+      const factor = effectiveFactor(party.id, factors[party.id] || 0, provinceKey);
+      if (factor > 0 && baseValue > 0) votes[party.id] = baseValue * factor;
     }
     const projectedSeats =
       state.year === "2028"
@@ -455,9 +493,15 @@ function aggregateIlce(factors) {
   for (const base of state.data.ilce) {
     const votes = {};
     const provinceKey = base.province_key || normalizeName(base.province_base);
-    for (const [id, value] of Object.entries(base.votes)) {
+    const ids = new Set([
+      ...Object.keys(base.votes),
+      ...state.mainOrder.filter((id) => base.votes[id] == null),
+    ]);
+    for (const id of ids) {
+      const party = state.partiesById.get(id);
+      const value = baselineVotesFor(base.votes, id, party?.baseline_mix);
       const factor = effectiveFactor(id, factors[id] || 0, provinceKey);
-      if (factor > 0) votes[id] = value * factor;
+      if (factor > 0 && value > 0) votes[id] = value * factor;
     }
     const total = Object.values(votes).reduce((a, b) => a + b, 0);
     const shares = {};
@@ -477,7 +521,10 @@ function aggregateIlce(factors) {
 
 function render() {
   const { districts, factors } = buildScenarioDistricts();
-  const alliances = state.useAlliances ? state.data.meta.alliances : {};
+  const meta = state.data.meta;
+  const alliances = state.useAlliances
+    ? meta[`alliances_${state.year}`] ?? meta.alliances
+    : {};
   const result = allocateDistricts(districts, alliances, state.threshold);
   const provinces = aggregateProvinces(districts, result);
   const ilce = aggregateIlce(factors);
@@ -507,16 +554,19 @@ function updateTable(result) {
   let mainShare = 0;
   let mainActual = 0;
 
-  for (const id of MAIN_ORDER) {
+  for (const id of state.mainOrder) {
     const party = state.partiesById.get(id);
     if (!party) continue;
     const seats = result.seatsByParty[id] || 0;
     const share = total ? (national[id] || 0) / total : 0;
-    const actual = party.actual_seats || 0;
+    const isNew = (party.active_from ?? 2023) > 2023;
+    const actual = isNew ? null : (party.actual_seats || 0);
     mainSeats += seats;
     mainShare += share;
-    mainActual += actual;
-    rows.push(rowHtml(party, share, seats, actual, seats - actual));
+    if (!isNew) mainActual += actual;
+    rows.push(
+      rowHtml(party, share, seats, actual, isNew ? null : seats - actual)
+    );
   }
 
   const otherSeats = 600 - mainSeats;
@@ -536,12 +586,14 @@ function updateTable(result) {
 
 function rowHtml(party, share, seats, actual, diff) {
   const diffClass = diff > 0 ? "pos" : diff < 0 ? "neg" : "";
+  const actualText = Number.isFinite(actual) ? formatInt(actual) : "—";
+  const diffText = Number.isFinite(diff) ? formatSigned(diff) : "—";
   return `<tr>
     <td><span class="swatch" style="background:${party.color}"></span>${party.short}</td>
     <td class="num">${formatPct(share * 100)}</td>
     <td class="num">${formatInt(seats)}</td>
-    <td class="num muted">${formatInt(actual)}</td>
-    <td class="num ${diffClass}">${formatSigned(diff)}</td>
+    <td class="num muted">${actualText}</td>
+    <td class="num ${diffClass}">${diffText}</td>
   </tr>`;
 }
 
@@ -566,7 +618,7 @@ function updateSummary(result) {
 
 function updateUrl() {
   const params = new URLSearchParams();
-  for (const id of MAIN_ORDER) params.set(id.toLowerCase(), state.shares[id].toFixed(1));
+  for (const id of state.mainOrder) params.set(id.toLowerCase(), state.shares[id].toFixed(1));
   params.set("t", (state.threshold * 100).toFixed(1));
   params.set("a", state.useAlliances ? "1" : "0");
   params.set("year", state.year);
@@ -769,12 +821,16 @@ function showIlceDetail(geoId) {
 }
 
 function applyPollAverage() {
-  const shares = parliamentAggregate(state.pollData, state.election?.date || "2023-05-14");
+  const shares = parliamentAggregate(
+    state.pollData,
+    state.election?.date || "2023-05-14",
+    state.mainOrder
+  );
   if (!Object.keys(shares).length) {
     updateElectionNote();
     return;
   }
-  for (const id of MAIN_ORDER) {
+  for (const id of state.mainOrder) {
     state.shares[id] = (shares[id] || 0) * 100;
   }
   normalizeShares();

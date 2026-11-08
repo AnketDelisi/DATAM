@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   adjustedShare,
+  baselineVotesFor,
   rakeToTargets,
   scaledStrength,
   swingFactor,
@@ -29,6 +30,18 @@ test("zero strength reproduces the uniform swing", () => {
 test("positive tilt amplifies a positive national factor", () => {
   assert.ok(swingFactor(1.2, 1, 0.5) > 1.2);
   assert.ok(swingFactor(1.2, -1, 0.5) < 1.2);
+});
+
+test("baseline mixes use normalized predecessor weights", () => {
+  const votes = { P22: 60, P9: 30, P11: 10 };
+  assert.ok(
+    Math.abs(baselineVotesFor(votes, "A", { P22: 0.7, P9: 0.2, P11: 0.1 }) - 49) <
+      1e-9
+  );
+  assert.equal(baselineVotesFor(votes, "P22"), 60);
+  assert.ok(
+    Math.abs(baselineVotesFor(votes, "A", { P22: 2, P9: 2 }) - 45) < 1e-9
+  );
 });
 
 test("party strengths use their own best backtest values at 60%", () => {

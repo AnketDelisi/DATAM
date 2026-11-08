@@ -29,6 +29,7 @@ CUTOFFS_BY_YEAR = {
     },
 }
 PRESIDENT_KEYS = {"A", "B", "C", "D"}
+PARLIAMENT_EXTRA_KEYS = {"YENI", "A"}
 PARLIAMENT_KEY = re.compile(r"^P\d+$")
 
 
@@ -108,7 +109,8 @@ def validate_poll(poll: dict, seen_ids: set[str], cutoffs: dict) -> list[str]:
             unknown = {
                 key
                 for key in results
-                if key not in {"MP", "OTHER"} and not PARLIAMENT_KEY.match(key)
+                if key not in {"MP", "OTHER", *PARLIAMENT_EXTRA_KEYS}
+                and not PARLIAMENT_KEY.match(key)
             }
             if unknown:
                 errors.append(f"unknown parliamentary keys: {sorted(unknown)}")

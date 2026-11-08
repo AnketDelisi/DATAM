@@ -24,14 +24,14 @@ GEO = ROOT / "web" / "geo" / "tr-provinces.geojson"
 ILCE_GEO = ROOT / "web" / "geo" / "tr-ilce.geojson"
 
 PARTY_META = {
-    "P9": {"name": "Adalet ve Kalkınma Partisi", "short": "AK Parti", "color": "#F4A300", "seat_order": 80, "main": True},
-    "P21": {"name": "Cumhuriyet Halk Partisi", "short": "CHP", "color": "#E4002B", "seat_order": 30, "main": True},
-    "P11": {"name": "Milliyetçi Hareket Partisi", "short": "MHP", "color": "#8B1A1A", "seat_order": 90, "main": True},
-    "P22": {"name": "İYİ Parti", "short": "İYİ Parti", "color": "#2E6DB4", "seat_order": 40, "main": True},
-    "P12": {"name": "Yeşiller ve Sol Gelecek Partisi", "short": "Yeşil Sol", "color": "#2E7D32", "seat_order": 20, "main": True},
-    "P10": {"name": "Yeniden Refah Partisi", "short": "YRP", "color": "#00897B", "seat_order": 70, "main": True},
-    "P13": {"name": "Türkiye İşçi Partisi", "short": "TİP", "color": "#C2185B", "seat_order": 10, "main": True},
-    "P24": {"name": "Zafer Partisi", "short": "Zafer", "color": "#1E3A8A", "seat_order": 60, "main": True},
+    "P9": {"name": "Adalet ve Kalkınma Partisi", "short": "AK Parti", "color": "#F4A300", "seat_order": 80, "main_order": 10, "main": True},
+    "P21": {"name": "Cumhuriyet Halk Partisi", "short": "CHP", "color": "#E4002B", "seat_order": 30, "main_order": 20, "main": True},
+    "P11": {"name": "Milliyetçi Hareket Partisi", "short": "MHP", "color": "#8B1A1A", "seat_order": 90, "main_order": 30, "main": True},
+    "P22": {"name": "İYİ Parti", "short": "İYİ Parti", "color": "#2E6DB4", "seat_order": 40, "main_order": 40, "main": True},
+    "P12": {"name": "Yeşiller ve Sol Gelecek Partisi", "short": "Yeşil Sol", "color": "#2E7D32", "seat_order": 20, "main_order": 50, "main": True},
+    "P10": {"name": "Yeniden Refah Partisi", "short": "YRP", "color": "#00897B", "seat_order": 70, "main_order": 60, "main": True},
+    "P13": {"name": "Türkiye İşçi Partisi", "short": "TİP", "color": "#C2185B", "seat_order": 10, "main_order": 70, "main": True},
+    "P24": {"name": "Zafer Partisi", "short": "Zafer", "color": "#1E3A8A", "seat_order": 60, "main_order": 80, "main": True},
     "P8": {"name": "Büyük Birlik Partisi", "short": "BBP", "color": "#6D4C41", "seat_order": 95, "main": False},
 }
 ALLIANCE_LABELS = {
@@ -65,6 +65,12 @@ def main() -> None:
     alliances = {k: list(v) for k, v in cfg["alliances"].items()}
     joint_lists = dict(cfg.get("joint_lists") or {})
     threshold = float(cfg["threshold"])
+    cfg_2028 = OmegaConf.to_container(
+        OmegaConf.load(ROOT / "config" / "alliances_2028.yaml"), resolve=True
+    )
+    alliances_2028 = {k: list(v) for k, v in cfg_2028["alliances"].items()}
+    joint_lists_2028 = dict(cfg_2028.get("joint_lists") or {})
+    threshold_2028 = float(cfg_2028["threshold"])
 
     wide = pd.read_csv(PROCESSED / "parliament_2023_districts.csv")
     headers = pd.read_csv(PROCESSED / "party_headers_2023.csv")
@@ -96,9 +102,30 @@ def main() -> None:
                 "short": short,
                 "color": meta.get("color", "#9E9E9E"),
                 "seat_order": meta.get("seat_order", 100),
+                "main_order": meta.get("main_order"),
                 "main": bool(meta.get("main", False)),
                 "alliance": party_to_alliance.get(pid),
                 "actual_seats": int(actual_seats.get(pid, 0)),
+            }
+        )
+
+    extra_parties = OmegaConf.to_container(
+        OmegaConf.load(ROOT / "config" / "parties_2028.yaml"), resolve=True
+    )["parties"]
+    for pid, meta in extra_parties.items():
+        parties.append(
+            {
+                "id": pid,
+                "name": meta["name"],
+                "short": meta["short"],
+                "color": meta["color"],
+                "seat_order": meta.get("seat_order", 100),
+                "main_order": meta.get("main_order"),
+                "main": bool(meta.get("main", False)),
+                "active_from": int(meta.get("active_from", 2028)),
+                "baseline_mix": meta.get("baseline_mix", {}),
+                "alliance": None,
+                "actual_seats": 0,
             }
         )
 
@@ -359,8 +386,11 @@ def main() -> None:
             "election_id": int(cfg["election_id"]),
             "threshold": threshold,
             "alliances": alliances,
+            "alliances_2028": alliances_2028,
+            "threshold_2028": threshold_2028,
             "alliance_labels": ALLIANCE_LABELS,
             "joint_lists": joint_lists,
+            "joint_lists_2028": joint_lists_2028,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "source": "YSK açık veri; TÜİK NİP",
             "disclaimer": "Bu araç bir senaryo simülasyonudur; seçim tahmini değildir.",

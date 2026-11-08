@@ -32,6 +32,14 @@ await visit("index.html", async (p) => {
   if (await p.isChecked("#demographic-swing")) {
     throw new Error("demographic swing should default off");
   }
+  if (await p.locator("#range-YENI").count()) {
+    throw new Error("2023 view should not show YENI");
+  }
+  await p.selectOption("#election-year", "2028");
+  if (!(await p.locator("#range-YENI").count()) || !(await p.locator("#range-A").count())) {
+    throw new Error("2028 view is missing new parties");
+  }
+  await p.selectOption("#election-year", "2023");
   const shares = async () =>
     (await p.locator("#party-table").innerText()).match(/\d+,\d+%/g)?.join("|");
   const beforeSwing = await shares();
@@ -44,8 +52,14 @@ await visit("index.html", async (p) => {
   if (!(await p.textContent("#election-note"))?.includes("2028")) {
     throw new Error("2028 scenario note missing");
   }
-  if (!(await p.isDisabled("#apply-polls"))) {
-    throw new Error("empty 2028 polls should disable the apply button");
+  if (await p.isDisabled("#apply-polls")) {
+    throw new Error("2028 polls should enable the apply button");
+  }
+  await p.click("#apply-polls");
+  await p.waitForTimeout(200);
+  const applied = await p.locator("#party-table").innerText();
+  if (!applied.includes("YENİ") || !applied.includes("\nA\n")) {
+    throw new Error("2028 poll average did not populate new parties");
   }
   await p.check("#demographic-swing");
   if (await p.isChecked("#kurdish-swing")) {

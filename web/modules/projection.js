@@ -46,6 +46,20 @@ export function adjustedShare(base, delta, tilt, strength) {
   return Math.max(0, base + delta * sensitivity);
 }
 
+export function baselineVotesFor(votes, id, mix) {
+  const entries = mix && Object.keys(mix).length ? Object.entries(mix) : [[id, 1]];
+  const total = entries.reduce(
+    (sum, [, weight]) => sum + Math.max(0, Number(weight) || 0),
+    0
+  );
+  if (total <= 0) return votes[id] || 0;
+  return entries.reduce(
+    (sum, [source, weight]) =>
+      sum + (votes[source] || 0) * (Math.max(0, Number(weight) || 0) / total),
+    0
+  );
+}
+
 export function rakeToTargets(districts, targets, iterations = 10) {
   const rows = districts.map((district) => ({
     ...district,

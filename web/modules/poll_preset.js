@@ -1,26 +1,27 @@
 import { aggregateAt, medianSample } from "./aggregate.js";
 
 export const MAIN_PARTIES = ["P9", "P21", "P11", "P22", "P12", "P10", "P13", "P24"];
+export const MAIN_PARTIES_2028 = [...MAIN_PARTIES, "YENI", "A"];
 const OTHER = "OTHER";
 const OPTIONS = {
   halfLifeDays: 28,
   normalize: true,
 };
 
-export function addOther(poll) {
+export function addOther(poll, mainParties = MAIN_PARTIES) {
   const other = Object.entries(poll.results)
-    .filter(([id, value]) => !MAIN_PARTIES.includes(id) && typeof value === "number")
+    .filter(([id, value]) => !mainParties.includes(id) && typeof value === "number")
     .reduce((sum, [, value]) => sum + value, 0);
   return { ...poll, results: { ...poll.results, [OTHER]: other } };
 }
 
-export function parliamentActual(data) {
+export function parliamentActual(data, mainParties = MAIN_PARTIES) {
   const shares = data.national.shares;
   const other = Object.entries(shares)
-    .filter(([id]) => !MAIN_PARTIES.includes(id))
+    .filter(([id]) => !mainParties.includes(id))
     .reduce((sum, [, value]) => sum + value, 0);
   const actual = {};
-  for (const id of MAIN_PARTIES) actual[id] = shares[id] || 0;
+  for (const id of mainParties) actual[id] = shares[id] || 0;
   actual[OTHER] = other;
   return actual;
 }
@@ -37,9 +38,9 @@ export function presidentAggregate(pollPayload, round = 1, cutoff = "2023-05-14"
   return result.shares;
 }
 
-export function parliamentAggregate(pollPayload, cutoff = "2023-05-14") {
-  const polls = pollPayload.datasets.parliament.polls.map(addOther);
-  const entities = [...MAIN_PARTIES, OTHER];
+export function parliamentAggregate(pollPayload, cutoff = "2023-05-14", mainParties = MAIN_PARTIES) {
+  const polls = pollPayload.datasets.parliament.polls.map((poll) => addOther(poll, mainParties));
+  const entities = [...mainParties, OTHER];
   const result = aggregateAt(polls, entities, cutoff, {
     ...OPTIONS,
     defaultSample: medianSample(polls),

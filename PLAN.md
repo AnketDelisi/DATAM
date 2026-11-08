@@ -128,6 +128,9 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] 2028 poll ingestion files and export/validation path.
 - [x] HDP/YSP political-support index, 2015–2023 (not a population estimate).
 - [x] Poll table shows raw values with adjusted subtext and winner highlight.
+- [x] Year-aware party registry for YENİ and A; baseline lineage metadata in place.
+- [x] Baseline allocation for new parties via baseline_mix and raking.
+- [x] 2028 parliamentary poll scraper and editable alliance config.
 - [x] Complete 2024 city/district data and fuller confounding diagnostics.
 - [ ] Final 2028 election calendar and official seat map.
 - [x] Browser smoke test in CI.
@@ -140,6 +143,7 @@ uv sync
 uv run python -m unittest discover -s pipeline/tests -v
 cd web; node --test modules
 uv run python pipeline/validate_polls.py
+uv run python pipeline/scrape_2028_polls.py
 uv run --with lxml --with beautifulsoup4 --with html5lib python pipeline/scrape_historical_polls.py
 uv run python pipeline/house_effects.py --backtest
 uv run python pipeline/house_effects_hierarchical.py
