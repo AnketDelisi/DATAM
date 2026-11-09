@@ -19,7 +19,9 @@ export function createHemicycle(svg, total = 600) {
       if (radius + cell * 0.71 > outerRadius) continue;
       if (radius - cell * 0.71 < innerRadius) continue;
       if (y + cell > centerY) continue;
-      candidates.push({ x, y, radius });
+      let angle = Math.atan2(y + cell / 2 - centerY, x + cell / 2 - centerX);
+      if (angle < 0) angle += Math.PI * 2;
+      candidates.push({ x, y, radius, angle });
     }
   }
 
@@ -28,7 +30,7 @@ export function createHemicycle(svg, total = 600) {
       Math.abs(left.radius - midRadius) - Math.abs(right.radius - midRadius)
   );
   const seats = candidates.slice(0, total);
-  seats.sort((left, right) => left.x - right.x || left.y - right.y);
+  seats.sort((left, right) => left.angle - right.angle || left.radius - right.radius);
 
   const group = root.append("g").attr("class", "hemicycle-seats");
   const shapes = group
