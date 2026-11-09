@@ -1,3 +1,5 @@
+import { cellPath, hexagonCells } from "./triangles.js";
+
 export function createHemicycle(svg, total = 600) {
   const d3 = globalThis.d3;
   const root = d3.select(svg);
@@ -7,16 +9,23 @@ export function createHemicycle(svg, total = 600) {
   const HEIGHT = 320;
   const centerX = WIDTH / 2;
   const centerY = 298;
-  const innerRadius = 92;
-  const outerRadius = 266;
-  const rowCount = 18;
+  const innerRadius = 88;
+  const outerRadius = 252;
+  const rowCount = 8;
+  const tileCount = Math.round(total / 6);
+  const tileCells = hexagonCells(1);
+  const tileScale = 11.5;
+
   const radii = Array.from(
     { length: rowCount },
-    (_, index) => innerRadius + ((outerRadius - innerRadius) * index) / (rowCount - 1)
+    (_, index) =>
+      innerRadius + ((outerRadius - innerRadius) * index) / (rowCount - 1)
   );
   const weightTotal = radii.reduce((sum, radius) => sum + radius, 0);
-  const counts = radii.map((radius) => Math.max(1, Math.round((total * radius) / weightTotal)));
-  let remaining = total - counts.reduce((sum, count) => sum + count, 0);
+  const counts = radii.map((radius) =>
+    Math.max(1, Math.round((tileCount * radius) / weightTotal))
+  );
+  let remaining = tileCount - counts.reduce((sum, count) => sum + count, 0);
   let cursor = 0;
   while (remaining !== 0) {
     const index = cursor % rowCount;
@@ -31,54 +40,34 @@ export function createHemicycle(svg, total = 600) {
   }
 
   const seats = [];
-  const band = (outerRadius - innerRadius) / Math.max(1, rowCount - 1);
-  verdict: for (let row = 0; row < rowCount; row += 1) {
+  for (let row = 0; row < rowCount; row += 1) {
     const radius = radii[row];
     const count = counts[row];
     const step = Math.PI / count;
-    for (let index = 0; index < count; index += 1) {
-      const angle = Math.PI + (index + 0.5) * step;
-      const size = Math.min(band * 1.05, (Math.PI * radius) / count * 0.52);
-      const tipRadius = radius - size * 0.62;
-      const baseRadius = radius + size * 0.48;
-      const tangentX = -Math.sin(angle);
-      const tangentY = Math.cos(angle);
-      const tip = [
-        centerX + tipRadius * Math.cos(angle),
-        centerY + tipRadius * Math.sin(angle),
-      ];
-      const base = [
-        [
-          centerX + baseRadius * Math.cos(angle) + tangentX * size * 0.58,
-          centerY + baseRadius * Math.sin(angle) + tangentY * size * 0.58,
-        ],
-        [
-          centerX + baseRadius * Math.cos(angle) - tangentX * size * 0.58,
-          centerY + baseRadius * Math.sin(angle) - tangentY * size * 0.58,
-        ],
-      ];
-      seats.push({
-        angle,
-        row,
-        points: [tip, base[0], base[1]],
-      });
-      if (seats.length === total) break verdict;
+    for (let tile = 0; tile < count; tile += 1) {
+      const angle = Math.PI + (tile + 0.5) * step;
+      const x = centerX + radius * Math.cos(angle);
+      const y = centerY + radius * Math.sin(angle);
+      for (const cell of tileCells) {
+        seats.push({
+          angle,
+          row,
+          path: cellPath(cell, tileScale, x, y),
+        });
+      }
     }
   }
   seats.sort((left, right) => left.angle - right.angle || left.row - right.row);
-
-  const pathFor = (seat) =>
-    `M${seat.points[0][0]},${seat.points[0][1]} L${seat.points[1][0]},${seat.points[1][1]} L${seat.points[2][0]},${seat.points[2][1]} Z`;
 
   const group = root.append("g").attr("class", "hemicycle-seats");
   const shapes = group
     .selectAll("path")
     .data(seats)
     .join("path")
-    .attr("d", pathFor)
+    .attr("d", (seat) => seat.path)
     .attr("fill", "#d7dbe0")
     .attr("stroke", "#fffdf8")
-    .attr("stroke-width", 0.4);
+    .attr("stroke-width", 0.5);
 
   root
     .append("text")
