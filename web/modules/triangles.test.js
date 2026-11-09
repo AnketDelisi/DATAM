@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cellBounds, hexagonCells, parallelogramCells, triangleCells } from "./triangles.js";
+import { cellBounds, hexagonCells, hexClusterCells, parallelogramCells, triangleCells } from "./triangles.js";
 
 test("triangle grid has a square number of cells", () => {
   assert.equal(triangleCells(1).length, 1);
@@ -30,4 +30,13 @@ test("exact hexagon counts are selectable", () => {
   for (const side of [1, 2, 3, 4]) {
     assert.equal(hexagonCells(side).length, 6 * side * side);
   }
+});
+
+test("hex cluster adds remainders horizontally to full hexagons", () => {
+  for (const count of [1, 2, 5, 6, 7, 15, 27, 96]) {
+    assert.equal(hexClusterCells(count).length, count);
+  }
+  const cells = hexClusterCells(7);
+  const bounds = cellBounds(cells);
+  assert.ok(bounds.width > bounds.height);
 });

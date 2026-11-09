@@ -1,5 +1,5 @@
 import { normalizeName } from "./format.js";
-import { cellBounds, cellPath, hexagonCells } from "./triangles.js";
+import { cellBounds, cellPath, hexClusterCells } from "./triangles.js";
 
 const WIDTH = 800;
 const HEIGHT = 380;
@@ -56,15 +56,7 @@ export function createDrillMap(
         ? counts.flatMap(([id, n]) => Array(n).fill(id))
         : Array(row.seats).fill(row.winner || "OTHER");
       const total = Math.min(row.seats, orderedIds.length);
-      const hexSide = Math.max(1, Math.ceil(Math.sqrt(total / 6)));
-      const cells = hexagonCells(hexSide)
-        .sort(
-          (left, right) =>
-            left.cx * left.cx + left.cy * left.cy -
-            (right.cx * right.cx + right.cy * right.cy)
-        )
-        .slice(0, total);
-      cells.sort((left, right) => left.cx - right.cx || left.cy - right.cy);
+      const cells = hexClusterCells(total);
       const box = cellBounds(cells);
       const scale = Math.min(
         7.0,

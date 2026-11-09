@@ -11,7 +11,7 @@ export function createHemicycle(svg, total = 600) {
   const centerY = 298;
   const innerRadius = 88;
   const outerRadius = 252;
-  const tileScale = 18.25;
+  const tileScale = 18;
   const tileCells = hexagonCells(1);
   const tileCount = Math.round(total / 6);
   const horizontal = 1.5 * tileScale;
@@ -27,12 +27,10 @@ export function createHemicycle(svg, total = 600) {
       if (y > centerY) continue;
       const radius = Math.hypot(x - centerX, y - centerY);
       if (radius < innerRadius || radius > outerRadius) continue;
-      candidates.push({
-        x,
-        y,
-        radius,
-        angle: Math.atan2(y - centerY, x - centerX),
-      });
+      if (y + (tileScale * Math.sqrt(3)) / 2 > centerY) continue;
+      let angle = Math.atan2(y - centerY, x - centerX);
+      if (angle < 0) angle += Math.PI * 2;
+      candidates.push({ x, y, radius, angle });
     }
   }
   candidates.sort(
@@ -40,7 +38,7 @@ export function createHemicycle(svg, total = 600) {
       Math.abs(left.radius - midRadius) - Math.abs(right.radius - midRadius)
   );
   const tiles = candidates.slice(0, tileCount);
-  tiles.sort((left, right) => left.angle - right.angle || left.radius - right.radius);
+  tiles.sort((left, right) => left.angle - right.angle || left.y - right.y);
 
   const seats = [];
   for (const tile of tiles) {
@@ -52,8 +50,6 @@ export function createHemicycle(svg, total = 600) {
       });
     }
   }
-  seats.sort((left, right) => left.angle - right.angle || left.radius - right.radius);
-
   const clipId = "hemicycle-half-donut";
   root
     .append("defs")

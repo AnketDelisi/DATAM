@@ -102,3 +102,30 @@ export function cellBounds(cells) {
   }
   return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
 }
+
+function translateCells(cells, x, y) {
+  return cells.map((cell) => ({
+    points: cell.points.map(([px, py]) => [px + x, py + y]),
+    cx: cell.cx + x,
+    cy: cell.cy + y,
+  }));
+}
+
+export function hexClusterCells(count) {
+  const full = Math.floor(count / 6);
+  const remainder = count % 6;
+  const tile = hexagonCells(1);
+  const cells = [];
+  for (let index = 0; index < full; index += 1) {
+    const x = index * 1.5;
+    const y = (index % 2) * (Math.sqrt(3) / 2);
+    cells.push(...translateCells(tile, x, y));
+  }
+  if (remainder > 0) {
+    const x = full * 1.5;
+    const y = (full % 2) * (Math.sqrt(3) / 2);
+    const partial = [...tile].sort((left, right) => right.cx - left.cx);
+    cells.push(...translateCells(partial.slice(0, remainder), x, y));
+  }
+  return cells;
+}
