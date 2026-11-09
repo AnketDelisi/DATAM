@@ -64,11 +64,8 @@ await visit("index.html", async (p) => {
   if ((await p.locator("#map .seat-badge").count()) === 0) {
     throw new Error("map seat badges missing");
   }
-  if ((await p.locator("#hemicycle path").count()) < 600) {
-    throw new Error("hemicycle triangles missing");
-  }
-  if ((await p.locator("#seat-cartogram path").count()) < 600) {
-    throw new Error("seat cartogram missing");
+  if ((await p.locator("#hemicycle .seat-square").count()) < 600) {
+    throw new Error("hemicycle squares missing");
   }
   await p.check("#demographic-swing");
   if (await p.isChecked("#kurdish-swing")) {

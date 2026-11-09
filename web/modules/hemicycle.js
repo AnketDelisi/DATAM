@@ -1,5 +1,3 @@
-import { cellPath, hexagonCells } from "./triangles.js";
-
 export function createHemicycle(svg, total = 600) {
   const d3 = globalThis.d3;
   const root = d3.select(svg);
@@ -9,70 +7,66 @@ export function createHemicycle(svg, total = 600) {
   const HEIGHT = 320;
   const centerX = WIDTH / 2;
   const centerY = 298;
-  const innerRadius = 88;
-  const outerRadius = 252;
-  const tileScale = 18;
-  const tileCells = hexagonCells(1);
-  const tileCount = Math.round(total / 6);
-  const horizontal = 1.5 * tileScale;
-  const vertical = Math.sqrt(3) * tileScale;
-  const midRadius = (innerRadius + outerRadius) / 2;
-
-  const candidates = [];
-  for (let column = -40; column <= 40; column += 1) {
-    const x = centerX + column * horizontal;
-    for (let row = -40; row <= 40; row += 1) {
-      const y =
-        centerY + row * vertical + (Math.abs(column) % 2 ? vertical / 2 : 0);
-      if (y > centerY) continue;
-      const radius = Math.hypot(x - centerX, y - centerY);
-      if (radius < innerRadius || radius > outerRadius) continue;
-      if (y + (tileScale * Math.sqrt(3)) / 2 > centerY) continue;
-      let angle = Math.atan2(y - centerY, x - centerX);
-      if (angle < 0) angle += Math.PI * 2;
-      candidates.push({ x, y, radius, angle });
-    }
-  }
-  candidates.sort(
-    (left, right) =>
-      Math.abs(left.radius - midRadius) - Math.abs(right.radius - midRadius)
+  const innerRadius = 92;
+  const outerRadius = 264;
+  const rowCount = 18;
+  const band = (outerRadius - innerRadius) / (rowCount - 1);
+  const radii = Array.from(
+    { length: rowCount },
+    (_, index) => innerRadius + index * band
   );
-  const tiles = candidates.slice(0, tileCount);
-  tiles.sort((left, right) => left.angle - right.angle || left.y - right.y);
+  const weightTotal = radii.reduce((sum, radius) => sum + radius, 0);
+  const counts = radii.map((radius) =>
+    Math.max(1, Math.round((total * radius) / weightTotal))
+  );
+  let remaining = total - counts.reduce((sum, count) => sum + count, 0);
+  let cursor = 0;
+  while (remaining !== 0) {
+    const index = cursor % rowCount;
+    if (remaining > 0) {
+      counts[index] += 1;
+      remaining -= 1;
+    } else if (counts[index] > 1) {
+      counts[index] -= 1;
+      remaining += 1;
+    }
+    cursor += 1;
+  }
 
   const seats = [];
-  for (const tile of tiles) {
-    for (const cell of tileCells) {
+  for (let row = 0; row < rowCount; row += 1) {
+    const radius = radii[row];
+    const count = counts[row];
+    const step = Math.PI / count;
+    const chord = (Math.PI * radius) / count;
+    const size = Math.max(3.4, Math.min(8.2, band * 0.82, chord * 0.58));
+    for (let index = 0; index < count; index += 1) {
+      const angle = Math.PI + (index + 0.5) * step;
       seats.push({
-        angle: tile.angle,
-        radius: tile.radius,
-        path: cellPath(cell, tileScale, tile.x, tile.y),
+        angle,
+        row,
+        x: centerX + radius * Math.cos(angle) - size / 2,
+        y: centerY + radius * Math.sin(angle) - size / 2,
+        size,
       });
     }
   }
-  const clipId = "hemicycle-half-donut";
-  root
-    .append("defs")
-    .append("clipPath")
-    .attr("id", clipId)
-    .append("path")
-    .attr(
-      "d",
-      `M${centerX - outerRadius},${centerY} A${outerRadius},${outerRadius} 0 0 1 ${centerX + outerRadius},${centerY} L${centerX + innerRadius},${centerY} A${innerRadius},${innerRadius} 0 0 0 ${centerX - innerRadius},${centerY} Z`
-    );
+  seats.sort((left, right) => left.angle - right.angle || left.row - right.row);
 
-  const group = root
-    .append("g")
-    .attr("class", "hemicycle-seats")
-    .attr("clip-path", `url(#${clipId})`);
+  const group = root.append("g").attr("class", "hemicycle-seats");
   const shapes = group
-    .selectAll("path")
+    .selectAll("rect")
     .data(seats)
-    .join("path")
-    .attr("d", (seat) => seat.path)
+    .join("rect")
+    .attr("class", "seat-square")
+    .attr("x", (seat) => seat.x)
+    .attr("y", (seat) => seat.y)
+    .attr("width", (seat) => seat.size)
+    .attr("height", (seat) => seat.size)
+    .attr("rx", 1)
     .attr("fill", "#d7dbe0")
     .attr("stroke", "#fffdf8")
-    .attr("stroke-width", 0.5);
+    .attr("stroke-width", 0.4);
 
   root
     .append("text")
@@ -94,7 +88,7 @@ export function createHemicycle(svg, total = 600) {
     );
     for (const party of sorted) {
       const count = seatsByParty[party.id] || 0;
-      for (let i = 0; i < count; i += 1) order.push(party.id);
+      for (let index = 0; index < count; index += 1) order.push(party.id);
     }
 
     shapes.attr("fill", (_, index) => {

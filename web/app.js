@@ -1,6 +1,5 @@
 import { allocateDistricts } from "./modules/allocate.js";
 import { createHemicycle } from "./modules/hemicycle.js";
-import { createSeatCartogram } from "./modules/seat_cartogram.js";
 import { createDrillMap } from "./modules/drill_map.js";
 import {
   clamp,
@@ -53,7 +52,6 @@ const state = {
   result: null,
   map: null,
   hemicycle: null,
-  cartogram: null,
 };
 
 function $(id) {
@@ -153,7 +151,6 @@ async function main() {
     onZoomChange: handleZoomChange,
   });
   state.hemicycle = createHemicycle($("hemicycle"), 600);
-  state.cartogram = createSeatCartogram($("seat-cartogram"));
 
   $("reset").addEventListener("click", resetTo2023);
   $("apply-polls").addEventListener("click", applyPollAverage);
@@ -537,7 +534,6 @@ function render() {
   state.ilce = ilce;
 
   state.hemicycle.update(result.seatsByParty, state.data.parties);
-  state.cartogram.update(provinces, state.data.parties);
   state.map.update(provinces, ilce);
   state.map.setSelected(state.selectedKey);
   updateTable(result);

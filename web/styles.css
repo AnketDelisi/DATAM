@@ -1510,25 +1510,3 @@ footer {
     animation-iteration-count: 1 !important;
   }
 }
-
-/* Seat cartogram */
-
-.seat-cartogram-panel {
-  max-width: 1720px;
-  margin: 20px auto 0;
-  padding: 18px 24px 22px;
-}
-
-.seat-cartogram {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin-top: 10px;
-}
-
-@media (max-width: 760px) {
-  .seat-cartogram-panel {
-    margin: 14px;
-    padding: 14px;
-  }
-}
