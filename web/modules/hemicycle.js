@@ -28,7 +28,7 @@ export function createHemicycle(svg, total = 600) {
       Math.abs(left.radius - midRadius) - Math.abs(right.radius - midRadius)
   );
   const seats = candidates.slice(0, total);
-  seats.sort((left, right) => left.y - right.y || left.x - right.x);
+  seats.sort((left, right) => left.x - right.x || left.y - right.y);
 
   const group = root.append("g").attr("class", "hemicycle-seats");
   const shapes = group

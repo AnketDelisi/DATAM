@@ -56,8 +56,15 @@ export function createDrillMap(
       const width = Math.max(1, x1 - x0);
       const height = Math.max(1, y1 - y0);
       const order = [];
-      for (const party of sortedParties) {
-        const count = row.scenario_seats?.[party.id] || 0;
+      const provinceParties = sortedParties
+        .filter((party) => (row.scenario_seats?.[party.id] || 0) > 0)
+        .sort(
+          (left, right) =>
+            (row.shares?.[right.id] || 0) - (row.shares?.[left.id] || 0) ||
+            left.seat_order - right.seat_order
+        );
+      for (const party of provinceParties) {
+        const count = row.scenario_seats[party.id] || 0;
         for (let index = 0; index < count; index += 1) order.push(party.id);
       }
       const total = Math.min(row.seats, order.length);
