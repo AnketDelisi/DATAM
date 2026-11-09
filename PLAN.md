@@ -127,7 +127,7 @@ province-level assignment of overseas votes. Max national party error: 2 seats.
 - [x] 2028 scenario scaffold (2023 baseline, configurable seat projection).
 - [x] 2028 poll ingestion files and export/validation path.
 - [x] 2028 district seat numbers imported from the 600 Turkey model.
-- [x] Triangular seat stacks on the province map and 600-seat chamber.
+- [x] Tessellated triangle seat stacks and 600-seat hexagon chamber.
 - [x] HDP/YSP political-support index, 2015–2023 (not a population estimate).
 - [x] Poll table shows raw values with adjusted subtext and winner highlight.
 - [x] Year-aware party registry for YENİ and A; baseline lineage metadata in place.

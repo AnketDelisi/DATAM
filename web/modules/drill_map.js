@@ -1,4 +1,5 @@
 import { normalizeName } from "./format.js";
+import { cellPath, triangleCells } from "./triangles.js";
 
 const WIDTH = 800;
 const HEIGHT = 380;
@@ -55,29 +56,23 @@ export function createDrillMap(
         ? counts.flatMap(([id, n]) => Array(n).fill(id))
         : Array(row.seats).fill(row.winner || "OTHER");
       const total = Math.min(row.seats, orderedIds.length);
-      const rows = Math.max(1, Math.ceil((Math.sqrt(8 * total + 1) - 1) / 2));
-      const size = Math.max(1.0, Math.min(4.2, width / (rows * 2.3), height / (rows * 1.8)));
-      const spacingX = size * 1.8;
-      const spacingY = size * 1.55;
-      const startY = cy - ((rows - 1) * spacingY) / 2;
-      let index = 0;
-      for (let row = 1; row <= rows && index < total; row += 1) {
-        const count = Math.min(row, total - index);
-        const rowWidth = (count - 1) * spacingX;
-        const y = startY + (row - 1) * spacingY;
-        for (let col = 0; col < count; col += 1) {
-          const x = cx - rowWidth / 2 + col * spacingX;
-          const id = orderedIds[index];
-          const color = colorsFor(id);
-          seatLayer
-            .append("path")
-            .attr("d", `M${x},${y - size} L${x + size * 0.9},${y + size * 0.75} L${x - size * 0.9},${y + size * 0.75} Z`)
-            .attr("fill", color)
-            .attr("stroke", "#fffdf8")
-            .attr("stroke-width", 0.3);
-          index += 1;
-        }
-      }
+      const side = Math.ceil(Math.sqrt(total));
+      const cells = triangleCells(side).slice(0, total);
+      const localHeight = (side * Math.sqrt(3)) / 2;
+      const scale = Math.min(
+        7.0,
+        (width * 0.58) / (side * 1.1),
+        (height * 0.58) / (localHeight * 1.05)
+      );
+      const offsetY = cy - (localHeight * scale) / 2;
+      cells.forEach((cell, index) => {
+        seatLayer
+          .append("path")
+          .attr("d", cellPath(cell, scale, cx, offsetY))
+          .attr("fill", colorsFor(orderedIds[index]))
+          .attr("stroke", "#fffdf8")
+          .attr("stroke-width", 0.3);
+      });
     }
   }
 
