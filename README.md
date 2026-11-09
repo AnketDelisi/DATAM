@@ -104,8 +104,8 @@ from the 600 repo's Turkey model (`prDistricts`, 87 districts, 600 seats).
 `project_2028_seats.py` preserves those counts in
 `web/data/seat_projection_2028.json`; the old growth model remains as a
 fallback. Map provinces use full hexagon tiles plus a horizontal remainder
-tile when needed; the 600-seat chamber is a clipped hex-lattice half-donut of
-100 hexagonal tiles, each split into six triangular seats. `polls/2028_*.json` are
+tile when needed; the 600-seat chamber is a 100-hexagon lattice inside a
+half-donut, each hexagon split into six triangular seats. `polls/2028_*.json` are
 ready for next-election polls; `export_site.py` combines them into
 `polls_2028.json`.
 
