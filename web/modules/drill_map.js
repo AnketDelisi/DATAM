@@ -91,7 +91,7 @@ export function createDrillMap(
           .attr("rx", 0.5)
           .attr("fill", colors.get(order[index]) || "#9e9e9e")
           .attr("stroke", "#fffdf8")
-          .attr("stroke-width", 0.25);
+          .attr("stroke-width", 0.6);
       }
     }
   }
