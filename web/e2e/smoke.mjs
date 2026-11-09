@@ -61,6 +61,15 @@ await visit("index.html", async (p) => {
   if (!applied.includes("YENİ") || !applied.includes("\nA\n")) {
     throw new Error("2028 poll average did not populate new parties");
   }
+  if ((await p.locator("#map .seat-badge").count()) === 0) {
+    throw new Error("map seat badges missing");
+  }
+  if ((await p.locator("#hemicycle path").count()) < 600) {
+    throw new Error("hemicycle triangles missing");
+  }
+  if ((await p.locator("#seat-cartogram path").count()) < 600) {
+    throw new Error("seat cartogram missing");
+  }
   await p.check("#demographic-swing");
   if (await p.isChecked("#kurdish-swing")) {
     throw new Error("kurdish support should default off");

@@ -1,5 +1,4 @@
 import { normalizeName } from "./format.js";
-import { cellBounds, cellPath, hexClusterCells } from "./triangles.js";
 
 const WIDTH = 800;
 const HEIGHT = 380;
@@ -45,34 +44,23 @@ export function createDrillMap(
     seatLayer.selectAll("*").remove();
     if (drilled) return;
     for (const [key, row] of provinceData) {
+      if (!row.seats) continue;
       const feature = provinceFeatures.get(key);
-      if (!feature || !row.seats) continue;
+      if (!feature) continue;
       const [cx, cy] = anchorFor(feature);
-      const [[x0, y0], [x1, y1]] = path.bounds(feature);
-      const width = Math.max(1, x1 - x0);
-      const height = Math.max(1, y1 - y0);
-      const counts = Object.entries(row.scenario_seats || {}).filter(([, n]) => n > 0);
-      const orderedIds = counts.length
-        ? counts.flatMap(([id, n]) => Array(n).fill(id))
-        : Array(row.seats).fill(row.winner || "OTHER");
-      const total = Math.min(row.seats, orderedIds.length);
-      const cells = hexClusterCells(total);
-      const box = cellBounds(cells);
-      const scale = Math.min(
-        7.0,
-        (width * 0.58) / Math.max(1, box.width),
-        (height * 0.58) / Math.max(1, box.height)
-      );
-      const offsetX = cx - ((box.minX + box.maxX) / 2) * scale;
-      const offsetY = cy - ((box.minY + box.maxY) / 2) * scale;
-      cells.forEach((cell, index) => {
-        seatLayer
-          .append("path")
-          .attr("d", cellPath(cell, scale, offsetX, offsetY))
-          .attr("fill", colorsFor(orderedIds[index]))
-          .attr("stroke", "#fffdf8")
-          .attr("stroke-width", 0.3);
-      });
+      seatLayer
+        .append("text")
+        .attr("x", cx)
+        .attr("y", cy + 2)
+        .attr("text-anchor", "middle")
+        .attr("class", "seat-badge")
+        .attr("fill", "#171714")
+        .attr("stroke", "#fffdf8")
+        .attr("stroke-width", 2.2)
+        .attr("paint-order", "stroke")
+        .attr("font-size", row.seats >= 10 ? 7 : 6)
+        .attr("font-weight", 700)
+        .text(row.seats);
     }
   }
 
