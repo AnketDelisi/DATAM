@@ -7,51 +7,28 @@ export function createHemicycle(svg, total = 600) {
   const HEIGHT = 320;
   const centerX = WIDTH / 2;
   const centerY = 298;
-  const innerRadius = 92;
-  const outerRadius = 264;
-  const rowCount = 18;
-  const band = (outerRadius - innerRadius) / (rowCount - 1);
-  const radii = Array.from(
-    { length: rowCount },
-    (_, index) => innerRadius + index * band
-  );
-  const weightTotal = radii.reduce((sum, radius) => sum + radius, 0);
-  const counts = radii.map((radius) =>
-    Math.max(1, Math.round((total * radius) / weightTotal))
-  );
-  let remaining = total - counts.reduce((sum, count) => sum + count, 0);
-  let cursor = 0;
-  while (remaining !== 0) {
-    const index = cursor % rowCount;
-    if (remaining > 0) {
-      counts[index] += 1;
-      remaining -= 1;
-    } else if (counts[index] > 1) {
-      counts[index] -= 1;
-      remaining += 1;
+  const innerRadius = 88;
+  const outerRadius = 252;
+  const cell = 11;
+  const midRadius = (innerRadius + outerRadius) / 2;
+  const candidates = [];
+
+  for (let y = centerY - outerRadius; y <= centerY; y += cell) {
+    for (let x = centerX - outerRadius; x <= centerX + outerRadius; x += cell) {
+      const radius = Math.hypot(x + cell / 2 - centerX, y + cell / 2 - centerY);
+      if (radius + cell * 0.71 > outerRadius) continue;
+      if (radius - cell * 0.71 < innerRadius) continue;
+      if (y + cell > centerY) continue;
+      candidates.push({ x, y, radius });
     }
-    cursor += 1;
   }
 
-  const seats = [];
-  for (let row = 0; row < rowCount; row += 1) {
-    const radius = radii[row];
-    const count = counts[row];
-    const step = Math.PI / count;
-    const chord = (Math.PI * radius) / count;
-    const size = Math.max(3.4, Math.min(8.2, band * 0.82, chord * 0.58));
-    for (let index = 0; index < count; index += 1) {
-      const angle = Math.PI + (index + 0.5) * step;
-      seats.push({
-        angle,
-        row,
-        x: centerX + radius * Math.cos(angle) - size / 2,
-        y: centerY + radius * Math.sin(angle) - size / 2,
-        size,
-      });
-    }
-  }
-  seats.sort((left, right) => left.angle - right.angle || left.row - right.row);
+  candidates.sort(
+    (left, right) =>
+      Math.abs(left.radius - midRadius) - Math.abs(right.radius - midRadius)
+  );
+  const seats = candidates.slice(0, total);
+  seats.sort((left, right) => left.y - right.y || left.x - right.x);
 
   const group = root.append("g").attr("class", "hemicycle-seats");
   const shapes = group
@@ -59,14 +36,14 @@ export function createHemicycle(svg, total = 600) {
     .data(seats)
     .join("rect")
     .attr("class", "seat-square")
-    .attr("x", (seat) => seat.x)
-    .attr("y", (seat) => seat.y)
-    .attr("width", (seat) => seat.size)
-    .attr("height", (seat) => seat.size)
+    .attr("x", (seat) => seat.x + 0.5)
+    .attr("y", (seat) => seat.y + 0.5)
+    .attr("width", cell - 1)
+    .attr("height", cell - 1)
     .attr("rx", 1)
     .attr("fill", "#d7dbe0")
     .attr("stroke", "#fffdf8")
-    .attr("stroke-width", 0.4);
+    .attr("stroke-width", 0.35);
 
   root
     .append("text")

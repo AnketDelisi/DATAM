@@ -103,9 +103,9 @@ are known; edit it then to activate the alliance threshold.
 from the 600 repo's Turkey model (`prDistricts`, 87 districts, 600 seats).
 `project_2028_seats.py` preserves those counts in
 `web/data/seat_projection_2028.json`; the old growth model remains as a
-fallback. The geographic map keeps winner colors and adds province seat-count
-badges. The 600-seat chamber is a half-donut of 600 square seats, ordered
-left-to-right by angle. `polls/2028_*.json` are
+fallback. The geographic map keeps winner colors and overlays each province's
+seats as small colored squares. The 600-seat chamber is a tighter half-donut
+of square seats, ordered left-to-right by angle. `polls/2028_*.json` are
 ready for next-election polls; `export_site.py` combines them into
 `polls_2028.json`.
 

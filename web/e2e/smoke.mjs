@@ -61,8 +61,8 @@ await visit("index.html", async (p) => {
   if (!applied.includes("YENİ") || !applied.includes("\nA\n")) {
     throw new Error("2028 poll average did not populate new parties");
   }
-  if ((await p.locator("#map .seat-badge").count()) === 0) {
-    throw new Error("map seat badges missing");
+  if ((await p.locator("#map .seat-square").count()) === 0) {
+    throw new Error("map seat squares missing");
   }
   if ((await p.locator("#hemicycle .seat-square").count()) < 600) {
     throw new Error("hemicycle squares missing");

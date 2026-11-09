@@ -43,29 +43,50 @@ export function createDrillMap(
   function renderSeats() {
     seatLayer.selectAll("*").remove();
     if (drilled) return;
+    const sortedParties = [...parties].sort(
+      (left, right) =>
+        left.seat_order - right.seat_order || left.id.localeCompare(right.id)
+    );
     for (const [key, row] of provinceData) {
       if (!row.seats) continue;
       const feature = provinceFeatures.get(key);
       if (!feature) continue;
       const [cx, cy] = anchorFor(feature);
-      seatLayer
-        .append("text")
-        .attr("x", cx)
-        .attr("y", cy + 2)
-        .attr("text-anchor", "middle")
-        .attr("class", "seat-badge")
-        .attr("fill", "#171714")
-        .attr("stroke", "#fffdf8")
-        .attr("stroke-width", 2.2)
-        .attr("paint-order", "stroke")
-        .attr("font-size", row.seats >= 10 ? 7 : 6)
-        .attr("font-weight", 700)
-        .text(row.seats);
+      const [[x0, y0], [x1, y1]] = path.bounds(feature);
+      const width = Math.max(1, x1 - x0);
+      const height = Math.max(1, y1 - y0);
+      const order = [];
+      for (const party of sortedParties) {
+        const count = row.scenario_seats?.[party.id] || 0;
+        for (let index = 0; index < count; index += 1) order.push(party.id);
+      }
+      const total = Math.min(row.seats, order.length);
+      if (!total) continue;
+      const cols = Math.max(1, Math.ceil(Math.sqrt(total)));
+      const rows = Math.ceil(total / cols);
+      const size = Math.max(
+        1.1,
+        Math.min(5.2, (width * 0.62) / (cols * 1.2), (height * 0.62) / (rows * 1.2))
+      );
+      const spacing = size * 1.15;
+      const startX = cx - ((cols - 1) * spacing) / 2;
+      const startY = cy - ((rows - 1) * spacing) / 2;
+      for (let index = 0; index < total; index += 1) {
+        const x = startX + (index % cols) * spacing;
+        const y = startY + Math.floor(index / cols) * spacing;
+        seatLayer
+          .append("rect")
+          .attr("class", "seat-square")
+          .attr("x", x - size / 2)
+          .attr("y", y - size / 2)
+          .attr("width", size)
+          .attr("height", size)
+          .attr("rx", 0.5)
+          .attr("fill", colors.get(order[index]) || "#9e9e9e")
+          .attr("stroke", "#fffdf8")
+          .attr("stroke-width", 0.25);
+      }
     }
-  }
-
-  function colorsFor(id) {
-    return colors.get(id) || "#9e9e9e";
   }
 
   function anchorFor(feature) {
