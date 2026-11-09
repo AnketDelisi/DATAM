@@ -1,5 +1,5 @@
 import { normalizeName } from "./format.js";
-import { cellPath, triangleCells } from "./triangles.js";
+import { cellBounds, cellPath, hexagonCells, parallelogramCells } from "./triangles.js";
 
 const WIDTH = 800;
 const HEIGHT = 380;
@@ -56,19 +56,22 @@ export function createDrillMap(
         ? counts.flatMap(([id, n]) => Array(n).fill(id))
         : Array(row.seats).fill(row.winner || "OTHER");
       const total = Math.min(row.seats, orderedIds.length);
-      const side = Math.ceil(Math.sqrt(total));
-      const cells = triangleCells(side).slice(0, total);
-      const localHeight = (side * Math.sqrt(3)) / 2;
+      const hexSides = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const hexSide = hexSides.find((value) => 6 * value * value === total);
+      const cells = hexSide ? hexagonCells(hexSide) : parallelogramCells(total);
+      cells.sort((left, right) => left.cx - right.cx || left.cy - right.cy);
+      const box = cellBounds(cells);
       const scale = Math.min(
         7.0,
-        (width * 0.58) / (side * 1.1),
-        (height * 0.58) / (localHeight * 1.05)
+        (width * 0.58) / Math.max(1, box.width),
+        (height * 0.58) / Math.max(1, box.height)
       );
-      const offsetY = cy - (localHeight * scale) / 2;
+      const offsetX = cx - ((box.minX + box.maxX) / 2) * scale;
+      const offsetY = cy - ((box.minY + box.maxY) / 2) * scale;
       cells.forEach((cell, index) => {
         seatLayer
           .append("path")
-          .attr("d", cellPath(cell, scale, cx, offsetY))
+          .attr("d", cellPath(cell, scale, offsetX, offsetY))
           .attr("fill", colorsFor(orderedIds[index]))
           .attr("stroke", "#fffdf8")
           .attr("stroke-width", 0.3);
