@@ -1,6 +1,7 @@
 import { allocateDistricts } from "./modules/allocate.js";
 import { createHemicycle } from "./modules/hemicycle.js";
 import { createDrillMap } from "./modules/drill_map.js";
+import { renderDistrictPanel } from "./modules/district_panel.js";
 import {
   clamp,
   formatInt,
@@ -24,6 +25,7 @@ const state = {
   data: null,
   geojson: null,
   ilceGeo: null,
+  splitGeoByYear: {},
   pollData: null,
   pollDataByYear: {},
   elections: {},
@@ -59,7 +61,7 @@ function $(id) {
 }
 
 async function main() {
-  const [data, geojson, ilceGeo, polls2023, polls2028, elections, demographicSwing, kurdishSupport, seatProjection] = await Promise.all([
+  const [data, geojson, ilceGeo, split2023, split2028, polls2023, polls2028, elections, demographicSwing, kurdishSupport, seatProjection] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -70,6 +72,14 @@ async function main() {
     }),
     fetch("./geo/tr-ilce.geojson").then((response) => {
       if (!response.ok) throw new Error(`ilce geo ${response.status}`);
+      return response.json();
+    }),
+    fetch("./geo/electoral_splits_2023.geojson").then((response) => {
+      if (!response.ok) throw new Error(`electoral 2023 ${response.status}`);
+      return response.json();
+    }),
+    fetch("./geo/electoral_splits_2028.geojson").then((response) => {
+      if (!response.ok) throw new Error(`electoral 2028 ${response.status}`);
       return response.json();
     }),
     fetch("./data/polls_2023.json").then((response) => {
@@ -100,6 +110,8 @@ async function main() {
 
   state.data = data;
   state.geojson = geojson;
+  state.ilceGeo = ilceGeo;
+  state.splitGeoByYear = { "2023": split2023, "2028": split2028 };
   state.pollDataByYear = { "2023": polls2023, "2028": polls2028 };
   state.elections = elections;
   state.demographicSwing = demographicSwing;
@@ -378,6 +390,28 @@ function effectiveFactor(id, factor, provinceKey) {
   return adjusted;
 }
 
+function scenarioDistricts() {
+  const districts = state.data.districts.map((district) => ({
+    ...district,
+    votes: { ...district.votes },
+  }));
+  if (state.year !== "2028") return districts;
+  const gudul = state.data.ilce.find(
+    (row) =>
+      normalizeName(row.province_base) === "ANKARA" &&
+      normalizeName(row.name) === "GUDUL"
+  );
+  const source = districts.find((district) => district.id === "6_404501");
+  const target = districts.find((district) => district.id === "6_404520");
+  if (gudul && source && target) {
+    for (const [id, value] of Object.entries(gudul.votes || {})) {
+      source.votes[id] = Math.max(0, (source.votes[id] || 0) - value);
+      target.votes[id] = (target.votes[id] || 0) + value;
+    }
+  }
+  return districts;
+}
+
 function buildScenarioDistricts() {
   const { data } = state;
   const totalValid = data.national.valid_votes;
@@ -411,7 +445,7 @@ function buildScenarioDistricts() {
     factors[id] = votes > 0 ? target / votes : 0;
   }
 
-  const scaled = data.districts.map((district) => {
+  const scaled = scenarioDistricts().map((district) => {
     const votes = {};
     const provinceKey = normalizeName(district.province_base);
     for (const [id] of Object.entries(district.votes)) {
@@ -493,6 +527,12 @@ function aggregateIlce(factors) {
   for (const base of state.data.ilce) {
     const votes = {};
     const provinceKey = base.province_key || normalizeName(base.province_base);
+    const districtId =
+      state.year === "2028" &&
+      provinceKey === "ANKARA" &&
+      normalizeName(base.name) === "GUDUL"
+        ? "6_404520"
+        : base.district_id;
     const ids = new Set([
       ...Object.keys(base.votes),
       ...state.mainOrder.filter((id) => base.votes[id] == null),
@@ -511,6 +551,7 @@ function aggregateIlce(factors) {
     const sorted = Object.entries(votes).sort((a, b) => b[1] - a[1]);
     ilce.set(base.geo_id, {
       ...base,
+      district_id: districtId,
       votes,
       shares,
       winner: sorted[0]?.[0] || null,
@@ -528,16 +569,28 @@ function render() {
   const result = allocateDistricts(districts, alliances, state.threshold);
   const provinces = aggregateProvinces(districts, result);
   const ilce = aggregateIlce(factors);
+  const districtWinners = new Map(
+    districts.map((district) => [
+      district.id,
+      Object.entries(district.votes).sort((a, b) => b[1] - a[1])[0]?.[0] || null,
+    ])
+  );
 
   state.result = result;
   state.provinces = provinces;
   state.ilce = ilce;
 
   state.hemicycle.update(result.seatsByParty, state.data.parties);
-  state.map.update(provinces, ilce);
+  state.map.update(provinces, ilce, state.splitGeoByYear[state.year], districtWinners);
   state.map.setSelected(state.selectedKey);
   updateTable(result);
   updateSummary(result);
+  renderDistrictPanel(
+    document.getElementById("district-grid"),
+    districts,
+    result,
+    state.data.parties
+  );
   updateOtherShare();
   updateUrl();
   if (state.selectedKey) {

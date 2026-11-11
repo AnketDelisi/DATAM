@@ -35,6 +35,15 @@ await visit("index.html", async (p) => {
   if (await p.locator("#range-YENI").count()) {
     throw new Error("2023 view should not show YENI");
   }
+  if (!(await p.locator("#range-P8").count())) {
+    throw new Error("BBP should be modifiable");
+  }
+  if ((await p.locator("#district-grid .district-card").count()) !== 10) {
+    throw new Error("split electoral districts missing");
+  }
+  if (!(await p.locator("#district-grid").innerText()).includes("ANKARA-3")) {
+    throw new Error("Ankara-III district missing");
+  }
   await p.selectOption("#election-year", "2028");
   if (!(await p.locator("#range-YENI").count()) || !(await p.locator("#range-A").count())) {
     throw new Error("2028 view is missing new parties");
@@ -63,6 +72,9 @@ await visit("index.html", async (p) => {
   }
   if ((await p.locator("#map .seat-square").count()) === 0) {
     throw new Error("map seat squares missing");
+  }
+  if ((await p.locator("#map .electoral-path").count()) !== 10) {
+    throw new Error("split electoral map regions missing");
   }
   if ((await p.locator("#hemicycle .seat-square").count()) < 600) {
     throw new Error("hemicycle squares missing");

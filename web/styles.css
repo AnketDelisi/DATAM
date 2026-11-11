@@ -1371,6 +1371,64 @@ footer {
 
 /* Responsive */
 
+.district-panel {
+  margin: 18px 18px 0;
+}
+
+.district-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+
+.district-card {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 10px;
+  min-height: 108px;
+}
+
+.district-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.district-card-head h3 {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.district-card-head span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.district-seats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 9px 0 7px;
+  min-height: 12px;
+}
+
+.district-seat {
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+
+.district-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
 @media (max-width: 1280px) {
   .layout {
     grid-template-columns: 300px minmax(0, 1fr);

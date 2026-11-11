@@ -32,7 +32,7 @@ PARTY_META = {
     "P10": {"name": "Yeniden Refah Partisi", "short": "YRP", "color": "#00897B", "seat_order": 70, "main_order": 60, "main": True},
     "P13": {"name": "Türkiye İşçi Partisi", "short": "TİP", "color": "#C2185B", "seat_order": 10, "main_order": 70, "main": True},
     "P24": {"name": "Zafer Partisi", "short": "Zafer", "color": "#1E3A8A", "seat_order": 60, "main_order": 80, "main": True},
-    "P8": {"name": "Büyük Birlik Partisi", "short": "BBP", "color": "#6D4C41", "seat_order": 95, "main": False},
+    "P8": {"name": "Büyük Birlik Partisi", "short": "BBP", "color": "#6D4C41", "seat_order": 95, "main_order": 85, "main": True},
 }
 ALLIANCE_LABELS = {
     "CUMHUR": "Cumhur İttifakı",

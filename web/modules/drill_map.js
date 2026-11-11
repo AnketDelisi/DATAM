@@ -32,17 +32,20 @@ export function createDrillMap(
 
   const zoomLayer = root.append("g");
   const provinceLayer = zoomLayer.append("g");
+  const splitLayer = zoomLayer.append("g").attr("class", "electoral-layer").style("pointer-events", "none");
   const seatLayer = zoomLayer.append("g").attr("class", "seat-layer").style("pointer-events", "none");
   const ilceLayer = zoomLayer.append("g").style("display", "none");
 
   let provinceData = new Map();
   let ilceData = new Map();
+  let districtWinners = new Map();
   let drilled = null;
   let selected = null;
 
   function renderSeats() {
     seatLayer.selectAll("*").remove();
     if (drilled) return;
+    splitLayer.style("display", "block");
     const sortedParties = [...parties].sort(
       (left, right) =>
         left.seat_order - right.seat_order || left.id.localeCompare(right.id)
@@ -194,6 +197,7 @@ export function createDrillMap(
     drilled = key;
     selected = null;
     seatLayer.style("display", "none");
+    splitLayer.style("display", "none");
     const [[x0, y0], [x1, y1]] = path.bounds(feature);
     const scale = Math.min(WIDTH / (x1 - x0), HEIGHT / (y1 - y0)) * 0.82;
     const tx = WIDTH / 2 - scale * ((x0 + x1) / 2);
@@ -220,6 +224,7 @@ export function createDrillMap(
   function reset() {
     drilled = null;
     selected = null;
+    splitLayer.style("display", "block");
     seatLayer.style("display", "block");
     renderSeats();
     provinceLayer.transition().duration(duration(450)).style("opacity", 1);
@@ -250,9 +255,23 @@ export function createDrillMap(
     );
   }
 
-  function update(nextProvinceData, nextIlceData) {
+  function update(nextProvinceData, nextIlceData, splitGeo, nextDistrictWinners) {
     provinceData = nextProvinceData;
     ilceData = nextIlceData;
+    districtWinners = nextDistrictWinners || new Map();
+    splitLayer
+      .selectAll("path")
+      .data(splitGeo?.features || [], (feature) => feature.properties.district_id)
+      .join("path")
+      .attr("class", "electoral-path")
+      .attr("d", path)
+      .attr("fill", (feature) => {
+        const winner = districtWinners.get(feature.properties.district_id);
+        return winner ? colors.get(winner) || "#9e9e9e" : "#dfe3e8";
+      })
+      .attr("stroke", "#fffdf8")
+      .attr("stroke-width", 1.2)
+      .attr("vector-effect", "non-scaling-stroke");
     provincePaths.attr("fill", (feature) => {
       const row = provinceData.get(provinceKey(feature));
       return row?.winner ? colors.get(row.winner) || "#9e9e9e" : "#dfe3e8";

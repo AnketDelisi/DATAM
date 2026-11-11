@@ -1,6 +1,6 @@
 import { aggregateAt, medianSample } from "./aggregate.js";
 
-export const MAIN_PARTIES = ["P9", "P21", "P11", "P22", "P12", "P10", "P13", "P24"];
+export const MAIN_PARTIES = ["P9", "P21", "P11", "P22", "P12", "P10", "P13", "P24", "P8"];
 export const MAIN_PARTIES_2028 = [...MAIN_PARTIES, "YENI", "A"];
 const OTHER = "OTHER";
 const OPTIONS = {
