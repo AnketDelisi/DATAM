@@ -154,6 +154,32 @@
       </section>
     </section>
 
+    <section class="panel model-panel" aria-label="Olasılıksal model">
+      <div class="panel-head">
+        <h2>Olasılıksal model</h2>
+        <span id="model-note" class="chart-subtitle"></span>
+      </div>
+      <p class="hint small">
+        Gizli oy eğilimi + pollster etkisi + bootstrap + seçim hatası.
+        Aralıklar %90’dır; bu bir 2023 nowcast’idir, resmi tahmin değildir.
+      </p>
+      <div class="table-wrap">
+        <table class="aggregate-table">
+          <thead>
+            <tr>
+              <th>Parti</th>
+              <th>Nokta</th>
+              <th>%90 GA</th>
+              <th>2023</th>
+              <th>Hata</th>
+              <th>Sandalye</th>
+            </tr>
+          </thead>
+          <tbody id="model-table"></tbody>
+        </table>
+      </div>
+    </section>
+
     <section id="methodology" class="panel methodology">
       <h2>Yöntem ve sınırlar</h2>
       <p>

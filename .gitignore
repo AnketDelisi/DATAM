@@ -33,3 +33,6 @@ dist/
 
 # Run logs
 *.log
+
+# Downloaded raw election data
+/data/raw/

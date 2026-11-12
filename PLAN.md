@@ -50,6 +50,17 @@ A static GitHub Pages tool that:
 
 ## Model
 
+### Probabilistic nowcast (M5)
+
+The new model in `pipeline/forecast_model.py` estimates latent party support
+on a log-ratio scale, jointly estimates shrunk pollster effects, and uses a
+pollster-cluster bootstrap plus a historical election-error term. It projects
+the 87 district baselines with proportional swing and D'Hondt, and writes
+`web/data/forecast_2023.json`. The backtest page exposes the resulting
+national and seat intervals. This is a nowcast foundation, not yet a 2028
+forecast; the old historical-house-effect and demographic controls remain
+separate experimental tools.
+
 ### Aggregator
 
 `weight_i = sample_size_i^0.5 * exp(-ln(2) * age_days / half_life) * reliability_i`
@@ -155,6 +166,11 @@ uv run python pipeline/house_effects_hierarchical.py
 uv run --no-project --python 3.13 --with ysk --with pyyaml python pipeline/build_2024_local.py
 uv run python pipeline/backtest_2024_local.py
 uv run python pipeline/export_site.py
+uv run python pipeline/forecast_model.py
+uv run python pipeline/forecast_model.py --backtest
+uv run python pipeline/province_swing.py
+uv run python pipeline/build_2018_districts.py  # requires raw YSK 2018 CSV
+uv run python pipeline/district_swing.py
 uv run python pipeline/scrape_2018_parties.py
 uv run python pipeline/demographic_correlation.py
 uv run python pipeline/demographic_confounding.py
@@ -177,6 +193,10 @@ Actions. The workflow runs tests, rebuilds `web/data`, and deploys `web/` on
 every push to `main`.
 
 ## Open issues
+
+- The M5 model is validated only on 2023 and currently shows wider-than-ideal intervals.
+- 2018 processed district results are domestic ballot-box aggregates; verify them against official totals before using them for headline claims.
+- 2028 needs a calendar-aware latent forecast and new-party district baselines.
 
 - Overseas votes affect the national threshold; verify YSK treatment.
 - Joint lists: v1 treats guest parties as part of the host list.

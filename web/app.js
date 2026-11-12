@@ -26,6 +26,8 @@ const state = {
   geojson: null,
   ilceGeo: null,
   splitGeoByYear: {},
+  provinceSwing: null,
+  districtSwing: null,
   pollData: null,
   pollDataByYear: {},
   elections: {},
@@ -61,7 +63,7 @@ function $(id) {
 }
 
 async function main() {
-  const [data, geojson, ilceGeo, split2023, split2028, polls2023, polls2028, elections, demographicSwing, kurdishSupport, seatProjection] = await Promise.all([
+  const [data, geojson, ilceGeo, split2023, split2028, provinceSwing, districtSwing, polls2023, polls2028, elections, demographicSwing, kurdishSupport, seatProjection] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -80,6 +82,14 @@ async function main() {
     }),
     fetch("./geo/electoral_splits_2028.geojson").then((response) => {
       if (!response.ok) throw new Error(`electoral 2028 ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/province_swing.json").then((response) => {
+      if (!response.ok) throw new Error(`province swing ${response.status}`);
+      return response.json();
+    }),
+    fetch("./data/district_swing.json").then((response) => {
+      if (!response.ok) throw new Error(`district swing ${response.status}`);
       return response.json();
     }),
     fetch("./data/polls_2023.json").then((response) => {
@@ -112,6 +122,8 @@ async function main() {
   state.geojson = geojson;
   state.ilceGeo = ilceGeo;
   state.splitGeoByYear = { "2023": split2023, "2028": split2028 };
+  state.provinceSwing = provinceSwing.provinces;
+  state.districtSwing = districtSwing.districts;
   state.pollDataByYear = { "2023": polls2023, "2028": polls2028 };
   state.elections = elections;
   state.demographicSwing = demographicSwing;
@@ -448,10 +460,18 @@ function buildScenarioDistricts() {
   const scaled = scenarioDistricts().map((district) => {
     const votes = {};
     const provinceKey = normalizeName(district.province_base);
+    const localSwing =
+      state.year === "2028"
+        ? state.districtSwing?.[district.id] ||
+          state.provinceSwing?.[provinceKey] ||
+          {}
+        : {};
     for (const [id] of Object.entries(district.votes)) {
       const party = state.partiesById.get(id);
       const baseValue = baselineVotesFor(district.votes, id, party?.baseline_mix);
-      const factor = effectiveFactor(id, factors[id] || 0, provinceKey);
+      const factor =
+        effectiveFactor(id, factors[id] || 0, provinceKey) *
+        Math.exp(localSwing[id] || 0);
       if (factor > 0 && baseValue > 0) votes[id] = baseValue * factor;
     }
     for (const party of state.mainParties) {
@@ -461,7 +481,9 @@ function buildScenarioDistricts() {
         party.id,
         party.baseline_mix
       );
-      const factor = effectiveFactor(party.id, factors[party.id] || 0, provinceKey);
+      const factor =
+        effectiveFactor(party.id, factors[party.id] || 0, provinceKey) *
+        Math.exp(localSwing[party.id] || 0);
       if (factor > 0 && baseValue > 0) votes[party.id] = baseValue * factor;
     }
     const projectedSeats =

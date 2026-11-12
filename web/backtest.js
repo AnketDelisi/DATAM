@@ -40,6 +40,7 @@ const state = {
   data: null,
   pollData: null,
   historicalEffects: null,
+  forecast: null,
   raceKey: "presidentFirst",
   halfLife: 28,
   houseEffects: false,
@@ -93,7 +94,7 @@ function entityMeta(id) {
 }
 
 async function main() {
-  const [data, pollData, historicalEffects] = await Promise.all([
+  const [data, pollData, historicalEffects, forecast] = await Promise.all([
     fetch("./data/parliament_2023.json").then((response) => {
       if (!response.ok) throw new Error(`data ${response.status}`);
       return response.json();
@@ -106,10 +107,15 @@ async function main() {
       if (!response.ok) throw new Error(`house effects ${response.status}`);
       return response.json();
     }),
+    fetch("./data/forecast_2023.json").then((response) => {
+      if (!response.ok) throw new Error(`forecast ${response.status}`);
+      return response.json();
+    }),
   ]);
   state.data = data;
   state.pollData = pollData;
   state.historicalEffects = historicalEffects;
+  state.forecast = forecast;
   state.meta = new Map(
     [...data.president.candidates, ...data.parties].map((item) => [
       item.id,
@@ -122,6 +128,7 @@ async function main() {
   attachControls();
   setGeneratedAt();
   applyRace(state.raceKey);
+  renderModel();
 }
 
 function buildRaceSwitch() {
@@ -445,6 +452,53 @@ function updateUrl() {
   } catch {
     // file:// or a restricted context.
   }
+}
+
+function renderModel() {
+  const forecast = state.forecast;
+  if (!forecast) return;
+  const modelParties = new Set([
+    "P9",
+    "P21",
+    "P11",
+    "P22",
+    "P12",
+    "P10",
+    "P13",
+    "P24",
+    "P8",
+  ]);
+  const actual = { OTHER: 0 };
+  for (const [id, value] of Object.entries(state.data.national.shares)) {
+    if (id === "OTHER") {
+      actual.OTHER += value;
+    } else if (modelParties.has(id)) {
+      actual[id] = value;
+    } else {
+      actual.OTHER += value;
+    }
+  }
+  const ids = Object.keys(forecast.national).sort(
+    (a, b) => forecast.national[b].p50 - forecast.national[a].p50
+  );
+  const rows = ids
+    .map((id) => {
+      const meta = entityMeta(id);
+      const row = forecast.national[id];
+      const seats = forecast.seats[id] || {};
+      const error = actual[id] == null ? null : row.p50 - actual[id];
+      return `<tr>
+        <td><span class="swatch" style="background:${meta.color}"></span>${escapeHtml(meta.short)}</td>
+        <td class="num">${formatPct(row.p50 * 100)}</td>
+        <td class="num">${ciFormat.format(row.p05 * 100)}–${ciFormat.format(row.p95 * 100)}</td>
+        <td class="num muted">${actual[id] == null ? "–" : formatPct(actual[id] * 100)}</td>
+        <td class="num ${error > 0 ? "neg" : error < 0 ? "pos" : ""}">${error == null ? "–" : formatSignedPp(error)}</td>
+        <td class="num">${formatInt(seats.p50)} <span class="ci">${formatInt(seats.p05)}–${formatInt(seats.p95)}</span></td>
+      </tr>`;
+    })
+    .join("");
+  $("model-table").innerHTML = rows;
+  $("model-note").textContent = `${forecast.meta.poll_count} anket · ${forecast.meta.pollster_count} pollster · ${forecast.meta.bootstrap_draws} bootstrap`;
 }
 
 function setGeneratedAt() {

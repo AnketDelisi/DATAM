@@ -33,6 +33,9 @@ jobs:
       - run: uv sync --python 3.12
       - run: uv run python -m unittest discover -s pipeline/tests -v
       - run: uv run python pipeline/export_site.py
+      - run: uv run python pipeline/forecast_model.py
+      - run: uv run python pipeline/province_swing.py
+      - run: uv run python pipeline/district_swing.py
       - run: uv run python pipeline/demographic_correlation.py
       - run: uv run python pipeline/demographic_swing.py
       - run: uv run python pipeline/demographic_swing_backtest.py
